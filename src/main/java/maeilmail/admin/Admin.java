@@ -9,7 +9,7 @@ import lombok.Getter;
 
 @Getter
 @Entity
-public class Admin {
+class Admin {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
