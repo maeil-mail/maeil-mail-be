@@ -6,15 +6,18 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
-class EmailSender {
+public class EmailSender {
 
     private final JavaMailSender javaMailSender;
+    private final MailEventRepository mailEventRepository;
 
+    @Async
     public void sendMail(MailMessage message) {
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
 
@@ -24,7 +27,9 @@ class EmailSender {
             mimeMessageHelper.setSubject(message.subject());
             mimeMessageHelper.setText(message.text(), true);
             javaMailSender.send(mimeMessage);
+            mailEventRepository.save(MailEvent.success(message.to(), message.type()));
         } catch (MessagingException e) {
+            mailEventRepository.save(MailEvent.fail(message.to(), message.type()));
             throw new RuntimeException(e);
         }
     }

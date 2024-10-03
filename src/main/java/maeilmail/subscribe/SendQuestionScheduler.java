@@ -40,7 +40,7 @@ class SendQuestionScheduler {
         String text = createText(question);
 
         log.info("메일을 전송합니다. email = {} question = {}", subscribe.getEmail(), question.getTitle());
-        return new MailMessage(subscribe.getEmail(), subject, text);
+        return new MailMessage(subscribe.getEmail(), subject, text, subscribeQuestionView.getType());
     }
 
     private String createText(Question question) {

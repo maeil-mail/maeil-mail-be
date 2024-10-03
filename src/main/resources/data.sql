@@ -24,3 +24,7 @@ values ('백엔드 질문 1',
 insert into subscribe(email, category)
 values ('leehaneul990623@gmail.com', 'BACKEND'),
        ('leehaneul0623@gmail.com', 'FRONTEND');
+
+insert into admin(email)
+values ('leehaneul990623@gmail.com'),
+       ('leehaneul0623@gmail.com');
