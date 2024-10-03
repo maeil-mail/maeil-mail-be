@@ -18,6 +18,7 @@ import org.springframework.stereotype.Component;
 class AdminReportScheduler {
 
     private final MailEventRepository mailEventRepository;
+    private final AdminRepository adminRepository;
     private final AdminReportView adminReportView;
     private final EmailSender emailSender;
 
@@ -30,9 +31,11 @@ class AdminReportScheduler {
         String report = adminReport.generateReport("question");
         String text = createText(report);
         String subject = "[관리자] 메일 전송 결과를 알려드립니다.";
-        MailMessage mailMessage = new MailMessage("", subject, text, adminReportView.getType());
 
-        emailSender.sendMail(mailMessage);
+        for (Admin admin : adminRepository.findAll()) {
+            MailMessage mailMessage = new MailMessage(admin.getEmail(), subject, text, adminReportView.getType());
+            emailSender.sendMail(mailMessage);
+        }
     }
 
     private String createText(String report) {
