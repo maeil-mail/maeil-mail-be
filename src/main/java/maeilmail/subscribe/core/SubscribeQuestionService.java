@@ -21,6 +21,7 @@ public class SubscribeQuestionService {
     private final MailSender mailSender;
     private final VerifyMailView verifyEmailView;
     private final CodeGenerator codeGenerator;
+    private final TemporalSubscriberStore temporalSubscriberStore;
 
     public void sendCodeIncludedMail(VerifyEmailRequest request) {
         String subject = "이메일 인증을 진행해주세요.";
@@ -31,14 +32,14 @@ public class SubscribeQuestionService {
         log.info("인증 코드 포함 메일 요청, 이메일 = {} 코드 = {}", request.email(), code);
         mailSender.sendMail(mailMessage);
 
-        TemporalSubscriberStore.add(request.email(), code);
+        temporalSubscriberStore.add(request.email(), code);
     }
 
     @Transactional
     public void subscribe(SubscribeQuestionRequest request) {
         log.info("이메일 구독 요청, 이메일 = {}", request.email());
 
-        TemporalSubscriberStore.verify(request.email(), request.code());
+        temporalSubscriberStore.verify(request.email(), request.code());
         QuestionCategory category = QuestionCategory.from(request.category());
         Subscribe subscribe = new Subscribe(request.email(), category);
 
