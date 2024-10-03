@@ -7,6 +7,7 @@ import java.time.LocalDate;
 import maeilmail.question.Question;
 import maeilmail.question.QuestionCategory;
 import maeilmail.question.QuestionRepository;
+import maeilmail.question.QuestionSummary;
 import maeilmail.subscribe.core.Subscribe;
 import maeilmail.subscribe.core.SubscribeRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -64,18 +65,17 @@ class SequenceChoicePolicyTest {
         createQuestion("질문5", QuestionCategory.BACKEND);
         createQuestion("질문6", QuestionCategory.BACKEND);
 
-        Question choice1 = sequenceChoicePolicy.choice(subscribe, LocalDate.of(2024, 9, 23));
-        Question choice2 = sequenceChoicePolicy.choice(subscribe, LocalDate.of(2024, 9, 24));
-        Question choice3 = sequenceChoicePolicy.choice(subscribe, LocalDate.of(2024, 9, 25));
-        Question choice4 = sequenceChoicePolicy.choice(subscribe, LocalDate.of(2024, 9, 26));
-        Question choice5 = sequenceChoicePolicy.choice(subscribe, LocalDate.of(2024, 9, 27));
+        QuestionSummary choice1 = sequenceChoicePolicy.choice(subscribe, LocalDate.of(2024, 9, 23));
+        QuestionSummary choice2 = sequenceChoicePolicy.choice(subscribe, LocalDate.of(2024, 9, 24));
+        QuestionSummary choice3 = sequenceChoicePolicy.choice(subscribe, LocalDate.of(2024, 9, 25));
+        QuestionSummary choice4 = sequenceChoicePolicy.choice(subscribe, LocalDate.of(2024, 9, 26));
+        QuestionSummary choice5 = sequenceChoicePolicy.choice(subscribe, LocalDate.of(2024, 9, 27));
 
-        assertThat(choice1.getTitle()).isEqualTo("질문1");
-        assertThat(choice2.getTitle()).isEqualTo("질문2");
-        assertThat(choice3.getTitle()).isEqualTo("질문3");
-        assertThat(choice4.getTitle()).isEqualTo("질문5");
-        assertThat(choice5.getTitle()).isEqualTo("질문6");
-
+        assertThat(choice1.title()).isEqualTo("질문1");
+        assertThat(choice2.title()).isEqualTo("질문2");
+        assertThat(choice3.title()).isEqualTo("질문3");
+        assertThat(choice4.title()).isEqualTo("질문5");
+        assertThat(choice5.title()).isEqualTo("질문6");
     }
 
     private Question createQuestion(String questionTitle, QuestionCategory category) {

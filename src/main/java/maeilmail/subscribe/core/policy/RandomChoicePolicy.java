@@ -4,8 +4,8 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Random;
 import lombok.RequiredArgsConstructor;
-import maeilmail.question.Question;
-import maeilmail.question.QuestionRepository;
+import maeilmail.question.QuestionQueryService;
+import maeilmail.question.QuestionSummary;
 import maeilmail.subscribe.core.ChoiceQuestionPolicy;
 import maeilmail.subscribe.core.Subscribe;
 import org.springframework.stereotype.Component;
@@ -14,12 +14,12 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 class RandomChoicePolicy implements ChoiceQuestionPolicy {
 
-    private final QuestionRepository questionRepository;
+    private final QuestionQueryService questionQueryService;
 
     @Override
-    public Question choice(Subscribe subscribe, LocalDate today) {
+    public QuestionSummary choice(Subscribe subscribe, LocalDate today) {
         Random rand = new Random();
-        List<Question> questions = questionRepository.findAllByCategoryOrderByIdAsc(subscribe.getCategory());
+        List<QuestionSummary> questions = questionQueryService.queryAllByCategory(subscribe.getCategory().name());
         int index = rand.nextInt(questions.size());
 
         return questions.get(index);

@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import maeilmail.mail.MailMessage;
 import maeilmail.mail.MailSender;
-import maeilmail.question.Question;
+import maeilmail.question.QuestionSummary;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,17 +38,17 @@ class SendQuestionScheduler {
 
     private MailMessage selectRandomQuestionAndMapToMail(Subscribe subscribe) {
         String subject = "오늘의 면접 질문을 보내드려요.";
-        Question question = choiceQuestionPolicy.choice(subscribe, LocalDate.now());
+        QuestionSummary question = choiceQuestionPolicy.choice(subscribe, LocalDate.now());
         String text = createText(question);
 
-        log.info("메일을 전송합니다. email = {} question = {}", subscribe.getEmail(), question.getTitle());
+        log.info("메일을 전송합니다. email = {} question = {}", subscribe.getEmail(), question.title());
         return new MailMessage(subscribe.getEmail(), subject, text, subscribeQuestionView.getType());
     }
 
-    private String createText(Question question) {
+    private String createText(QuestionSummary question) {
         HashMap<Object, Object> attribute = new HashMap<>();
-        attribute.put("questionId", question.getId());
-        attribute.put("question", question.getTitle());
+        attribute.put("questionId", question.id());
+        attribute.put("question", question.title());
 
         return subscribeQuestionView.render(attribute);
     }
