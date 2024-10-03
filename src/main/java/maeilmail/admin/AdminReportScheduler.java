@@ -5,10 +5,10 @@ import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import maeilmail.mail.MailSender;
 import maeilmail.mail.MailEvent;
 import maeilmail.mail.MailEventRepository;
 import maeilmail.mail.MailMessage;
+import maeilmail.mail.MailSender;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 

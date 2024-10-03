@@ -1,4 +1,4 @@
-package maeilmail.subscribe;
+package maeilmail.subscribe.core;
 
 import java.time.LocalDate;
 import java.util.HashMap;

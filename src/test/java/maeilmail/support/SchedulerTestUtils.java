@@ -1,4 +1,4 @@
-package maeilmail.subscribe;
+package maeilmail.support;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -11,7 +11,7 @@ import org.springframework.scheduling.support.SimpleTriggerContext;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
 
-class SchedulerTestUtils {
+public class SchedulerTestUtils {
 
     public static void assertCronExpression(
             Class<?> targetClass,

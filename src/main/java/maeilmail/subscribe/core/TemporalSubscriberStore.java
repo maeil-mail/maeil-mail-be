@@ -1,4 +1,4 @@
-package maeilmail.subscribe;
+package maeilmail.subscribe.core;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

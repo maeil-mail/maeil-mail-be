@@ -1,4 +1,4 @@
-package maeilmail.subscribe;
+package maeilmail.subscribe.core;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

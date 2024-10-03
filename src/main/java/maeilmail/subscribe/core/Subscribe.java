@@ -1,4 +1,4 @@
-package maeilmail.subscribe;
+package maeilmail.subscribe.core;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
