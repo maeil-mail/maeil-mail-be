@@ -12,14 +12,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 class QuestionApi {
 
-    private final QuestionRepository questionRepository;
     private final QuestionQueryService questionQueryService;
 
     @GetMapping("/question")
     public ResponseEntity<List<QuestionSummary>> getQuestions(
             @RequestParam(defaultValue = "all") String category
     ) {
-        List<QuestionSummary> summaries = questionRepository.queryAll(category);
+        List<QuestionSummary> summaries = questionQueryService.queryAllByCategory(category);
 
         return ResponseEntity.ok(summaries);
     }
