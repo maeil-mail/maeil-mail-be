@@ -1,0 +1,24 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        auto_quote_keyword: true
+        format_sql: true
+    show-sql: true
+  sql:
+    init:
+      mode: never
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: atom
+    password: mock
+    properties:
+      mail:
+        smtp:
+          auth: true
+          timeout: 5000
+          starttls:
+            enable: true

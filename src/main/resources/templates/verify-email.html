@@ -1,0 +1,76 @@
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>매일 메일</title>
+  </head>
+  <body style="margin: 0; padding: 0">
+    <div style="height: 100%; width: 100%; font-family: Arial, sans-serif">
+      <div
+        style="
+          background-color: #ffffff;
+          padding: 40px;
+          border-radius: 8px;
+          box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+          text-align: center;
+          max-width: 400px;
+          width: 100%;
+          margin: 0 auto;
+        "
+      >
+        <a
+          href="https://www.maeil-mail.kr/"
+          style="
+            display: block;
+            margin-bottom: 20px;
+            text-decoration: none;
+            color: #000000;
+            font-size: 28px;
+            font-weight: bold;
+          "
+        >
+          매일 메일
+        </a>
+        <div
+          style="
+            background-color: #f1f3f5;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            text-align: left;
+          "
+        >
+          <div style="width: 100%; text-align: center">
+            <b style="color: #212529; font-size: 24px">인증 번호</b>
+          </div>
+          <p
+            style="
+              font-size: 24px;
+              font-weight: bold;
+              line-height: 1.5;
+              color: #495057;
+              margin: 10px 0 0;
+              text-align: center;
+            "
+            th:text="${code}"
+          >
+          </p>
+        </div>
+        <span
+          style="
+            display: inline-block;
+            padding: 15px 30px;
+            color: #000;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+          "
+        >
+          인증 번호를 입력해주세요.
+        </span>
+      </div>
+    </div>
+  </body>
+</html>

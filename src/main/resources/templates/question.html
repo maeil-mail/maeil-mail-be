@@ -1,0 +1,84 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>매일 메일</title>
+  </head>
+  <body style="margin: 0; padding: 0">
+    <div
+      style="
+        height: 100%;
+        width: 100%;
+        font-family: Arial, sans-serif;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+      "
+    >
+      <div
+        style="
+          background-color: #ffffff;
+          padding: 40px;
+          border-radius: 8px;
+          box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+          text-align: center;
+          max-width: 400px;
+          width: 100%;
+        "
+      >
+        <a
+          href="https://maeil-mail.vercel.app"
+          style="
+            display: block;
+            margin-bottom: 20px;
+            text-decoration: none;
+            color: #000000;
+            font-size: 28px;
+            font-weight: bold;
+          "
+        >
+          매일 메일
+        </a>
+        <div
+          style="
+            background-color: #f1f3f5;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            text-align: left;
+          "
+        >
+          <b style="color: #212529; font-size: 18px">오늘의 질문은?</b>
+          <p
+            style="
+              font-size: 24px;
+              font-weight: bold;
+              line-height: 1.5;
+              color: #495057;
+              margin: 10px 0 0;
+            "
+            th:text="${question}"
+          >
+          </p>
+        </div>
+        <a
+          th:href="@{https://maeil-mail.vercel.app/question/{id}(id = ${questionId})}"
+          style="
+            display: inline-block;
+            padding: 15px 30px;
+            background-color: #6f6f6f;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+          "
+        >
+          답변 확인하러 가기
+        </a>
+      </div>
+    </div>
+  </body>
+</html>

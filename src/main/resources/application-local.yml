@@ -1,0 +1,36 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driverClassName: org.h2.Driver
+    username: sa
+    password:
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        auto_quote_keyword: true
+        format_sql: true
+    show-sql: true
+    defer-datasource-initialization: true
+  sql:
+    init:
+      mode: embedded
+      data-locations: classpath:data.sql
+      encoding: UTF-8
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${mail.username}
+    password: ${mail.password}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          timeout: 5000
+          starttls:
+            enable: true

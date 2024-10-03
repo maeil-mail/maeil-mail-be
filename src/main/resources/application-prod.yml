@@ -1,0 +1,23 @@
+spring:
+  datasource:
+    url: jdbc:mysql://${db.endpoint}/${db.dbname}?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&serverTimezone=Asia/Seoul
+    driverClassName: com.mysql.cj.jdbc.Driver
+    username: ${db.username}
+    password: ${db.password}
+  jpa:
+    database-platform: org.hibernate.dialect.MySQLDialect
+    hibernate:
+      ddl-auto: validate
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${mail.username}
+    password: ${mail.password}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          timeout: 5000
+          starttls:
+            enable: true
