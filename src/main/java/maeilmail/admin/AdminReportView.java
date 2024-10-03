@@ -2,14 +2,14 @@ package maeilmail.admin;
 
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
-import maeilmail.subscribe.EmailView;
+import maeilmail.mail.MailView;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.SpringTemplateEngine;
 
 @Component
 @RequiredArgsConstructor
-class AdminReportView implements EmailView {
+class AdminReportView implements MailView {
 
     private final SpringTemplateEngine templateEngine;
 

@@ -1,7 +1,7 @@
 package maeilmail.admin;
 
 import java.util.List;
-import maeilmail.subscribe.MailEvent;
+import maeilmail.mail.MailEvent;
 
 class AdminReport {
 

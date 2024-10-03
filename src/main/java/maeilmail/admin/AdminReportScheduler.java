@@ -5,10 +5,10 @@ import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import maeilmail.subscribe.EmailSender;
-import maeilmail.subscribe.MailEvent;
-import maeilmail.subscribe.MailEventRepository;
-import maeilmail.subscribe.MailMessage;
+import maeilmail.mail.MailSender;
+import maeilmail.mail.MailEvent;
+import maeilmail.mail.MailEventRepository;
+import maeilmail.mail.MailMessage;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -20,7 +20,7 @@ class AdminReportScheduler {
     private final MailEventRepository mailEventRepository;
     private final AdminRepository adminRepository;
     private final AdminReportView adminReportView;
-    private final EmailSender emailSender;
+    private final MailSender mailSender;
 
     @Scheduled(cron = "0 30 7 1/1 * ?", zone = "Asia/Seoul")
     public void sendReport() {
@@ -34,7 +34,7 @@ class AdminReportScheduler {
 
         for (Admin admin : adminRepository.findAll()) {
             MailMessage mailMessage = new MailMessage(admin.getEmail(), subject, text, adminReportView.getType());
-            emailSender.sendMail(mailMessage);
+            mailSender.sendMail(mailMessage);
         }
     }
 

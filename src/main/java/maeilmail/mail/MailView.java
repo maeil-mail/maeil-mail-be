@@ -1,8 +1,8 @@
-package maeilmail.subscribe;
+package maeilmail.mail;
 
 import java.util.Map;
 
-public interface EmailView {
+public interface MailView {
 
     String render(Map<Object, Object> attribute);
 

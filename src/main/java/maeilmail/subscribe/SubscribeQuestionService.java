@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import maeilmail.mail.MailMessage;
+import maeilmail.mail.MailSender;
 import maeilmail.question.QuestionCategory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,8 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 class SubscribeQuestionService {
 
     private final SubscribeRepository subscribeRepository;
-    private final EmailSender emailSender;
-    private final VerifyEmailView verifyEmailView;
+    private final MailSender mailSender;
+    private final VerifyMailView verifyEmailView;
 
     public void sendCodeIncludedMail(VerifyEmailRequest request) {
         String subject = "이메일 인증을 진행해주세요.";
@@ -24,7 +26,7 @@ class SubscribeQuestionService {
         MailMessage mailMessage = new MailMessage(request.email(), subject, text, verifyEmailView.getType());
 
         log.info("인증 코드 포함 메일 요청, 이메일 = {} 코드 = {}", request.email(), code);
-        emailSender.sendMail(mailMessage);
+        mailSender.sendMail(mailMessage);
 
         TemporalSubscriberStore.add(request.email(), code);
     }

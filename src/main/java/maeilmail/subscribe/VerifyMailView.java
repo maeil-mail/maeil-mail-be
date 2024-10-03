@@ -2,13 +2,14 @@ package maeilmail.subscribe;
 
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
+import maeilmail.mail.MailView;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.SpringTemplateEngine;
 
 @Component
 @RequiredArgsConstructor
-class VerifyEmailView implements EmailView {
+class VerifyMailView implements MailView {
 
     private final SpringTemplateEngine templateEngine;
 
