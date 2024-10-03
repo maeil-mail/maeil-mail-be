@@ -19,4 +19,9 @@ class VerifyEmailView implements EmailView {
 
         return templateEngine.process("verify-email", context);
     }
+
+    @Override
+    public String getType() {
+        return "verify";
+    }
 }

@@ -1,28 +1,28 @@
-package maeilmail.subscribe;
+package maeilmail.admin;
 
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
+import maeilmail.subscribe.EmailView;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.SpringTemplateEngine;
 
 @Component
 @RequiredArgsConstructor
-class SubscribeQuestionView implements EmailView {
+class AdminReportView implements EmailView {
 
     private final SpringTemplateEngine templateEngine;
 
     @Override
     public String render(Map<Object, Object> attribute) {
         Context context = new Context();
-        context.setVariable("questionId", attribute.get("questionId"));
-        context.setVariable("question", attribute.get("question"));
+        context.setVariable("report", attribute.get("report"));
 
-        return templateEngine.process("question-v2", context);
+        return templateEngine.process("report", context);
     }
 
     @Override
     public String getType() {
-        return "question";
+        return "report";
     }
 }

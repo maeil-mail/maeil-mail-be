@@ -21,7 +21,7 @@ class SubscribeQuestionService {
         String subject = "이메일 인증을 진행해주세요.";
         String code = CodeGenerator.generateCode();
         String text = createText(code);
-        MailMessage mailMessage = new MailMessage(request.email(), subject, text);
+        MailMessage mailMessage = new MailMessage(request.email(), subject, text, verifyEmailView.getType());
 
         log.info("인증 코드 포함 메일 요청, 이메일 = {} 코드 = {}", request.email(), code);
         emailSender.sendMail(mailMessage);
