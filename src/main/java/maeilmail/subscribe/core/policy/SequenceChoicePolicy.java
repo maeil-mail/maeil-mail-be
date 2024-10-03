@@ -4,8 +4,8 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import maeilmail.question.Question;
-import maeilmail.question.QuestionRepository;
+import maeilmail.question.QuestionQueryService;
+import maeilmail.question.QuestionSummary;
 import maeilmail.subscribe.core.ChoiceQuestionPolicy;
 import maeilmail.subscribe.core.Subscribe;
 import org.springframework.context.annotation.Primary;
@@ -17,12 +17,12 @@ import org.springframework.stereotype.Component;
 class SequenceChoicePolicy implements ChoiceQuestionPolicy {
 
     private final LocalDate baseDate = LocalDate.of(2024, 9, 23);
-    private final QuestionRepository questionRepository;
+    private final QuestionQueryService questionQueryService;
 
     @Override
-    public Question choice(Subscribe subscribe, LocalDate today) {
+    public QuestionSummary choice(Subscribe subscribe, LocalDate today) {
         validateInvalidDate(today);
-        List<Question> questions = findQuestions(subscribe);
+        List<QuestionSummary> questions = findQuestions(subscribe);
         Period period = Period.between(baseDate, today);
 
         return questions.get(period.getDays() % questions.size());
@@ -34,14 +34,14 @@ class SequenceChoicePolicy implements ChoiceQuestionPolicy {
         }
     }
 
-    private List<Question> findQuestions(Subscribe subscribe) {
-        List<Question> questions = questionRepository.findAllByCategoryOrderByIdAsc(subscribe.getCategory());
+    private List<QuestionSummary> findQuestions(Subscribe subscribe) {
+        List<QuestionSummary> questions = questionQueryService.queryAllByCategory(subscribe.getCategory().name());
         validateQuestionEmpty(questions);
 
         return questions;
     }
 
-    private void validateQuestionEmpty(List<Question> questions) {
+    private void validateQuestionEmpty(List<QuestionSummary> questions) {
         if (questions.isEmpty()) {
             throw new IllegalStateException("질문지를 결정할 수 없습니다.");
         }

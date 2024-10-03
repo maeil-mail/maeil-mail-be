@@ -1,9 +1,9 @@
 package maeilmail.subscribe.core;
 
 import java.time.LocalDate;
-import maeilmail.question.Question;
+import maeilmail.question.QuestionSummary;
 
 public interface ChoiceQuestionPolicy {
 
-    Question choice(Subscribe subscribe, LocalDate today);
+    QuestionSummary choice(Subscribe subscribe, LocalDate today);
 }

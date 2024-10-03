@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-class QuestionQueryService {
+public class QuestionQueryService {
 
     private final JPAQueryFactory queryFactory;
 
