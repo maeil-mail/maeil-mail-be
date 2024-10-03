@@ -1,4 +1,4 @@
-package maeilmail.subscribe;
+package maeilmail.mail;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class EmailSender {
+public class MailSender {
 
     private final JavaMailSender javaMailSender;
     private final MailEventRepository mailEventRepository;

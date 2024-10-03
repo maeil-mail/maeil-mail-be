@@ -1,9 +1,10 @@
-package maeilmail.subscribe;
+package maeilmail.subscribe.core;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
+import maeilmail.support.SchedulerTestUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

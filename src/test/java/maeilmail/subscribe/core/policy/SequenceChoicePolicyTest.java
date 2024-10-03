@@ -1,4 +1,4 @@
-package maeilmail.subscribe.policy;
+package maeilmail.subscribe.core.policy;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -7,8 +7,8 @@ import java.time.LocalDate;
 import maeilmail.question.Question;
 import maeilmail.question.QuestionCategory;
 import maeilmail.question.QuestionRepository;
-import maeilmail.subscribe.Subscribe;
-import maeilmail.subscribe.SubscribeRepository;
+import maeilmail.subscribe.core.Subscribe;
+import maeilmail.subscribe.core.SubscribeRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

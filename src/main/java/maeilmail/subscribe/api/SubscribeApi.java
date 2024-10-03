@@ -1,6 +1,9 @@
-package maeilmail.subscribe;
+package maeilmail.subscribe.api;
 
 import lombok.RequiredArgsConstructor;
+import maeilmail.subscribe.core.SubscribeQuestionService;
+import maeilmail.subscribe.core.request.SubscribeQuestionRequest;
+import maeilmail.subscribe.core.request.VerifyEmailRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

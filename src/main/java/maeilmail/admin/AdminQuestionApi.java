@@ -13,7 +13,7 @@ class AdminQuestionApi {
     private final AdminQuestionService adminQuestionService;
 
     @PostMapping("/admin/question")
-    public ResponseEntity<Void> createQuestion(@RequestBody CreateQuestionRequest request) {
+    public ResponseEntity<Void> createQuestion(@RequestBody AdminCreateQuestionRequest request) {
         adminQuestionService.createQuestion(request.toDomainEntity());
 
         return ResponseEntity.noContent().build();
