@@ -75,7 +75,6 @@ class SequenceChoicePolicyTest {
         assertThat(choice3.getTitle()).isEqualTo("질문3");
         assertThat(choice4.getTitle()).isEqualTo("질문5");
         assertThat(choice5.getTitle()).isEqualTo("질문6");
-
     }
 
     private Question createQuestion(String questionTitle, QuestionCategory category) {
