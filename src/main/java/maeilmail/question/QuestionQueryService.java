@@ -21,6 +21,7 @@ class QuestionQueryService {
         return queryFactory.select(projectionQuestionSummary())
                 .from(question)
                 .where(eqCategory(category))
+                .orderBy(question.id.asc())
                 .fetch();
     }
 
