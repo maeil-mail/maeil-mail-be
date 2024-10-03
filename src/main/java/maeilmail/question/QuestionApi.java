@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 class QuestionApi {
 
     private final QuestionRepository questionRepository;
+    private final QuestionQueryService questionQueryService;
 
     @GetMapping("/question")
     public ResponseEntity<List<QuestionSummary>> getQuestions(
@@ -25,7 +26,7 @@ class QuestionApi {
 
     @GetMapping("/question/{id}")
     public ResponseEntity<QuestionSummary> getQuestionById(@PathVariable Long id) {
-        QuestionSummary summary = questionRepository.queryById(id);
+        QuestionSummary summary = questionQueryService.queryOneById(id);
 
         return ResponseEntity.ok(summary);
     }
