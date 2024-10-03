@@ -20,10 +20,11 @@ public class SubscribeQuestionService {
     private final SubscribeRepository subscribeRepository;
     private final MailSender mailSender;
     private final VerifyMailView verifyEmailView;
+    private final CodeGenerator codeGenerator;
 
     public void sendCodeIncludedMail(VerifyEmailRequest request) {
         String subject = "이메일 인증을 진행해주세요.";
-        String code = CodeGenerator.generateCode();
+        String code = codeGenerator.generateCode();
         String text = createText(code);
         MailMessage mailMessage = new MailMessage(request.email(), subject, text, verifyEmailView.getType());
 
