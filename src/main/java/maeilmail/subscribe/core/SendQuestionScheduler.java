@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import maeilmail.mail.MailMessage;
 import maeilmail.mail.MailSender;
 import maeilmail.question.QuestionSummary;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,8 +23,8 @@ class SendQuestionScheduler {
     private final SubscribeQuestionView subscribeQuestionView;
     private final SubscribeRepository subscribeRepository;
 
-    @Scheduled(cron = "0 0 7 1/1 * ?", zone = "Asia/Seoul")
     @Transactional
+    @Scheduled(cron = "0 0 7 1/1 * ?", zone = "Asia/Seoul")
     public void sendMail() {
         log.info("메일 전송을 시작합니다.");
         List<Subscribe> subscribes = subscribeRepository.findAll();
