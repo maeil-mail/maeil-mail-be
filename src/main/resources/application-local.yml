@@ -22,8 +22,9 @@ spring:
       mode: embedded
       data-locations: classpath:data.sql
       encoding: UTF-8
+
   mail:
-    host: smtp.gmail.com
+    host: ${mail.host}
     port: 587
     username: ${mail.username}
     password: ${mail.password}
