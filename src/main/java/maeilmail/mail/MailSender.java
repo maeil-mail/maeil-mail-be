@@ -24,6 +24,7 @@ public class MailSender {
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
 
         try {
+            log.info("메일을 전송합니다. email = {} question = {} type = {}", message.to(), message.subject(), message.type());
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, false, "UTF-8");
             mimeMessageHelper.setFrom(FROM_EMAIL);
             mimeMessageHelper.setTo(message.to());
