@@ -8,7 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import maeilmail.mail.MailMessage;
 import maeilmail.mail.MailSender;
 import maeilmail.question.QuestionSummary;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
