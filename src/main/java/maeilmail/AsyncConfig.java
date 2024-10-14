@@ -18,9 +18,9 @@ class AsyncConfig implements AsyncConfigurer {
     @Bean("mailExecutor")
     public ThreadPoolTaskExecutor getAsyncExecutor() {
         ThreadPoolTaskExecutor threadPoolTaskExecutor = new ThreadPoolTaskExecutor();
-        threadPoolTaskExecutor.setCorePoolSize(1);
-        threadPoolTaskExecutor.setQueueCapacity(2);
+        threadPoolTaskExecutor.setCorePoolSize(3);
         threadPoolTaskExecutor.setMaxPoolSize(10);
+        threadPoolTaskExecutor.setQueueCapacity(100);
         threadPoolTaskExecutor.setThreadNamePrefix("async mail executor-");
         threadPoolTaskExecutor.initialize();
 
