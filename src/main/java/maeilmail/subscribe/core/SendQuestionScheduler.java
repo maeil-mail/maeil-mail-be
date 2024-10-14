@@ -8,10 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 import maeilmail.mail.MailMessage;
 import maeilmail.mail.MailSender;
 import maeilmail.question.QuestionSummary;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Component
@@ -23,7 +21,6 @@ class SendQuestionScheduler {
     private final SubscribeQuestionView subscribeQuestionView;
     private final SubscribeRepository subscribeRepository;
 
-    @Transactional
     @Scheduled(cron = "0 0 7 1/1 * ?", zone = "Asia/Seoul")
     public void sendMail() {
         log.info("메일 전송을 시작합니다.");
@@ -33,8 +30,6 @@ class SendQuestionScheduler {
         subscribes.stream()
                 .map(this::selectRandomQuestionAndMapToMail)
                 .forEach(mailSender::sendMail);
-
-        log.info("메일 전송을 마칩니다.");
     }
 
     private MailMessage selectRandomQuestionAndMapToMail(Subscribe subscribe) {
@@ -42,7 +37,6 @@ class SendQuestionScheduler {
         QuestionSummary question = choiceQuestionPolicy.choice(subscribe, LocalDate.now());
         String text = createText(question);
 
-        log.info("메일을 전송합니다. email = {} question = {}", subscribe.getEmail(), question.title());
         return new MailMessage(subscribe.getEmail(), subject, text, subscribeQuestionView.getType());
     }
 
