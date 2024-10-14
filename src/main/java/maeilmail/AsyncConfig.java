@@ -1,5 +1,6 @@
 package maeilmail;
 
+import java.util.concurrent.Executor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.AsyncConfigurer;
@@ -16,7 +17,7 @@ class AsyncConfig implements AsyncConfigurer {
      */
     @Override
     @Bean("mailExecutor")
-    public ThreadPoolTaskExecutor getAsyncExecutor() {
+    public Executor getAsyncExecutor() {
         ThreadPoolTaskExecutor threadPoolTaskExecutor = new ThreadPoolTaskExecutor();
         threadPoolTaskExecutor.setCorePoolSize(3);
         threadPoolTaskExecutor.setMaxPoolSize(10);
