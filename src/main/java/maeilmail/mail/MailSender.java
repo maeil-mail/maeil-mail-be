@@ -13,6 +13,8 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class MailSender {
 
+    private static final String FROM_EMAIL = "maeil-mail-noreply@maeil-mail.site";
+
     private final JavaMailSender javaMailSender;
     private final MailEventRepository mailEventRepository;
 
@@ -21,6 +23,7 @@ public class MailSender {
 
         try {
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, false, "UTF-8");
+            mimeMessageHelper.setFrom(FROM_EMAIL);
             mimeMessageHelper.setTo(message.to());
             mimeMessageHelper.setSubject(message.subject());
             mimeMessageHelper.setText(message.text(), true);
