@@ -25,6 +25,7 @@ public class MailSender {
 
         try {
             log.info("메일을 전송합니다. email = {} question = {} type = {}", message.to(), message.subject(), message.type());
+            tryAppendOpenEventTrace(message, mimeMessage);
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, false, "UTF-8");
             mimeMessageHelper.setFrom(FROM_EMAIL);
             mimeMessageHelper.setTo(message.to());
@@ -35,6 +36,13 @@ public class MailSender {
         } catch (MessagingException e) {
             mailEventRepository.save(MailEvent.fail(message.to(), message.type()));
             log.info("메일 전송 실패 = {}", e.getMessage());
+        }
+    }
+
+    private void tryAppendOpenEventTrace(MailMessage message, MimeMessage mimeMessage) throws MessagingException {
+        if ("question".equals(message.type())) {
+            mimeMessage.setHeader("X-SES-CONFIGURATION-SET", "my-first-configuration-set");
+            mimeMessage.setHeader("X-SES-MESSAGE_TAGS", "mail-open");
         }
     }
 }
