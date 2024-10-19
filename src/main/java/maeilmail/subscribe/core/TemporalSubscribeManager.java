@@ -1,27 +1,32 @@
 package maeilmail.subscribe.core;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
+@RequiredArgsConstructor
 class TemporalSubscribeManager {
 
     private static final String INVALID_EMAIL_MESSAGE = "인증되지 않은 이메일입니다.";
-    private static final Map<String, String> store = new ConcurrentHashMap<>();
 
-    public void add(String email, String code) {
-        store.put(email, code);
+    private final TemporalSubscribeRepository temporalSubscribeRepository;
+
+    public void add(String email, String verifyCode) {
+        TemporalSubscribe temporalSubscribe = new TemporalSubscribe(email, verifyCode);
+        temporalSubscribeRepository.save(temporalSubscribe);
     }
 
-    public void verify(String email, String code) {
-        if (!store.containsKey(email)) {
-            throw new IllegalStateException(INVALID_EMAIL_MESSAGE);
-        }
+    public void verify(String email, String verifyCode) {
+        TemporalSubscribe temporalSubscribe = temporalSubscribeRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException(INVALID_EMAIL_MESSAGE));
 
-        String verifyCode = store.get(email);
-        if (!verifyCode.equals(code)) {
-            throw new IllegalStateException(INVALID_EMAIL_MESSAGE);
+        try {
+            temporalSubscribe.verify(verifyCode);
+        } catch (Exception e) {
+            log.info("메일 인증 실패 email = {} message = {}", email, e.getMessage());
+            throw new IllegalArgumentException(INVALID_EMAIL_MESSAGE, e);
         }
     }
 }
