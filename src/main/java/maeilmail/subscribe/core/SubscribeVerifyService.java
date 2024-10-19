@@ -17,7 +17,7 @@ class SubscribeVerifyService {
     private final CodeGenerator codeGenerator;
     private final VerifyMailView verifyMailView;
     private final MailSender mailSender;
-    private final TemporalSubscriberStore temporalSubscriberStore;
+    private final TemporalSubscribeManager temporalSubscribeManager;
 
     public void sendCodeIncludedMail(VerifyEmailRequest request) {
         String subject = "이메일 인증을 진행해주세요.";
@@ -28,7 +28,7 @@ class SubscribeVerifyService {
         log.info("인증 코드 포함 메일 요청, 이메일 = {} 코드 = {}", request.email(), code);
         mailSender.sendMail(mailMessage);
 
-        temporalSubscriberStore.add(request.email(), code);
+        temporalSubscribeManager.add(request.email(), code);
     }
 
     private String createText(String code) {
@@ -39,6 +39,6 @@ class SubscribeVerifyService {
     }
 
     public void verify(String email, String code) {
-        temporalSubscriberStore.verify(email, code);
+        temporalSubscribeManager.verify(email, code);
     }
 }
