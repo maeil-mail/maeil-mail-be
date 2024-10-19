@@ -31,3 +31,12 @@ create table admin
     email varchar(255) not null,
     primary key (id)
 );
+
+create table temporal_subscribe
+(
+    id bigint auto_increment,
+    email       varchar(255) not null,
+    verify_code varchar(255) not null,
+    is_verified boolean      not null,
+    primary key (id)
+);
