@@ -22,3 +22,8 @@ spring:
           timeout: 5000
           starttls:
             enable: true
+
+distribute:
+  server:
+    count: 1
+    index: 1
