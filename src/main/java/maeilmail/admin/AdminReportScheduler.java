@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import maeilmail.DistributedSupport;
 import maeilmail.mail.MailEvent;
 import maeilmail.mail.MailEventRepository;
 import maeilmail.mail.MailMessage;
@@ -21,6 +22,7 @@ class AdminReportScheduler {
     private final AdminRepository adminRepository;
     private final AdminReportView adminReportView;
     private final MailSender mailSender;
+    private final DistributedSupport distributedSupport;
 
     @Scheduled(cron = "0 30 7 1/1 * ?", zone = "Asia/Seoul")
     public void sendReport() {
@@ -32,13 +34,17 @@ class AdminReportScheduler {
         String text = createText(report);
         String subject = "[관리자] 메일 전송 결과를 알려드립니다.";
 
-        for (Admin admin : adminRepository.findAll()) {
-            MailMessage mailMessage = new MailMessage(admin.getEmail(), subject, text, adminReportView.getType());
-            mailSender.sendMail(mailMessage);
-        }
+        adminRepository.findAll().stream()
+                .filter(it -> distributedSupport.isMine(it.getId()))
+                .map(it -> createMessage(it, subject, text))
+                .forEach(mailSender::sendMail);
     }
 
     private String createText(String report) {
         return adminReportView.render(Map.of("report", report));
+    }
+
+    private MailMessage createMessage(Admin admin, String subject, String text) {
+        return new MailMessage(admin.getEmail(), subject, text, adminReportView.getType());
     }
 }

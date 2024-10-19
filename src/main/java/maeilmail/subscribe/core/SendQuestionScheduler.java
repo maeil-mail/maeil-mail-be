@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import maeilmail.DistributedSupport;
 import maeilmail.mail.MailMessage;
 import maeilmail.mail.MailSender;
 import maeilmail.question.QuestionSummary;
@@ -20,6 +21,7 @@ class SendQuestionScheduler {
     private final ChoiceQuestionPolicy choiceQuestionPolicy;
     private final SubscribeQuestionView subscribeQuestionView;
     private final SubscribeRepository subscribeRepository;
+    private final DistributedSupport distributedSupport;
 
     @Scheduled(cron = "0 0 7 1/1 * ?", zone = "Asia/Seoul")
     public void sendMail() {
@@ -28,6 +30,7 @@ class SendQuestionScheduler {
         log.info("{}명의 사용자에게 메일을 전송합니다.", subscribes.size());
 
         subscribes.stream()
+                .filter(it -> distributedSupport.isMine(it.getId()))
                 .map(this::selectRandomQuestionAndMapToMail)
                 .forEach(mailSender::sendMail);
     }
