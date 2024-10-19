@@ -21,16 +21,16 @@ class TemporalSubscribe {
     private Long id;
 
     @Column(nullable = false)
-    private String verifyCode;
+    private String email;
 
     @Column(nullable = false)
-    private String email;
+    private String verifyCode;
 
     @Column(nullable = false)
     private boolean isVerified;
 
-    public TemporalSubscribe(String email, CodeGenerator codeGenerator) {
-        this(null, codeGenerator.generateCode(), email, false);
+    public TemporalSubscribe(String email, String verifyCode) {
+        this(null, email, verifyCode, false);
     }
 
     public void verify(String code) {
