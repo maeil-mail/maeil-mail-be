@@ -16,7 +16,7 @@ class TemporalSubscribeTest {
         String invalidCode = "deco";
         assertThatThrownBy(() -> temporalSubscribe.verify(invalidCode))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("인증되지 않은 이메일입니다.");
+                .hasMessage("올바른 인증 코드를 입력해주세요.");
     }
 
     @Test

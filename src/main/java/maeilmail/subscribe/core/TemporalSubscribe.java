@@ -35,7 +35,7 @@ class TemporalSubscribe {
 
     public void verify(String code) {
         if (!verifyCode.equals(code)) {
-            throw new IllegalArgumentException("인증되지 않은 이메일입니다.");
+            throw new IllegalArgumentException("올바른 인증 코드를 입력해주세요.");
         }
 
         this.isVerified = true;
