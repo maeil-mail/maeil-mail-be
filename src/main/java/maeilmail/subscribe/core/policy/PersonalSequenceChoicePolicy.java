@@ -9,8 +9,10 @@ import maeilmail.question.QuestionQueryService;
 import maeilmail.question.QuestionSummary;
 import maeilmail.subscribe.core.ChoiceQuestionPolicy;
 import maeilmail.subscribe.core.Subscribe;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
+@Primary
 @Component
 @RequiredArgsConstructor
 class PersonalSequenceChoicePolicy implements ChoiceQuestionPolicy {
