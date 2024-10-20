@@ -19,7 +19,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 class PersonalSequenceChoicePolicy implements ChoiceQuestionPolicy {
 
-    private final LocalDateTime backendDefaultSubscribedAt = LocalDateTime.of(2024, 10, 16, 0, 0);
+    private final LocalDateTime backendDefaultSubscribedAt = LocalDateTime.of(2024, 10, 11, 0, 0);
     private final LocalDateTime frontendDefaultSubscribedAt = LocalDateTime.of(2024, 10, 14, 0, 0);
     private final LocalTime datePlusBase = LocalTime.of(6, 59, 59);
     private final QuestionQueryService questionQueryService;

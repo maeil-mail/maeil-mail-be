@@ -68,24 +68,24 @@ class PersonalSequenceChoicePolicyTest {
     }
 
     /**
-     * 24년 10월 21일부로 해당 기능이 적용되어야하는데, 10월 20일에 백엔드 5번 질문지를 발송됐다.
+     * 24년 10월 21일부로 해당 기능이 적용되어야하는데, 10월 20일에 백엔드 10번 질문지를 발송됐다.
      * 24년 10월 20일자 기준, 기존 사용자들의 구독일이 null이다.
-     * Period(2024-10-16, 2024-10-21).getDays() + 1 = 6번 질문지를 발송할 수 있으므로,
-     * 백엔드의 구독일이 존재하지 않는 경우, 구독일을 10월 16일로 판단하여 기존 사용자가 받던 순서대로 질문을 선택한다.
+     * Period(2024-10-11, 2024-10-21).getDays() + 1 = 11번 질문지를 발송할 수 있으므로,
+     * 백엔드의 구독일이 존재하지 않는 경우, 구독일을 10월 11일로 판단하여 기존 사용자가 받던 순서대로 질문을 선택한다.
      */
     @Test
-    @DisplayName("백엔드 구독자가 구독일이 존재하지 않는 경우, 구독일을 10월 16일로 판단한다.")
+    @DisplayName("백엔드 구독자가 구독일이 존재하지 않는 경우, 구독일을 10월 11일로 판단한다.")
     void backendDefaultChoice() {
         Subscribe subscribe = createSubscribe(QuestionCategory.BACKEND, null);
-        createQuestions(10, QuestionCategory.BACKEND);
+        createQuestions(20, QuestionCategory.BACKEND);
 
         QuestionSummary choice1 = personalSequenceChoicePolicy.choice(subscribe, LocalDate.of(2024, 10, 20));
         QuestionSummary choice2 = personalSequenceChoicePolicy.choice(subscribe, LocalDate.of(2024, 10, 21));
         QuestionSummary choice3 = personalSequenceChoicePolicy.choice(subscribe, LocalDate.of(2024, 10, 22));
 
-        assertThat(choice1.title()).isEqualTo("질문5");
-        assertThat(choice2.title()).isEqualTo("질문6");
-        assertThat(choice3.title()).isEqualTo("질문7");
+        assertThat(choice1.title()).isEqualTo("질문10");
+        assertThat(choice2.title()).isEqualTo("질문11");
+        assertThat(choice3.title()).isEqualTo("질문12");
     }
 
     /**
