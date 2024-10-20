@@ -109,6 +109,35 @@ class PersonalSequenceChoicePolicyTest {
         assertThat(choice3.title()).isEqualTo("질문9");
     }
 
+    /**
+     * 7시 0분 이후 구독하는 경우, 당일 메일을 받지 못하므로 다음날 첫 질문을 받아야 한다.
+     * 하지만, 구독일 기반 메일 전송 알고리즘이기 때문에 받기 어렵다.
+     * 이를 해결하기 위해서 6시 59분 59초 이후 구독자는 구독일에 1일을 추가해줘야 한다.
+     * 참고로 7시 0분에 구독했는데, 7시에 질문지를 결정하려고 하면 구독일이 질문 선택 일자보다 커지기 때문에 예외가 발생할 가능성이 있다.
+     * 이곳에서 발생한 예외는 면접 질문 스케줄러에서 처리한다.
+     *
+     * @see maeilmail.subscribe.core.SendQuestionScheduler
+     */
+    @Test
+    @DisplayName("구독 당일날 메일을 못받은 경우 다음날 메일을 처음부터 받을 수 있다.")
+    void subscribeTodayButNotReceiveMail() {
+        LocalDateTime subscribedAt = LocalDateTime.of(2024, 10, 20, 7, 0);
+        Subscribe subscribe = createSubscribe(QuestionCategory.BACKEND, subscribedAt);
+        createQuestions(3, QuestionCategory.BACKEND);
+
+        QuestionSummary choice1 = personalSequenceChoicePolicy.choice(subscribe, subscribedAt.toLocalDate().plusDays(1));
+        QuestionSummary choice2 = personalSequenceChoicePolicy.choice(subscribe, subscribedAt.toLocalDate().plusDays(2));
+        QuestionSummary choice3 = personalSequenceChoicePolicy.choice(subscribe, subscribedAt.toLocalDate().plusDays(3));
+        QuestionSummary choice4 = personalSequenceChoicePolicy.choice(subscribe, subscribedAt.toLocalDate().plusDays(4));
+
+        assertThatThrownBy(() -> personalSequenceChoicePolicy.choice(subscribe, subscribedAt.toLocalDate()))
+                .isInstanceOf(IllegalArgumentException.class);
+        assertThat(choice1.title()).isEqualTo("질문1");
+        assertThat(choice2.title()).isEqualTo("질문2");
+        assertThat(choice3.title()).isEqualTo("질문3");
+        assertThat(choice4.title()).isEqualTo("질문1");
+    }
+
     @Test
     @DisplayName("질문지를 결정한다.")
     void choice() {

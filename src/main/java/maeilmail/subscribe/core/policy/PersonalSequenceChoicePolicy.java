@@ -2,6 +2,7 @@ package maeilmail.subscribe.core.policy;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.Period;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -20,13 +21,13 @@ class PersonalSequenceChoicePolicy implements ChoiceQuestionPolicy {
 
     private final LocalDateTime backendDefaultSubscribedAt = LocalDateTime.of(2024, 10, 16, 0, 0);
     private final LocalDateTime frontendDefaultSubscribedAt = LocalDateTime.of(2024, 10, 14, 0, 0);
+    private final LocalTime datePlusBase = LocalTime.of(6, 59, 59);
     private final QuestionQueryService questionQueryService;
 
     @Override
     public QuestionSummary choice(Subscribe subscribe, LocalDate today) {
         LocalDateTime subscribeAt = getOrDefaultSubscribeAt(subscribe.getSubscribedAt(), subscribe.getCategory());
         LocalDate actualDate = getActualDate(subscribeAt);
-
         validateInvalidDate(actualDate, today);
         List<QuestionSummary> questions = findQuestions(subscribe);
         Period period = Period.between(actualDate, today);
@@ -35,6 +36,11 @@ class PersonalSequenceChoicePolicy implements ChoiceQuestionPolicy {
     }
 
     private LocalDate getActualDate(LocalDateTime subscribeAt) {
+        LocalTime subscribedTime = subscribeAt.toLocalTime();
+        if (subscribedTime.isAfter(datePlusBase)) {
+            return subscribeAt.toLocalDate().plusDays(1);
+        }
+
         return subscribeAt.toLocalDate();
     }
 
