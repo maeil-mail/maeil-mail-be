@@ -1,6 +1,7 @@
 package maeilmail.subscribe.core.policy;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Period;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -17,34 +18,40 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 class PersonalSequenceChoicePolicy implements ChoiceQuestionPolicy {
 
-    private final LocalDate backendDefaultDate = LocalDate.of(2024, 10, 16);
-    private final LocalDate frontendDefaultDate = LocalDate.of(2024, 10, 14);
+    private final LocalDateTime backendDefaultSubscribedAt = LocalDateTime.of(2024, 10, 16, 0, 0);
+    private final LocalDateTime frontendDefaultSubscribedAt = LocalDateTime.of(2024, 10, 14, 0, 0);
     private final QuestionQueryService questionQueryService;
 
     @Override
     public QuestionSummary choice(Subscribe subscribe, LocalDate today) {
-        LocalDate subscribeDate = getOrDefaultSubscribeDate(subscribe.getSubscribeDate(), subscribe.getCategory());
-        validateInvalidDate(subscribeDate, today);
+        LocalDateTime subscribeAt = getOrDefaultSubscribeAt(subscribe.getSubscribedAt(), subscribe.getCategory());
+        LocalDate actualDate = getActualDate(subscribeAt);
+
+        validateInvalidDate(actualDate, today);
         List<QuestionSummary> questions = findQuestions(subscribe);
-        Period period = Period.between(subscribeDate, today);
+        Period period = Period.between(actualDate, today);
 
         return questions.get(period.getDays() % questions.size());
     }
 
-    private LocalDate getOrDefaultSubscribeDate(LocalDate subscribeDate, QuestionCategory category) {
-        if (subscribeDate == null) {
+    private LocalDate getActualDate(LocalDateTime subscribeAt) {
+        return subscribeAt.toLocalDate();
+    }
+
+    private LocalDateTime getOrDefaultSubscribeAt(LocalDateTime subscribeAt, QuestionCategory category) {
+        if (subscribeAt == null) {
             return getDefaultSubscribeDate(category);
         }
 
-        return subscribeDate;
+        return subscribeAt;
     }
 
-    private LocalDate getDefaultSubscribeDate(QuestionCategory category) {
+    private LocalDateTime getDefaultSubscribeDate(QuestionCategory category) {
         if (category.equals(QuestionCategory.BACKEND)) {
-            return backendDefaultDate;
+            return backendDefaultSubscribedAt;
         }
 
-        return frontendDefaultDate;
+        return frontendDefaultSubscribedAt;
     }
 
     private void validateInvalidDate(LocalDate subscribeDate, LocalDate today) {

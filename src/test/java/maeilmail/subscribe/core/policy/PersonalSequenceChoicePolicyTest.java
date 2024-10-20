@@ -6,12 +6,12 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import maeilmail.question.Question;
 import maeilmail.question.QuestionCategory;
 import maeilmail.question.QuestionRepository;
 import maeilmail.question.QuestionSummary;
 import maeilmail.subscribe.core.Subscribe;
-import maeilmail.subscribe.core.SubscribeRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,9 +23,6 @@ import org.springframework.transaction.annotation.Transactional;
 class PersonalSequenceChoicePolicyTest {
 
     @Autowired
-    private SubscribeRepository subscribeRepository;
-
-    @Autowired
     private QuestionRepository questionRepository;
 
     @Autowired
@@ -34,12 +31,13 @@ class PersonalSequenceChoicePolicyTest {
     @Test
     @DisplayName("구독일을 이용해 사용자별 순차 방식으로 질문지를 선택한다.")
     void choiceWithSubscribedAt() {
-        LocalDate today = LocalDate.now();
-        Subscribe subscribe = createSubscribe(QuestionCategory.BACKEND);
+        LocalDateTime baseDateTime = LocalDateTime.of(2024, 10, 20, 0, 0);
+        Subscribe subscribe = createSubscribe(QuestionCategory.BACKEND, baseDateTime);
+
         createQuestion("질문1", QuestionCategory.BACKEND);
         createQuestion("질문2", QuestionCategory.BACKEND);
 
-        QuestionSummary choice = personalSequenceChoicePolicy.choice(subscribe, today);
+        QuestionSummary choice = personalSequenceChoicePolicy.choice(subscribe, baseDateTime.toLocalDate());
 
         assertThat(choice.title()).isEqualTo("질문1");
     }
@@ -47,8 +45,11 @@ class PersonalSequenceChoicePolicyTest {
     @Test
     @DisplayName("구독일이 주어진 날짜보다 클 수 없다.")
     void cantChoice() {
-        LocalDate yesterday = LocalDate.now().minusDays(1);
-        Subscribe subscribe = createSubscribe(QuestionCategory.BACKEND);
+        LocalDateTime baseDateTime = LocalDateTime.of(2024, 10, 20, 0, 0);
+        LocalDate yesterday = baseDateTime.minusDays(1).toLocalDate();
+        Subscribe subscribe = createSubscribe(QuestionCategory.BACKEND, baseDateTime);
+
+        createQuestion("질문1", QuestionCategory.BACKEND);
 
         assertThatThrownBy(() -> personalSequenceChoicePolicy.choice(subscribe, yesterday))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -58,10 +59,10 @@ class PersonalSequenceChoicePolicyTest {
     @Test
     @DisplayName("질문이 존재하지 않으면 질문지를 선택할 수 없다.")
     void cantChoice2() {
-        LocalDate today = LocalDate.now();
-        Subscribe subscribe = createSubscribe(QuestionCategory.BACKEND);
+        LocalDateTime baseDateTime = LocalDateTime.of(2024, 10, 20, 0, 0);
+        Subscribe subscribe = createSubscribe(QuestionCategory.BACKEND, baseDateTime);
 
-        assertThatThrownBy(() -> personalSequenceChoicePolicy.choice(subscribe, today))
+        assertThatThrownBy(() -> personalSequenceChoicePolicy.choice(subscribe, baseDateTime.toLocalDate()))
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessage("질문지를 결정할 수 없습니다.");
     }
@@ -75,11 +76,7 @@ class PersonalSequenceChoicePolicyTest {
     @Test
     @DisplayName("백엔드 구독자가 구독일이 존재하지 않는 경우, 구독일을 10월 16일로 판단한다.")
     void backendDefaultChoice() {
-        Subscribe subscribe = mock(Subscribe.class);
-        when(subscribe.getCategory())
-                .thenReturn(QuestionCategory.BACKEND);
-        when(subscribe.getSubscribeDate())
-                .thenReturn(null);
+        Subscribe subscribe = createSubscribe(QuestionCategory.BACKEND, null);
         createQuestions(10, QuestionCategory.BACKEND);
 
         QuestionSummary choice1 = personalSequenceChoicePolicy.choice(subscribe, LocalDate.of(2024, 10, 20));
@@ -100,11 +97,7 @@ class PersonalSequenceChoicePolicyTest {
     @Test
     @DisplayName("프론트엔드 구독자가 구독일이 존재하지 않는 경우, 구독일을 10월 14일로 판단한다.")
     void frontendDefaultChoice() {
-        Subscribe subscribe = mock(Subscribe.class);
-        when(subscribe.getCategory())
-                .thenReturn(QuestionCategory.FRONTEND);
-        when(subscribe.getSubscribeDate())
-                .thenReturn(null);
+        Subscribe subscribe = createSubscribe(QuestionCategory.FRONTEND, null);
         createQuestions(10, QuestionCategory.FRONTEND);
 
         QuestionSummary choice1 = personalSequenceChoicePolicy.choice(subscribe, LocalDate.of(2024, 10, 20));
@@ -119,8 +112,8 @@ class PersonalSequenceChoicePolicyTest {
     @Test
     @DisplayName("질문지를 결정한다.")
     void choice() {
-        Subscribe subscribe = createSubscribe(QuestionCategory.BACKEND);
-        LocalDate today = LocalDate.now();
+        LocalDateTime baseDateTime = LocalDateTime.of(2024, 10, 20, 0, 0);
+        Subscribe subscribe = createSubscribe(QuestionCategory.BACKEND, baseDateTime);
 
         createQuestion("질문1", QuestionCategory.BACKEND);
         createQuestion("질문2", QuestionCategory.BACKEND);
@@ -129,12 +122,12 @@ class PersonalSequenceChoicePolicyTest {
         createQuestion("질문5", QuestionCategory.BACKEND);
         createQuestion("질문6", QuestionCategory.BACKEND);
 
-        QuestionSummary choice1 = personalSequenceChoicePolicy.choice(subscribe, today);
-        QuestionSummary choice2 = personalSequenceChoicePolicy.choice(subscribe, today.plusDays(1));
-        QuestionSummary choice3 = personalSequenceChoicePolicy.choice(subscribe, today.plusDays(2));
-        QuestionSummary choice4 = personalSequenceChoicePolicy.choice(subscribe, today.plusDays(3));
-        QuestionSummary choice5 = personalSequenceChoicePolicy.choice(subscribe, today.plusDays(4));
-        QuestionSummary choice6 = personalSequenceChoicePolicy.choice(subscribe, today.plusDays(5));
+        QuestionSummary choice1 = personalSequenceChoicePolicy.choice(subscribe, baseDateTime.toLocalDate());
+        QuestionSummary choice2 = personalSequenceChoicePolicy.choice(subscribe, baseDateTime.toLocalDate().plusDays(1));
+        QuestionSummary choice3 = personalSequenceChoicePolicy.choice(subscribe, baseDateTime.toLocalDate().plusDays(2));
+        QuestionSummary choice4 = personalSequenceChoicePolicy.choice(subscribe, baseDateTime.toLocalDate().plusDays(3));
+        QuestionSummary choice5 = personalSequenceChoicePolicy.choice(subscribe, baseDateTime.toLocalDate().plusDays(4));
+        QuestionSummary choice6 = personalSequenceChoicePolicy.choice(subscribe, baseDateTime.toLocalDate().plusDays(5));
 
         assertThat(choice1.title()).isEqualTo("질문1");
         assertThat(choice2.title()).isEqualTo("질문2");
@@ -156,9 +149,13 @@ class PersonalSequenceChoicePolicyTest {
         questionRepository.save(question);
     }
 
-    private Subscribe createSubscribe(QuestionCategory category) {
-        Subscribe subscribe = new Subscribe("lee@gmail.com", category);
+    private Subscribe createSubscribe(QuestionCategory category, LocalDateTime subscribedAt) {
+        Subscribe subscribe = mock(Subscribe.class);
+        when(subscribe.getCategory())
+                .thenReturn(category);
+        when(subscribe.getSubscribedAt())
+                .thenReturn(subscribedAt);
 
-        return subscribeRepository.save(subscribe);
+        return subscribe;
     }
 }

@@ -1,6 +1,6 @@
 package maeilmail.subscribe.core;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
@@ -36,7 +36,7 @@ public class Subscribe {
     private QuestionCategory category;
 
     @CreatedDate
-    private LocalDate subscribeDate;
+    private LocalDateTime subscribedAt;
 
     public Subscribe(String email, QuestionCategory category) {
         this.email = email;
