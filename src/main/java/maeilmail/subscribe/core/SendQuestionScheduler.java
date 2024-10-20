@@ -3,6 +3,7 @@ package maeilmail.subscribe.core;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import maeilmail.DistributedSupport;
@@ -32,15 +33,21 @@ class SendQuestionScheduler {
         subscribes.stream()
                 .filter(it -> distributedSupport.isMine(it.getId()))
                 .map(this::selectRandomQuestionAndMapToMail)
+                .filter(Objects::nonNull)
                 .forEach(mailSender::sendMail);
     }
 
     private MailMessage selectRandomQuestionAndMapToMail(Subscribe subscribe) {
         String subject = "오늘의 면접 질문을 보내드려요.";
-        QuestionSummary question = choiceQuestionPolicy.choice(subscribe, LocalDate.now());
-        String text = createText(question);
+        try {
+            QuestionSummary question = choiceQuestionPolicy.choice(subscribe, LocalDate.now());
+            String text = createText(question);
+            return new MailMessage(subscribe.getEmail(), subject, text, subscribeQuestionView.getType());
 
-        return new MailMessage(subscribe.getEmail(), subject, text, subscribeQuestionView.getType());
+        } catch (Exception e) {
+            log.info("면접 질문 선택 실패 = {}", e.getMessage());
+            return null;
+        }
     }
 
     private String createText(QuestionSummary question) {
