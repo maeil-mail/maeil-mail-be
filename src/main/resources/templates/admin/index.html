@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://thymeleaf.org">
 <head>
     <meta charset="utf-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
@@ -15,8 +15,8 @@
     <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js"
             crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked@3.0.7/marked.min.js"></script>
-    <link href="css/styles.css" rel="stylesheet"/>
-    <script src="js/scripts.js"></script>
+    <link href="/css/styles.css" rel="stylesheet"/>
+    <script src="/js/scripts.js"></script>
 </head>
 <body class="sb-nav-fixed">
 <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
@@ -107,20 +107,11 @@
                             </tr>
                             </tfoot>
                             <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td>리액트 성능 최적화</td>
-                                <td><a href="https://www.maeil-mail.kr/question/1" target="_blank">보러가기</a></td>
-                                <td>프론트엔드</td>
-                                <td>
-                                    <button class="btn btn-warning btn-sm edit-btn">수정</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>2</td>
-                                <td>OSIV</td>
-                                <td><a href="https://www.maeil-mail.kr/question/1" target="_blank">보러가기</a></td>
-                                <td>백엔드</td>
+                            <tr th:each="question:${questions}">
+                                <td th:text="${question.id}"></td>
+                                <td th:text="${question.title}"></td>
+                                <td th:text="${question.content}"></td>
+                                <td th:text="${question.category}"></td>
                                 <td>
                                     <button class="btn btn-warning btn-sm edit-btn">수정</button>
                                 </td>
