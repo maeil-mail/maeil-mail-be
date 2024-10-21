@@ -25,14 +25,26 @@ public class SubscribeQuestionService {
     @Transactional
     public void subscribe(SubscribeQuestionRequest request) {
         log.info("이메일 구독 요청, 이메일 = {}", request.email());
-
-        subscribeVerifyService.verify(request.email(), request.code());
-        QuestionCategory category = QuestionCategory.from(request.category());
-        Subscribe subscribe = new Subscribe(request.email(), category);
-
-        log.info("이메일 구독 성공, 이메일 = {}", request.email());
-        subscribeRepository.save(subscribe);
+        trySubscribe(request);
         sendSubscribeWelcomeMail(request.email());
+        log.info("이메일 구독 성공, 이메일 = {}", request.email());
+    }
+
+    private void trySubscribe(SubscribeQuestionRequest request) {
+        subscribeVerifyService.verify(request.email(), request.code());
+
+        for (String requestCategory : request.category()) {
+            subscribeIfAbsent(request.email(), QuestionCategory.from(requestCategory));
+        }
+    }
+
+    private void subscribeIfAbsent(String email, QuestionCategory category) {
+        boolean alreadyExist = subscribeRepository.existsByEmailAndCategory(email, category);
+
+        if (!alreadyExist) {
+            Subscribe subscribe = new Subscribe(email, category);
+            subscribeRepository.save(subscribe);
+        }
     }
 
     public void sendCodeIncludedMail(VerifyEmailRequest request) {
