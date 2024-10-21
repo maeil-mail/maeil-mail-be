@@ -14,6 +14,7 @@ class TemporalSubscribeManager {
     private final TemporalSubscribeRepository temporalSubscribeRepository;
 
     public void add(String email, String verifyCode) {
+        temporalSubscribeRepository.findByEmail(email).ifPresent(temporalSubscribeRepository::delete);
         TemporalSubscribe temporalSubscribe = new TemporalSubscribe(email, verifyCode);
         temporalSubscribeRepository.save(temporalSubscribe);
     }
