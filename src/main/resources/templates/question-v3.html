@@ -1,0 +1,100 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+    <title>매일 메일</title>
+</head>
+<body style="margin: 0; padding: 0">
+<div
+        style="
+        height: 100%;
+        width: 100%;
+        font-family: Arial, sans-serif;
+        padding: 16px;
+      "
+>
+    <div
+            style="
+          background-color: #ffffff;
+          padding: 40px;
+          border-radius: 8px;
+          box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+          text-align: center;
+          max-width: 400px;
+          width: 100%;
+          margin: 0 auto;
+        "
+    >
+        <a
+                href="https://www.maeil-mail.kr/"
+                style="
+            display: block;
+            margin-bottom: 40px;
+            text-decoration: none;
+            width: 5.5rem;
+            font-weight: bold;
+          "
+        >
+            <p style="color: #00a86b">매일메일</p>
+        </a>
+        <p style="font-size: 18px; font-weight: 600; margin-bottom: 20px">
+            오늘의 질문
+        </p>
+        <div
+                style="
+            background-color: #f1f3f5;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: left;
+          "
+        >
+            <p
+                    style="
+              font-size: 22px;
+              color: &quot;#2b2b2b&quot;;
+              font-weight: bold;
+              line-height: 1.5;
+            "
+                    th:text="${question}"
+            >
+            </p>
+        </div>
+        <p
+                style="
+            font-size: 14px;
+            color: #888888;
+            text-align: left;
+            word-break: keep-all;
+            line-height: 1.5;
+            margin: 15px 0 30px 0;
+          "
+        >
+            혹시 답변 과정에서 확실하지 않은 부분이 있다면,<br/>
+            아래 버튼을 눌러 답변을 확인해 보시길 권장드려요!
+        </p>
+        <a
+                th:href="@{https://www.maeil-mail.kr/question/{id}(id = ${questionId})}"
+                style="
+            display: inline-block;
+            padding: 15px 35px;
+            background-color: #00a86b;
+            color: white;
+            text-decoration: none;
+            border-radius: 30px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+
+            transition: transform 0.4s ease-in-out;
+          "
+                onmouseover="this.style.transform='scale(1.03)';"
+                onmouseout="this.style.transform='scale(1)';"
+        >
+            답변 확인
+        </a>
+    </div>
+</div>
+</body>
+</html>
