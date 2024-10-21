@@ -18,7 +18,7 @@ class VerifyMailView implements MailView {
         Context context = new Context();
         context.setVariable("code", attribute.get("code"));
 
-        return templateEngine.process("verify-email", context);
+        return templateEngine.process("verify-email-v2", context);
     }
 
     @Override
