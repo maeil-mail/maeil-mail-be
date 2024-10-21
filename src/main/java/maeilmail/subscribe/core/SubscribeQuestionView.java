@@ -19,7 +19,7 @@ class SubscribeQuestionView implements MailView {
         context.setVariable("questionId", attribute.get("questionId"));
         context.setVariable("question", attribute.get("question"));
 
-        return templateEngine.process("question-v2", context);
+        return templateEngine.process("question-v3", context);
     }
 
     @Override
