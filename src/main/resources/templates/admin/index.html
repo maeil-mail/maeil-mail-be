@@ -110,7 +110,9 @@
                             <tr th:each="question:${questions}">
                                 <td th:text="${question.id}"></td>
                                 <td th:text="${question.title}"></td>
-                                <td th:text="${question.content}"></td>
+                                <td><a target="_blank"
+                                       th:href="@{https://www.maeil-mail.kr/question/{id}(id = ${question.id})}">질문
+                                    보러가기</a></td>
                                 <td th:text="${question.category}"></td>
                                 <td>
                                     <button class="btn btn-warning btn-sm edit-btn">수정</button>

@@ -23,21 +23,24 @@ window.addEventListener('DOMContentLoaded', event => {
     });
 
     document.querySelectorAll('.edit-btn').forEach(button => {
-        button.addEventListener('click', function () {
-            const row = this.closest('tr'); // 클릭한 버튼의 행 찾기
-            const title = row.children[1].textContent; // 질문 제목
-            const detail = row.children[2].textContent; // 질문 상세
-            const category = row.children[3].textContent; // 카테고리
+        button.addEventListener('click', async function () {
+            const row = this.closest('tr');
+            const id = row.children[0].textContent;
+            const title = row.children[1].textContent;
+            const category = row.children[3].textContent;
 
-            // 수정 폼에 기존 값 로드
+            const res = await fetch(`/question/${id}`, {
+                method: 'GET',
+                headers: {
+                    Accept: 'application/json'
+                }
+            })
+            const json = await res.json();
+
             document.getElementById('questionFormTitle').innerText = '질문 수정';
             document.getElementById('questionTitle').value = title;
-
-            // detail에 들어간 값에서 id 파싱해가지고, 백엔드 서버로 단건 조회 api 호출
-            document.getElementById('questionDetail').value = detail;
             document.getElementById('questionCategory').value = category;
-
-            // 수정 폼 보이기
+            document.getElementById('questionDetail').value = json.content;
             document.getElementById('questionForm').classList.remove('hidden');
         });
     });
