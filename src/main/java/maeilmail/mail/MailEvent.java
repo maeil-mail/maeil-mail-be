@@ -11,6 +11,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import maeilmail.BaseEntity;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -18,8 +19,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@EntityListeners(AuditingEntityListener.class)
-public class MailEvent {
+//@EntityListeners(AuditingEntityListener.class)
+public class MailEvent extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,14 +34,16 @@ public class MailEvent {
 
     private boolean isSuccess;
 
-    @CreatedDate
-    private LocalDate date;
+//    @CreatedDate
+//    private LocalDate date;
 
     public static MailEvent success(String email, String type) {
-        return new MailEvent(null, email, type, true, null);
+//        return new MailEvent(null, email, type, true, null);
+        return new MailEvent(null, email, type, true);
     }
 
     public static MailEvent fail(String email, String type) {
-        return new MailEvent(null, email, type, false, null);
+//        return new MailEvent(null, email, type, false, null);
+        return new MailEvent(null, email, type, false);
     }
 }

@@ -11,13 +11,14 @@ import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import maeilmail.BaseEntity;
 import maeilmail.question.QuestionCategory;
 
 @Entity
 @Getter
 @Table(name = "subscribe")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Subscribe {
+public class Subscribe extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
