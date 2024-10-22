@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<html lang="en" xmlns:th="http://thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
@@ -20,7 +19,7 @@
 </head>
 <body class="sb-nav-fixed">
 <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
-    <a class="navbar-brand ps-3" href="index.html">매일메일 어드민</a>
+    <a class="navbar-brand ps-3" href="/admin">매일메일 어드민</a>
     <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i
             class="fas fa-bars"></i></button>
 </nav>
@@ -30,7 +29,7 @@
             <div class="sb-sidenav-menu">
                 <div class="nav">
                     <div class="sb-sidenav-menu-heading">Core</div>
-                    <a class="nav-link" href="index.html">
+                    <a class="nav-link" href="/admin">
                         <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
                         면접 질문 관리
                     </a>
@@ -53,24 +52,27 @@
                     <h3 id="questionFormTitle">질문 생성</h3>
                     <div class="row">
                         <div class="col-md-6">
-                            <form id="form">
+                            <form th:action="@{/admin/question}" th:method="post" th:object="${questionForm}">
                                 <div class="mb-3">
                                     <label for="questionTitle" class="form-label">질문 제목</label>
-                                    <input type="text" class="form-control" id="questionTitle" required>
+                                    <input type="text" th:field="*{title}" class="form-control" id="questionTitle"
+                                           required>
                                 </div>
                                 <div class="mb-3">
                                     <label for="questionDetail" class="form-label">답변</label>
-                                    <textarea class="form-control" id="questionDetail" rows="5" required></textarea>
+                                    <textarea th:field="*{content}" class="form-control" id="questionDetail" rows="5"
+                                              required></textarea>
                                 </div>
                                 <div class="mb-3">
                                     <label for="questionCategory" class="form-label">카테고리</label>
-                                    <select class="form-select" id="questionCategory" required>
+                                    <select th:field="*{category}" class="form-select"
+                                            id="questionCategory" required>
                                         <option value="" disabled selected>카테고리를 선택하세요.</option>
-                                        <option value="프론트엔드">프론트엔드</option>
-                                        <option value="백엔드">백엔드</option>
+                                        <option value="frontend">프론트엔드</option>
+                                        <option value="backend">백엔드</option>
                                     </select>
                                 </div>
-                                <button type="submit" class="btn btn-success mb-4">저장</button>
+                                <button type="submit" class="btn btn-success mb-4" id="submitBtn">저장</button>
                                 <button type="button" class="btn btn-secondary mb-4" id="cancelBtn">취소</button>
                             </form>
                         </div>

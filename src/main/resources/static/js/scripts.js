@@ -30,8 +30,7 @@ window.addEventListener('DOMContentLoaded', event => {
             const category = row.children[3].textContent;
 
             const res = await fetch(`/question/${id}`, {
-                method: 'GET',
-                headers: {
+                method: 'GET', headers: {
                     Accept: 'application/json'
                 }
             })
