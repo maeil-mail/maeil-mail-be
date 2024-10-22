@@ -26,9 +26,10 @@ class AdminReportScheduler {
 
     @Scheduled(cron = "0 30 7 1/1 * ?", zone = "Asia/Seoul")
     public void sendReport() {
-        log.info("관리자 결과 전송, date = {}", LocalDate.now());
+        LocalDate now = LocalDate.now();
+        log.info("관리자 결과 전송, date = {}", now);
 
-        List<MailEvent> result = mailEventRepository.findMailEventByDate(LocalDate.now());
+        List<MailEvent> result = mailEventRepository.findMailEventByDate(now);
         AdminReport adminReport = new AdminReport(result);
         String report = adminReport.generateReport("question");
         String text = createText(report);
