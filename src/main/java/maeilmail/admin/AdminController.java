@@ -27,8 +27,12 @@ class AdminController {
     }
 
     @PostMapping("/admin/question")
-    public String putQuestion(@ModelAttribute("questionForm") AdminQuestionForm questionForm) {
-        adminQuestionService.createQuestion(questionForm.toQuestion());
+    public String postQuestion(@ModelAttribute("questionForm") AdminQuestionForm questionForm) {
+        if (questionForm.isUpdate()) {
+            adminQuestionService.updateQuestion(questionForm.toQuestion());
+        } else {
+            adminQuestionService.createQuestion(questionForm.toQuestion());
+        }
 
         return "redirect:/admin";
     }

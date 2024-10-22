@@ -53,6 +53,11 @@
                     <div class="row">
                         <div class="col-md-6">
                             <form th:action="@{/admin/question}" th:method="post" th:object="${questionForm}">
+                                <div class="mb-3" id="questionIdWrapper">
+                                    <label for="questionId" class="form-label">질문 아이디</label>
+                                    <input type="text" th:field="*{id}" class="form-control" id="questionId"
+                                           readonly>
+                                </div>
                                 <div class="mb-3">
                                     <label for="questionTitle" class="form-label">질문 제목</label>
                                     <input type="text" th:field="*{title}" class="form-control" id="questionTitle"

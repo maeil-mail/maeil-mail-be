@@ -9,11 +9,16 @@ import maeilmail.question.QuestionCategory;
 @Setter
 public class AdminQuestionForm {
 
+    private Long id;
     private String title;
     private String content;
     private String category;
 
     public Question toQuestion() {
-        return new Question(title, content, QuestionCategory.from(category));
+        return new Question(id, title, content, QuestionCategory.from(category));
+    }
+
+    public boolean isUpdate() {
+        return id != null;
     }
 }
