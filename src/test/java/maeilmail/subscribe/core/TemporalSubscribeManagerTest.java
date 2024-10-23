@@ -40,4 +40,16 @@ class TemporalSubscribeManagerTest {
         assertThatCode(() -> temporalSubscribeManager.verify("test3@naver.com", "3212"))
                 .doesNotThrowAnyException();
     }
+
+    @Test
+    @DisplayName("이미 인증 코드를 받은 적이 있다면, 기존 인증 코드를 제거한다.")
+    void deleteBefore() {
+        temporalSubscribeManager.add("test4@naver.com", "3212");
+        temporalSubscribeManager.add("test4@naver.com", "2111");
+        temporalSubscribeManager.add("test4@naver.com", "3222");
+        temporalSubscribeManager.add("test4@naver.com", "1234");
+
+        assertThatCode(() -> temporalSubscribeManager.verify("test4@naver.com", "1234"))
+                .doesNotThrowAnyException();
+    }
 }

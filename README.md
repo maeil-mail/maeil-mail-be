@@ -1,18 +1,18 @@
-# 매일메일
+# 매일메일 - 기술 면접 질문 구독 서비스
 
-## 페이지 화면
+<img width="1103" alt="스크린샷 2024-10-21 오후 7 58 23" src="https://github.com/user-attachments/assets/71e98867-1a98-4a16-8292-753ec2dab8c4">
 
-![화면 기록 2024-09-21 오후 3 11 23](https://github.com/user-attachments/assets/99ce49b0-ce5b-473c-a7fa-5550ae2bdbdb)
+<img width="1099" alt="스크린샷 2024-10-21 오후 7 59 18" src="https://github.com/user-attachments/assets/e33228d5-857a-40dd-8450-aff5a07a5495">
 
-## 메일 전송 완료 시 화면
+<img width="1102" alt="스크린샷 2024-10-21 오후 7 59 43" src="https://github.com/user-attachments/assets/1f38950f-0488-4d58-821b-af6e1fd78a8e">
 
-<img width="505" alt="스크린샷 2024-09-21 오후 3 12 15" src="https://github.com/user-attachments/assets/5775640c-1225-4874-adfe-2e24cdaac10f">
+<img width="967" alt="스크린샷 2024-10-21 오후 8 01 53" src="https://github.com/user-attachments/assets/8fd838aa-1bb7-4004-a299-9713a3c0f68b">
 
-## 🔍 해당 프로젝트의 목적은 무엇인가요?
+## - 🔍 해당 프로젝트의 목적은 무엇인가요?
 
 매일 오전 7시에 무작위의 개발 관련 질문을 메일로 보내드리는 사이트입니다.
 
-## 🤔 어떤 문제를 해결하려고 하나요 ?
+## - 🤔 어떤 문제를 해결하려고 하나요 ?
 
 다들 면접 대비는 어떻게 하시나요?
 

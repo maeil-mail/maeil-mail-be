@@ -1,4 +1,6 @@
 package maeilmail.subscribe.core.request;
 
-public record SubscribeQuestionRequest(String email, String category, String code) {
+import java.util.List;
+
+public record SubscribeQuestionRequest(String email, List<String> category, String code) {
 }

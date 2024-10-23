@@ -12,6 +12,7 @@ create table subscribe
     id       bigint auto_increment,
     email    varchar(255) not null,
     category enum ('BACKEND','FRONTEND') not null,
+    subscribed_at timestamp(6),
     primary key (id)
 );
 
