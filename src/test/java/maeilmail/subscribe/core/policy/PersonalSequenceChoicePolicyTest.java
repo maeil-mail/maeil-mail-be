@@ -182,7 +182,7 @@ class PersonalSequenceChoicePolicyTest {
         Subscribe subscribe = mock(Subscribe.class);
         when(subscribe.getCategory())
                 .thenReturn(category);
-        when(subscribe.getSubscribedAt())
+        when(subscribe.getCreatedAt())
                 .thenReturn(subscribedAt);
 
         return subscribe;
