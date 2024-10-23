@@ -1,6 +1,8 @@
 package maeilmail.admin;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import maeilmail.mail.MailEvent;
 
 class AdminReport {
@@ -14,20 +16,10 @@ class AdminReport {
     }
 
     public String generateReport(String type) {
-        return String.format(REPORT_FORMAT, type, calculateSuccessCount(type), calculateFailCount(type));
-    }
-
-    private int calculateSuccessCount(String type) {
-        return (int) events.stream()
+        Map<Boolean, Long> result = events.stream()
                 .filter(it -> it.getType().equals(type))
-                .filter(MailEvent::isSuccess)
-                .count();
-    }
+                .collect(Collectors.partitioningBy(MailEvent::isSuccess, Collectors.counting()));
 
-    private int calculateFailCount(String type) {
-        return (int) events.stream()
-                .filter(it -> it.getType().equals(type))
-                .filter(it -> !it.isSuccess())
-                .count();
+        return String.format(REPORT_FORMAT, type, result.get(true), result.get(false));
     }
 }

@@ -9,6 +9,13 @@ class CodeGenerator {
     private static final int CODE_LENGTH = 4;
     private static final int RAND_BOUND = 10;
 
+    private static String pickOne() {
+        Random random = new Random();
+        int eachValue = random.nextInt(RAND_BOUND);
+
+        return Integer.toString(eachValue);
+    }
+
     public String generateCode() {
         StringBuilder code = new StringBuilder();
 
@@ -17,12 +24,5 @@ class CodeGenerator {
         }
 
         return code.toString();
-    }
-
-    private static String pickOne() {
-        Random random = new Random();
-        int eachValue = random.nextInt(RAND_BOUND);
-
-        return Integer.toString(eachValue);
     }
 }
