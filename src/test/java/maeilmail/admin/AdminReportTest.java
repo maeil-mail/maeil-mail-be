@@ -2,7 +2,6 @@ package maeilmail.admin;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.time.LocalDate;
 import java.util.List;
 import maeilmail.mail.MailEvent;
 import org.junit.jupiter.api.DisplayName;
@@ -27,6 +26,6 @@ class AdminReportTest {
     }
 
     private MailEvent createMailEvent(boolean isSuccess, String type) {
-        return new MailEvent(1L, "sample@test.com", type, isSuccess, LocalDate.now());
+        return new MailEvent(1L, "sample@test.com", type, isSuccess);
     }
 }

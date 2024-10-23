@@ -26,7 +26,7 @@ class PersonalSequenceChoicePolicy implements ChoiceQuestionPolicy {
 
     @Override
     public QuestionSummary choice(Subscribe subscribe, LocalDate today) {
-        LocalDateTime subscribeAt = getOrDefaultSubscribeAt(subscribe.getSubscribedAt(), subscribe.getCategory());
+        LocalDateTime subscribeAt = getOrDefaultSubscribeAt(subscribe.getCreatedAt(), subscribe.getCategory());
         LocalDate actualDate = getActualDate(subscribeAt);
         validateInvalidDate(actualDate, today);
         List<QuestionSummary> questions = findQuestions(subscribe);

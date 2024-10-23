@@ -1,6 +1,7 @@
 package maeilmail.admin;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
@@ -26,10 +27,12 @@ class AdminReportScheduler {
 
     @Scheduled(cron = "0 30 7 1/1 * ?", zone = "Asia/Seoul")
     public void sendReport() {
-        LocalDate now = LocalDate.now();
-        log.info("관리자 결과 전송, date = {}", now);
+        LocalDate today = LocalDate.now();
+        LocalDateTime startOfDay = today.atStartOfDay();
+        LocalDateTime endOfDay = today.plusDays(1).atStartOfDay().minusNanos(1);
+        log.info("관리자 결과 전송, date = {}", today);
 
-        List<MailEvent> result = mailEventRepository.findMailEventByDate(now);
+        List<MailEvent> result = mailEventRepository.findMailEventByCreatedAtBetween(startOfDay, endOfDay);
         AdminReport adminReport = new AdminReport(result);
         String report = adminReport.generateReport("question");
         String text = createText(report);
