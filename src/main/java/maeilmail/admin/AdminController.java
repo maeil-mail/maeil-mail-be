@@ -23,7 +23,7 @@ class AdminController {
         model.addAttribute("questions", questions);
         model.addAttribute("questionForm", new AdminQuestionForm());
 
-        return "/admin/index";
+        return "admin/index";
     }
 
     @PostMapping("/admin/question")
