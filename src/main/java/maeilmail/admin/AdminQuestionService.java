@@ -1,5 +1,6 @@
 package maeilmail.admin;
 
+import java.util.NoSuchElementException;
 import lombok.RequiredArgsConstructor;
 import maeilmail.question.Question;
 import maeilmail.question.QuestionRepository;
@@ -15,5 +16,14 @@ class AdminQuestionService {
     @Transactional
     public void createQuestion(Question question) {
         questionRepository.save(question);
+    }
+
+    @Transactional
+    public void updateQuestion(Question question) {
+        Question found = questionRepository.findById(question.getId())
+                .orElseThrow(NoSuchElementException::new);
+        found.setTitle(question.getTitle());
+        found.setContent(question.getContent());
+        found.setCategory(question.getCategory());
     }
 }
