@@ -19,7 +19,7 @@ class CodeGenerator {
         return code.toString();
     }
 
-    private static String pickOne() {
+    private String pickOne() {
         Random random = new Random();
         int eachValue = random.nextInt(RAND_BOUND);
 
