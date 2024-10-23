@@ -1,10 +1,10 @@
 package maeilmail.mail;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface MailEventRepository extends JpaRepository<MailEvent, Long> {
 
-    List<MailEvent> findMailEventByDate(LocalDate date);
+    List<MailEvent> findMailEventByCreatedAtBetween(LocalDateTime startOfDay, LocalDateTime endOfDay);
 }
