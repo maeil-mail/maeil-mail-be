@@ -52,7 +52,8 @@
                     <h3 id="questionFormTitle">질문 생성</h3>
                     <div class="row">
                         <div class="col-md-6">
-                            <form th:action="@{/admin/question}" th:method="post" th:object="${questionForm}">
+                            <form th:action="@{/admin/question}" th:method="post" th:object="${questionForm}"
+                                  onsubmit="return confirm('정말로 저장하시겠습니까?')">
                                 <div class="mb-3" id="questionIdWrapper">
                                     <label for="questionId" class="form-label">질문 아이디</label>
                                     <input type="text" th:field="*{id}" class="form-control" id="questionId"
