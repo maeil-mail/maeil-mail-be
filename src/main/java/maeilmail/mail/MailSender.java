@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class MailSender {
 
-    private static final String FROM_EMAIL = "maeil-mail-noreply@maeil-mail.site";
+    private static final String FROM_EMAIL = "매일메일 <maeil-mail-noreply@maeil-mail.site>";
 
     private final JavaMailSender javaMailSender;
     private final MailEventRepository mailEventRepository;
