@@ -32,12 +32,12 @@ class SendQuestionScheduler {
 
         subscribes.stream()
                 .filter(it -> distributedSupport.isMine(it.getId()))
-                .map(this::selectRandomQuestionAndMapToMail)
+                .map(this::choiceQuestion)
                 .filter(Objects::nonNull)
                 .forEach(mailSender::sendMail);
     }
 
-    private MailMessage selectRandomQuestionAndMapToMail(Subscribe subscribe) {
+    private MailMessage choiceQuestion(Subscribe subscribe) {
         String subject = "오늘의 면접 질문을 보내드려요.";
         try {
             QuestionSummary question = choiceQuestionPolicy.choice(subscribe, LocalDate.now());
