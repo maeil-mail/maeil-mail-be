@@ -38,12 +38,11 @@ class SendQuestionScheduler {
     }
 
     private MailMessage choiceQuestion(Subscribe subscribe) {
-        String subject = "오늘의 면접 질문을 보내드려요.";
         try {
             QuestionSummary question = choiceQuestionPolicy.choice(subscribe, LocalDate.now());
+            String subject = question.customizedTitle() == null ? "오늘의 면접 질문을 보내드려요." : question.customizedTitle();
             String text = createText(question);
             return new MailMessage(subscribe.getEmail(), subject, text, subscribeQuestionView.getType());
-
         } catch (Exception e) {
             log.info("면접 질문 선택 실패 = {}", e.getMessage());
             return null;
