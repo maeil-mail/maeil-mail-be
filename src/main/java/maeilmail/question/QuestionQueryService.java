@@ -47,6 +47,7 @@ public class QuestionQueryService {
                 question.id,
                 question.title,
                 question.content,
+                question.customizedTitle,
                 question.category.stringValue().lower()
         );
     }
