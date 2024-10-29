@@ -65,6 +65,11 @@
                                            required>
                                 </div>
                                 <div class="mb-3">
+                                    <label for="questionCustomizedTitle" class="form-label">메일 제목</label>
+                                    <input type="text" th:field="*{customizedTitle}" class="form-control"
+                                           id="questionCustomizedTitle">
+                                </div>
+                                <div class="mb-3">
                                     <label for="questionDetail" class="form-label">답변</label>
                                     <textarea th:field="*{content}" class="form-control" id="questionDetail" rows="5"
                                               required></textarea>
@@ -100,24 +105,17 @@
                             <tr>
                                 <th>ID</th>
                                 <th>질문 제목</th>
+                                <th>메일 제목</th>
                                 <th>질문 상세</th>
                                 <th>카테고리</th>
                                 <th>작업</th>
                             </tr>
                             </thead>
-                            <tfoot>
-                            <tr>
-                                <th>ID</th>
-                                <th>질문 제목</th>
-                                <th>상세 페이지</th>
-                                <th>카테고리</th>
-                                <th>작업</th>
-                            </tr>
-                            </tfoot>
                             <tbody>
                             <tr th:each="question:${questions}">
                                 <td th:text="${question.id}"></td>
                                 <td th:text="${question.title}"></td>
+                                <td th:text="${question.customizedTitle}"></td>
                                 <td><a target="_blank"
                                        th:href="@{https://www.maeil-mail.kr/question/{id}(id = ${question.id})}">질문
                                     보러가기</a></td>

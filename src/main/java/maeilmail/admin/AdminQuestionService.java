@@ -24,6 +24,7 @@ class AdminQuestionService {
                 .orElseThrow(NoSuchElementException::new);
         found.setTitle(question.getTitle());
         found.setContent(question.getContent());
+        found.setCustomizedTitle(question.getCustomizedTitle());
         found.setCategory(question.getCategory());
     }
 }

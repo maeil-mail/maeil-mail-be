@@ -23,6 +23,7 @@ window.addEventListener('DOMContentLoaded', event => {
         markdownPreview.innerHTML = "";
         document.getElementById('questionId').value = "";
         document.getElementById('questionTitle').value = "";
+        document.getElementById('questionCustomizedTitle').value = "";
         document.getElementById('questionCategory').value = "";
         document.getElementById('questionDetail').value = "";
         document.getElementById('questionForm').classList.remove('hidden');
@@ -35,9 +36,11 @@ window.addEventListener('DOMContentLoaded', event => {
     document.querySelectorAll('.edit-btn').forEach(button => {
         button.addEventListener('click', async function () {
             const row = this.closest('tr');
+
             const id = row.children[0].textContent;
             const title = row.children[1].textContent;
-            const category = row.children[3].textContent;
+            const customizedTile = row.children[2].textContent;
+            const category = row.children[4].textContent;
             const res = await fetch(`/question/${id}`, {
                 method: 'GET', headers: {
                     Accept: 'application/json'
@@ -49,6 +52,7 @@ window.addEventListener('DOMContentLoaded', event => {
             document.getElementById('questionFormTitle').innerText = '질문 수정';
             document.getElementById('questionId').value = id;
             document.getElementById('questionTitle').value = title;
+            document.getElementById('questionCustomizedTitle').value = customizedTile;
             document.getElementById('questionCategory').value = category;
             document.getElementById('questionDetail').value = json.content;
             document.getElementById('questionIdWrapper').classList.remove('hidden');

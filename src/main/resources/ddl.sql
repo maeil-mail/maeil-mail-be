@@ -1,11 +1,12 @@
 create table question
 (
-    id         bigint auto_increment,
-    content    text         not null,
-    title      varchar(255) not null,
-    category   enum ('BACKEND','FRONTEND') not null,
-    created_at timestamp(6),
-    updated_at timestamp(6),
+    id               bigint auto_increment,
+    content          text         not null,
+    title            varchar(255) not null,
+    customized_title varchar(255),
+    category         enum ('BACKEND','FRONTEND') not null,
+    created_at       timestamp(6),
+    updated_at       timestamp(6),
     primary key (id)
 );
 

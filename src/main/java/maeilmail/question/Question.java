@@ -12,8 +12,8 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import maeilmail.BaseEntity;
 import lombok.Setter;
+import maeilmail.BaseEntity;
 
 @Entity
 @Getter
@@ -32,6 +32,9 @@ public class Question extends BaseEntity {
 
     @Column(nullable = false)
     private String content;
+
+    @Column(nullable = true)
+    private String customizedTitle;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
