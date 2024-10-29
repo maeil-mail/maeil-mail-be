@@ -12,10 +12,15 @@ public class AdminQuestionForm {
     private Long id;
     private String title;
     private String content;
+    private String customizedTitle;
     private String category;
 
     public Question toQuestion() {
-        return new Question(id, title, content, QuestionCategory.from(category));
+        if (customizedTitle.isBlank()) {
+            customizedTitle = null;
+        }
+
+        return new Question(id, title, content, customizedTitle, QuestionCategory.from(category));
     }
 
     public boolean isUpdate() {
