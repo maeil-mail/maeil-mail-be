@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import maeilmail.DistributedSupport;
 import maeilmail.mail.MailMessage;
 import maeilmail.mail.MailSender;
+import maeilmail.question.QuestionCategory;
 import maeilmail.question.QuestionSummary;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -40,13 +41,21 @@ class SendQuestionScheduler {
     private MailMessage choiceQuestion(Subscribe subscribe) {
         try {
             QuestionSummary question = choiceQuestionPolicy.choice(subscribe, LocalDate.now());
-            String subject = question.customizedTitle() == null ? "오늘의 면접 질문을 보내드려요." : question.customizedTitle();
+            String subject = createSubject(question);
             String text = createText(question);
-            return new MailMessage(subscribe.getEmail(), subject, text, subscribeQuestionView.getType());
+            return new MailMessage(subscribe.getEmail(), subject, text, createQuestionType(subscribe.getCategory()));
         } catch (Exception e) {
             log.info("면접 질문 선택 실패 = {}", e.getMessage());
             return null;
         }
+    }
+
+    private String createSubject(QuestionSummary question) {
+        if (question.customizedTitle() == null) {
+            return "오늘의 면접 질문을 보내드려요.";
+        }
+
+        return question.customizedTitle();
     }
 
     private String createText(QuestionSummary question) {
@@ -55,5 +64,14 @@ class SendQuestionScheduler {
         attribute.put("question", question.title());
 
         return subscribeQuestionView.render(attribute);
+    }
+
+    private String createQuestionType(QuestionCategory category) {
+        String type = subscribeQuestionView.getType();
+        if (QuestionCategory.BACKEND.equals(category)) {
+            return type + "-backend";
+        }
+
+        return type + "-frontend";
     }
 }
