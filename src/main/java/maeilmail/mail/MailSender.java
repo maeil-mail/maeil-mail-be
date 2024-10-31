@@ -33,6 +33,11 @@ public class MailSender {
         } catch (Exception e) {
             mailEventRepository.save(MailEvent.fail(message.to(), message.type()));
             log.error("예기치 않은 오류 발생: email = {}, type = {}, 오류 = {}", message.to(), message.type(), e.getMessage(), e);
+        } finally {
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException ignored) {
+            }
         }
     }
 
