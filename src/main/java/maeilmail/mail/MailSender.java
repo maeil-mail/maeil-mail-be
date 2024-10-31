@@ -4,6 +4,7 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
@@ -21,15 +22,17 @@ public class MailSender {
 
     @Async
     public void sendMail(MailMessage message) {
-
         try {
             log.info("메일을 전송합니다. email = {} question = {} type = {}", message.to(), message.subject(), message.type());
             MimeMessage mimeMessage = convertToMime(message);
             javaMailSender.send(mimeMessage);
             mailEventRepository.save(MailEvent.success(message.to(), message.type()));
-        } catch (MessagingException e) {
+        } catch (MessagingException | MailException e) {
             mailEventRepository.save(MailEvent.fail(message.to(), message.type()));
-            log.info("메일 전송 실패 = {}", e.getMessage());
+            log.error("메일 전송 실패: email = {}, type = {}, 오류 = {}", message.to(), message.type(), e.getMessage(), e);
+        } catch (Exception e) {
+            mailEventRepository.save(MailEvent.fail(message.to(), message.type()));
+            log.error("예기치 않은 오류 발생: email = {}, type = {}, 오류 = {}", message.to(), message.type(), e.getMessage(), e);
         }
     }
 
