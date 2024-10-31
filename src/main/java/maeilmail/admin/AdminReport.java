@@ -17,7 +17,7 @@ class AdminReport {
 
     public String generateReport(String type) {
         Map<Boolean, Long> result = events.stream()
-                .filter(it -> it.getType().equals(type))
+                .filter(it -> it.getType().startsWith(type))
                 .collect(Collectors.partitioningBy(MailEvent::isSuccess, Collectors.counting()));
 
         return String.format(REPORT_FORMAT, type, result.get(true), result.get(false));
