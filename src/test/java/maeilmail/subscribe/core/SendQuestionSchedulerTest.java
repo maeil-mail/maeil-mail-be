@@ -5,13 +5,11 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
 import maeilmail.support.SchedulerTestUtils;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 class SendQuestionSchedulerTest {
 
-    @Disabled
     @Test
     @DisplayName("매일 아침 7시에 스케줄러가 동작하는지 확인한다.")
     void cronTest() {

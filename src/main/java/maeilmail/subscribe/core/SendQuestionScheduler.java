@@ -14,6 +14,7 @@ import maeilmail.mail.MailMessage;
 import maeilmail.mail.MailSender;
 import maeilmail.question.QuestionCategory;
 import maeilmail.question.QuestionSummary;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 @Slf4j
@@ -27,6 +28,7 @@ class SendQuestionScheduler {
     private final SubscribeRepository subscribeRepository;
     private final DistributedSupport distributedSupport;
 
+    @Scheduled(cron = "0 0 7 1/1 * ?", zone = "Asia/Seoul")
     public void sendMail() {
         log.info("메일 전송을 시작합니다.");
         LocalDateTime now = ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toLocalDateTime();
