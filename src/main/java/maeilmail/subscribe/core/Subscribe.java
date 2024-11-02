@@ -31,8 +31,12 @@ public class Subscribe extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private QuestionCategory category;
 
+    @Column(nullable = false)
+    private Long nextQuestionSequence;
+
     public Subscribe(String email, QuestionCategory category) {
         this.email = email;
         this.category = category;
+        this.nextQuestionSequence = 0L;
     }
 }
