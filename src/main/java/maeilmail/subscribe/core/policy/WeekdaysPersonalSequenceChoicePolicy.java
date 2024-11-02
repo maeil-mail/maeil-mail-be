@@ -22,7 +22,7 @@ class WeekdaysPersonalSequenceChoicePolicy implements ChoiceQuestionPolicy {
         List<QuestionSummary> questions = findQuestions(subscribe);
         Long nextQuestionSequence = subscribe.getNextQuestionSequence();
 
-        return questions.get(nextQuestionSequence.intValue());
+        return questions.get(nextQuestionSequence.intValue() % questions.size());
     }
 
     private List<QuestionSummary> findQuestions(Subscribe subscribe) {
