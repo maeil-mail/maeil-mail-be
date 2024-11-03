@@ -12,11 +12,12 @@ create table question
 
 create table subscribe
 (
-    id         bigint auto_increment,
-    email      varchar(255) not null,
-    category   enum ('BACKEND','FRONTEND') not null,
-    created_at timestamp(6),
-    updated_at timestamp(6),
+    id                     bigint auto_increment,
+    email                  varchar(255) not null,
+    category               enum ('BACKEND','FRONTEND') not null,
+    created_at             timestamp(6),
+    updated_at             timestamp(6),
+    next_question_sequence bigint       not null default '0',
     primary key (id)
 );
 
