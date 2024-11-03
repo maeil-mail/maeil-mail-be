@@ -21,9 +21,9 @@ values ('백엔드 질문 1',
         '프론트 질문 3 내용',
         'FRONTEND');
 
-insert into subscribe(email, category)
-values ('leehaneul990623@gmail.com', 'BACKEND'),
-       ('leehaneul0623@gmail.com', 'FRONTEND');
+insert into subscribe(email, category, next_question_sequence)
+values ('leehaneul990623@gmail.com', 'BACKEND', 0),
+       ('leehaneul0623@gmail.com', 'FRONTEND', 0);
 
 insert into admin(email)
 values ('leehaneul990623@gmail.com'),
