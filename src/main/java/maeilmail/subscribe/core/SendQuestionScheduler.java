@@ -32,6 +32,7 @@ class SendQuestionScheduler {
         LocalDateTime now = ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toLocalDateTime();
         List<Subscribe> subscribes = subscribeRepository.findAllByCreatedAtBefore(now);
         log.info("{}명의 사용자에게 메일을 전송합니다.", subscribes.size());
+
         subscribes.stream()
                 .filter(it -> distributedSupport.isMine(it.getId()))
                 .map(this::choiceQuestion)
