@@ -1,6 +1,9 @@
 package maeilmail.subscribe.core;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
@@ -26,9 +29,9 @@ class SendQuestionScheduler {
 
     public void sendMail() {
         log.info("메일 전송을 시작합니다.");
-        List<Subscribe> subscribes = subscribeRepository.findAll();
+        LocalDateTime now = ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toLocalDateTime();
+        List<Subscribe> subscribes = subscribeRepository.findAllByCreatedAtBefore(now);
         log.info("{}명의 사용자에게 메일을 전송합니다.", subscribes.size());
-
         subscribes.stream()
                 .filter(it -> distributedSupport.isMine(it.getId()))
                 .map(this::choiceQuestion)
