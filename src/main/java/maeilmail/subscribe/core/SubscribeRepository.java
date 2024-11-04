@@ -15,4 +15,6 @@ public interface SubscribeRepository extends JpaRepository<Subscribe, Long> {
 
     @Query("select distinct s.email from Subscribe s where s.createdAt between :startOfDay and :endOfDay")
     List<String> findDistinctEmailsByCreatedAtBetween(LocalDateTime startOfDay, LocalDateTime endOfDay);
+
+    List<Subscribe> findAllByCreatedAtBefore(LocalDateTime now);
 }
