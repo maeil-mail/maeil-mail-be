@@ -7,8 +7,10 @@ import maeilmail.mail.MailEvent;
 
 class AdminReport {
 
+    // TODO: 외부로 이동 -> drive service
     private static final String REPORT_FORMAT = "질문 전송 카운트(타입/성공/실패) : %s/%d/%d";
 
+    // TODO: Statistics로 이동 -> event
     private final List<MailEvent> events;
 
     public AdminReport(List<MailEvent> events) {

@@ -1,4 +1,4 @@
-package maeilmail.admin;
+package maeilmail.statistics;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -7,22 +7,23 @@ import maeilmail.mail.MailEvent;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-class AdminReportTest {
+class MailEventAggregatorTest {
 
     @Test
     @DisplayName("메일 이벤트를 받으면 하루 결과로 변환한다.")
     void report() {
+        MailEventAggregator mailEventAggregator = new MailEventAggregator();
         List<MailEvent> events = List.of(
                 createMailEvent(true, "type"),
                 createMailEvent(true, "none"),
                 createMailEvent(false, "type"),
                 createMailEvent(true, "type")
         );
-        AdminReport adminReport = new AdminReport(events);
 
-        String result = adminReport.generateReport("type");
+        MailEventReport result = mailEventAggregator.generateReport("type", events);
 
-        assertThat(result).isEqualTo("질문 전송 카운트(타입/성공/실패) : type/2/1");
+        assertThat(result.success()).isEqualTo(2);
+        assertThat(result.fail()).isEqualTo(1);
     }
 
     private MailEvent createMailEvent(boolean isSuccess, String type) {
