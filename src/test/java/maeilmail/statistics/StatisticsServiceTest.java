@@ -16,10 +16,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
 @Transactional
-class AdminStatisticsServiceTest {
+class StatisticsServiceTest {
 
     @Autowired
-    private AdminStatisticsService adminStatisticsService;
+    private StatisticsService statisticsService;
 
     @Autowired
     private SubscribeRepository subscribeRepository;
@@ -35,7 +35,7 @@ class AdminStatisticsServiceTest {
         subscribeRepository.save(new Subscribe("test" + 3, QuestionCategory.FRONTEND));
         subscribeRepository.saveAll(subscribes);
 
-        int distinctEmailsCount = adminStatisticsService.countCumulativeSubscribers();
+        int distinctEmailsCount = statisticsService.countCumulativeSubscribers();
 
         assertThat(distinctEmailsCount).isEqualTo(10);
     }
@@ -49,7 +49,7 @@ class AdminStatisticsServiceTest {
         subscribeRepository.save(new Subscribe("test" + 2, QuestionCategory.FRONTEND));
         subscribeRepository.save(new Subscribe("test" + 2, QuestionCategory.FRONTEND));
 
-        int distinctEmailsCount = adminStatisticsService.countNewSubscribersOnSpecificDate(LocalDate.now());
+        int distinctEmailsCount = statisticsService.countNewSubscribersOnSpecificDate(LocalDate.now());
 
         assertThat(distinctEmailsCount).isEqualTo(2);
     }
@@ -59,7 +59,7 @@ class AdminStatisticsServiceTest {
     void countNewSubscribersOnSpecificDate2() {
         subscribeRepository.save(new Subscribe("test" + 1, QuestionCategory.FRONTEND));
 
-        int distinctEmailsCount = adminStatisticsService.countNewSubscribersOnSpecificDate(LocalDate.now().minusDays(1));
+        int distinctEmailsCount = statisticsService.countNewSubscribersOnSpecificDate(LocalDate.now().minusDays(1));
 
         assertThat(distinctEmailsCount).isEqualTo(0);
     }

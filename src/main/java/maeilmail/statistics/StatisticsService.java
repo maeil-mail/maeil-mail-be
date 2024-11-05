@@ -8,10 +8,10 @@ import maeilmail.subscribe.core.SubscribeRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Transactional(readOnly = true)
-@RequiredArgsConstructor
 @Service
-public class AdminStatisticsService {
+@RequiredArgsConstructor
+@Transactional(readOnly = true)
+public class StatisticsService {
 
     private final SubscribeRepository subscribeRepository;
 
