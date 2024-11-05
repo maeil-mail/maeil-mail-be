@@ -28,14 +28,10 @@ public class StatisticsService {
         return eventAggregator.aggregate(type, result);
     }
 
-    public SubscribeReport generateDailySubscribeReport() {
-        return new SubscribeReport(countCumulativeSubscribers());
-    }
-
-    public Long countCumulativeSubscribers() {
+    public SubscribeReport generateSubscribeReport() {
         List<String> distinctEmails = subscribeRepository.findDistinctEmails();
 
-        return (long) distinctEmails.size();
+        return new SubscribeReport((long) distinctEmails.size());
     }
 
     public int countNewSubscribersOnSpecificDate(LocalDate date) {

@@ -31,7 +31,7 @@ class StatisticsServiceTest {
 
     @Test
     @DisplayName("고유한 이메일을 가진 누적 구독자 수를 반환한다.")
-    void countCumulativeSubscribers() {
+    void generateSubscribeReport() {
         List<Subscribe> subscribes = IntStream.rangeClosed(1, 10)
                 .mapToObj(index -> new Subscribe("test" + index, QuestionCategory.BACKEND))
                 .toList();
@@ -40,9 +40,9 @@ class StatisticsServiceTest {
         subscribeRepository.save(new Subscribe("test" + 3, QuestionCategory.FRONTEND));
         subscribeRepository.saveAll(subscribes);
 
-        Long distinctEmailsCount = statisticsService.countCumulativeSubscribers();
+        SubscribeReport subscribeReport = statisticsService.generateSubscribeReport();
 
-        assertThat(distinctEmailsCount).isEqualTo(10);
+        assertThat(subscribeReport.cumulativeCount()).isEqualTo(10);
     }
 
     @Test
@@ -80,18 +80,5 @@ class StatisticsServiceTest {
 
         assertThat(eventReport.success()).isEqualTo(2);
         assertThat(eventReport.fail()).isEqualTo(1);
-    }
-
-    @Test
-    @DisplayName("일일 구독자 현황을 반환한다.")
-    void generateDailySubscribeReport() {
-        subscribeRepository.save(new Subscribe("test" + 1, QuestionCategory.FRONTEND));
-        subscribeRepository.save(new Subscribe("test" + 1, QuestionCategory.BACKEND));
-        subscribeRepository.save(new Subscribe("test" + 2, QuestionCategory.FRONTEND));
-        subscribeRepository.save(new Subscribe("test" + 2, QuestionCategory.BACKEND));
-
-        SubscribeReport subscribeReport = statisticsService.generateDailySubscribeReport();
-
-        assertThat(subscribeReport.cumulativeCount()).isEqualTo(2);
     }
 }

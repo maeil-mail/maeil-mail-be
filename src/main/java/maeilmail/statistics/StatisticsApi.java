@@ -13,7 +13,7 @@ class StatisticsApi {
 
     @GetMapping("/statistics/subscribe")
     public ResponseEntity<SubscribeReport> getDailySubscribeReport() {
-        SubscribeReport report = statisticsService.generateDailySubscribeReport();
+        SubscribeReport report = statisticsService.generateSubscribeReport();
 
         return ResponseEntity.ok(report);
     }
