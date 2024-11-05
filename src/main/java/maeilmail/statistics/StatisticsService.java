@@ -19,10 +19,23 @@ public class StatisticsService {
     private final MailEventRepository mailEventRepository;
     private final MailEventAggregator mailEventAggregator;
 
-    public int countCumulativeSubscribers() {
+    public MailEventReport generateDailyMailEventReport(String type) {
+        LocalDate today = LocalDate.now();
+        LocalDateTime startOfDay = today.atStartOfDay();
+        LocalDateTime endOfDay = today.plusDays(1).atStartOfDay().minusNanos(1);
+        List<MailEvent> result = mailEventRepository.findMailEventByCreatedAtBetween(startOfDay, endOfDay);
+
+        return mailEventAggregator.generateReport(type, result);
+    }
+
+    public SubscribeReport generateDailySubscribeReport() {
+        return new SubscribeReport(countCumulativeSubscribers(), subscribeRepository.count());
+    }
+
+    public Long countCumulativeSubscribers() {
         List<String> distinctEmails = subscribeRepository.findDistinctEmails();
 
-        return distinctEmails.size();
+        return (long) distinctEmails.size();
     }
 
     public int countNewSubscribersOnSpecificDate(LocalDate date) {
@@ -31,14 +44,5 @@ public class StatisticsService {
         List<String> distinctEmails = subscribeRepository.findDistinctEmailsByCreatedAtBetween(startOfDay, endOfDay);
 
         return distinctEmails.size();
-    }
-
-    public MailEventReport generateDailyMailEventReport(String type) {
-        LocalDate today = LocalDate.now();
-        LocalDateTime startOfDay = today.atStartOfDay();
-        LocalDateTime endOfDay = today.plusDays(1).atStartOfDay().minusNanos(1);
-        List<MailEvent> result = mailEventRepository.findMailEventByCreatedAtBetween(startOfDay, endOfDay);
-
-        return mailEventAggregator.generateReport(type, result);
     }
 }
