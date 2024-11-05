@@ -2,6 +2,7 @@ package maeilmail.subscribe.core;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.HashMap;
@@ -14,12 +15,16 @@ import maeilmail.mail.MailMessage;
 import maeilmail.mail.MailSender;
 import maeilmail.question.QuestionCategory;
 import maeilmail.question.QuestionSummary;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
 class SendQuestionScheduler {
+
+    private static final ZoneId KOREA_ZONE = ZoneId.of("Asia/Seoul");
 
     private final MailSender mailSender;
     private final ChoiceQuestionPolicy choiceQuestionPolicy;
@@ -27,10 +32,11 @@ class SendQuestionScheduler {
     private final SubscribeRepository subscribeRepository;
     private final DistributedSupport distributedSupport;
 
+    @Scheduled(cron = "0 0 7 * * MON-FRI")
     public void sendMail() {
         log.info("메일 전송을 시작합니다.");
-        LocalDateTime now = ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toLocalDateTime();
-        List<Subscribe> subscribes = subscribeRepository.findAllByCreatedAtBeforeOrCreatedAtIsNull(now);
+        LocalDateTime now = ZonedDateTime.now(KOREA_ZONE).toLocalDateTime();
+        List<Subscribe> subscribes = subscribeRepository.findAllByCreatedAtBefore(now);
         log.info("{}명의 사용자에게 메일을 전송합니다.", subscribes.size());
 
         subscribes.stream()
@@ -38,6 +44,13 @@ class SendQuestionScheduler {
                 .map(this::choiceQuestion)
                 .filter(Objects::nonNull)
                 .forEach(mailSender::sendMail);
+    }
+
+    @Transactional
+    @Scheduled(cron = "0 0 22 * * MON-FRI")
+    public void increaseNextQuestionSequence() {
+        LocalDateTime baseDateTime = ZonedDateTime.of(LocalDate.now(), LocalTime.of(7, 0), KOREA_ZONE).toLocalDateTime();
+        subscribeRepository.increaseNextQuestionSequence(baseDateTime);
     }
 
     private MailMessage choiceQuestion(Subscribe subscribe) {

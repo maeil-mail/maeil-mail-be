@@ -29,11 +29,11 @@ public class MailSender {
             javaMailSender.send(mimeMessage);
             mailEventRepository.save(MailEvent.success(message.to(), message.type()));
         } catch (MessagingException | MailException e) {
-            mailEventRepository.save(MailEvent.fail(message.to(), message.type()));
             log.error("메일 전송 실패: email = {}, type = {}, 오류 = {}", message.to(), message.type(), e.getMessage(), e);
-        } catch (Exception e) {
             mailEventRepository.save(MailEvent.fail(message.to(), message.type()));
+        } catch (Exception e) {
             log.error("예기치 않은 오류 발생: email = {}, type = {}, 오류 = {}", message.to(), message.type(), e.getMessage(), e);
+            mailEventRepository.save(MailEvent.fail(message.to(), message.type()));
         } finally {
             try {
                 Thread.sleep(MAIL_SENDER_RATE_MILLISECONDS);
