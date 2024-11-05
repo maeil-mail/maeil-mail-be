@@ -48,7 +48,7 @@ public class MailSender {
     }
 
     private void tryAppendOpenEventTrace(MailMessage message, MimeMessage mimeMessage) throws MessagingException {
-        if ("question".equals(message.type())) {
+        if (message.type().startsWith("question")) {
             mimeMessage.setHeader("X-SES-CONFIGURATION-SET", "my-first-configuration-set");
             mimeMessage.setHeader("X-SES-MESSAGE_TAGS", "mail-open");
         }
