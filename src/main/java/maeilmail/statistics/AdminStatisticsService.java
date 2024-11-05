@@ -1,4 +1,4 @@
-package maeilmail.admin;
+package maeilmail.statistics;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

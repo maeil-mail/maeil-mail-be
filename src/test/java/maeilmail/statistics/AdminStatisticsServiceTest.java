@@ -1,4 +1,4 @@
-package maeilmail.admin;
+package maeilmail.statistics;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
