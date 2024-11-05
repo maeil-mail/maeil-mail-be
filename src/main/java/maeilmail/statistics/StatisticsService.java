@@ -29,7 +29,7 @@ public class StatisticsService {
     }
 
     public SubscribeReport generateDailySubscribeReport() {
-        return new SubscribeReport(countCumulativeSubscribers(), subscribeRepository.count());
+        return new SubscribeReport(countCumulativeSubscribers());
     }
 
     public Long countCumulativeSubscribers() {

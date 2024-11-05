@@ -93,6 +93,5 @@ class StatisticsServiceTest {
         SubscribeReport subscribeReport = statisticsService.generateDailySubscribeReport();
 
         assertThat(subscribeReport.cumulativeCount()).isEqualTo(2);
-        assertThat(subscribeReport.totalMailTargetCount()).isEqualTo(4);
     }
 }
