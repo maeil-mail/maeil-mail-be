@@ -1,3 +1,5 @@
+[매일메일 바로가기](https://www.maeil-mail.kr?utm_source=github_be)
+
 ## 📮 매일메일 - 기술 면접 질문 구독 서비스
 
 [<img width="949" alt="스크린샷 2024-10-22 오후 2 03 36" src="https://github.com/user-attachments/assets/66206b1c-1556-4f66-9a46-3311b2f55abb">](https://www.maeil-mail.kr?utm_source=github_be)
@@ -36,6 +38,7 @@
 이메일 등록만 해놓으시고 하루에 5분만 투자해보세요!
 
 --------------
+[매일메일 바로가기](https://www.maeil-mail.kr?utm_source=github_be)
 
 혹시, 도움이 되었다면 Star를 눌러주세요 ⭐️  
 작은 관심이 서비스 운영에 큰 도움이 됩니다! 감사합니다. :)
