@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class MailSender {
 
-    private static final int MAIL_SENDER_RATE_MILLS = 500;
+    private static final int MAIL_SENDER_RATE_MILLISECONDS = 500;
     private static final String FROM_EMAIL = "maeil-mail <maeil-mail-noreply@maeil-mail.site>";
 
     private final JavaMailSender javaMailSender;
@@ -36,7 +36,7 @@ public class MailSender {
             log.error("예기치 않은 오류 발생: email = {}, type = {}, 오류 = {}", message.to(), message.type(), e.getMessage(), e);
         } finally {
             try {
-                Thread.sleep(MAIL_SENDER_RATE_MILLS);
+                Thread.sleep(MAIL_SENDER_RATE_MILLISECONDS);
             } catch (InterruptedException ignored) {
             }
         }
