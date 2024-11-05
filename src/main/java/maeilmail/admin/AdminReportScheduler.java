@@ -1,16 +1,14 @@
 package maeilmail.admin;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import maeilmail.DistributedSupport;
-import maeilmail.mail.MailEvent;
-import maeilmail.mail.MailEventRepository;
 import maeilmail.mail.MailMessage;
 import maeilmail.mail.MailSender;
+import maeilmail.statistics.EventReport;
+import maeilmail.statistics.StatisticsService;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -19,22 +17,18 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 class AdminReportScheduler {
 
-    private final MailEventRepository mailEventRepository;
+    private static final String REPORT_FORMAT = "질문 전송 카운트(타입/성공/실패) : %s/%d/%d";
+
+    private final MailSender mailSender;
     private final AdminRepository adminRepository;
     private final AdminReportView adminReportView;
-    private final MailSender mailSender;
     private final DistributedSupport distributedSupport;
+    private final StatisticsService statisticsService;
 
     @Scheduled(cron = "0 30 7 1/1 * ?", zone = "Asia/Seoul")
     public void sendReport() {
-        LocalDate today = LocalDate.now();
-        LocalDateTime startOfDay = today.atStartOfDay();
-        LocalDateTime endOfDay = today.plusDays(1).atStartOfDay().minusNanos(1);
-        log.info("관리자 결과 전송, date = {}", today);
-
-        List<MailEvent> result = mailEventRepository.findMailEventByCreatedAtBetween(startOfDay, endOfDay);
-        AdminReport adminReport = new AdminReport(result);
-        String report = adminReport.generateReport("question");
+        log.info("관리자 결과 전송, date = {}", LocalDate.now());
+        EventReport report = statisticsService.generateDailyMailEventReport("question");
         String text = createText(report);
         String subject = "[관리자] 메일 전송 결과를 알려드립니다.";
 
@@ -44,8 +38,10 @@ class AdminReportScheduler {
                 .forEach(mailSender::sendMail);
     }
 
-    private String createText(String report) {
-        return adminReportView.render(Map.of("report", report));
+    private String createText(EventReport report) {
+        String reportText = String.format(REPORT_FORMAT, report.type(), report.success(), report.fail());
+
+        return adminReportView.render(Map.of("report", reportText));
     }
 
     private MailMessage createMessage(Admin admin, String subject, String text) {
