@@ -17,4 +17,11 @@ class StatisticsApi {
 
         return ResponseEntity.ok(report);
     }
+
+    @GetMapping("/statistics/mail-event/question")
+    public ResponseEntity<EventReport> getDailyMailEventReport() {
+        EventReport report = statisticsService.generateDailyMailEventReport("question");
+
+        return ResponseEntity.ok(report);
+    }
 }
