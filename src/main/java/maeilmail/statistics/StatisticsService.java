@@ -25,7 +25,7 @@ public class StatisticsService {
         LocalDateTime endOfDay = today.plusDays(1).atStartOfDay().minusNanos(1);
         List<MailEvent> result = mailEventRepository.findMailEventByCreatedAtBetween(startOfDay, endOfDay);
 
-        return mailEventAggregator.generateReport(type, result);
+        return mailEventAggregator.aggregate(type, result);
     }
 
     public SubscribeReport generateDailySubscribeReport() {

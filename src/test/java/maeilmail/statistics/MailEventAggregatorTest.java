@@ -20,7 +20,7 @@ class MailEventAggregatorTest {
                 createMailEvent(true, "type")
         );
 
-        MailEventReport result = mailEventAggregator.generateReport("type", events);
+        MailEventReport result = mailEventAggregator.aggregate("type", events);
 
         assertThat(result.success()).isEqualTo(2);
         assertThat(result.fail()).isEqualTo(1);
