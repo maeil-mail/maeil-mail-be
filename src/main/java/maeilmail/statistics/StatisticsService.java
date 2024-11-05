@@ -17,15 +17,15 @@ public class StatisticsService {
 
     private final SubscribeRepository subscribeRepository;
     private final MailEventRepository mailEventRepository;
-    private final MailEventAggregator mailEventAggregator;
+    private final EventAggregator eventAggregator;
 
-    public MailEventReport generateDailyMailEventReport(String type) {
+    public EventReport generateDailyMailEventReport(String type) {
         LocalDate today = LocalDate.now();
         LocalDateTime startOfDay = today.atStartOfDay();
         LocalDateTime endOfDay = today.plusDays(1).atStartOfDay().minusNanos(1);
         List<MailEvent> result = mailEventRepository.findMailEventByCreatedAtBetween(startOfDay, endOfDay);
 
-        return mailEventAggregator.aggregate(type, result);
+        return eventAggregator.aggregate(type, result);
     }
 
     public SubscribeReport generateDailySubscribeReport() {

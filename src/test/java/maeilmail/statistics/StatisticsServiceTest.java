@@ -76,10 +76,10 @@ class StatisticsServiceTest {
         mailEventRepository.save(MailEvent.success("temp2@gmail.com", "question"));
         mailEventRepository.save(MailEvent.fail("temp3@gmail.com", "question"));
 
-        MailEventReport mailEventReport = statisticsService.generateDailyMailEventReport("question");
+        EventReport eventReport = statisticsService.generateDailyMailEventReport("question");
 
-        assertThat(mailEventReport.success()).isEqualTo(2);
-        assertThat(mailEventReport.fail()).isEqualTo(1);
+        assertThat(eventReport.success()).isEqualTo(2);
+        assertThat(eventReport.fail()).isEqualTo(1);
     }
 
     @Test

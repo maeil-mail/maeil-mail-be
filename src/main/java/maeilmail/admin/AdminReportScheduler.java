@@ -7,7 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import maeilmail.DistributedSupport;
 import maeilmail.mail.MailMessage;
 import maeilmail.mail.MailSender;
-import maeilmail.statistics.MailEventReport;
+import maeilmail.statistics.EventReport;
 import maeilmail.statistics.StatisticsService;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -28,7 +28,7 @@ class AdminReportScheduler {
     @Scheduled(cron = "0 30 7 1/1 * ?", zone = "Asia/Seoul")
     public void sendReport() {
         log.info("관리자 결과 전송, date = {}", LocalDate.now());
-        MailEventReport report = statisticsService.generateDailyMailEventReport("question");
+        EventReport report = statisticsService.generateDailyMailEventReport("question");
         String text = createText(report);
         String subject = "[관리자] 메일 전송 결과를 알려드립니다.";
 
@@ -38,7 +38,7 @@ class AdminReportScheduler {
                 .forEach(mailSender::sendMail);
     }
 
-    private String createText(MailEventReport report) {
+    private String createText(EventReport report) {
         String reportText = String.format(REPORT_FORMAT, report.type(), report.success(), report.fail());
 
         return adminReportView.render(Map.of("report", reportText));

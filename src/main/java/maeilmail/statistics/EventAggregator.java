@@ -7,13 +7,13 @@ import maeilmail.mail.MailEvent;
 import org.springframework.stereotype.Component;
 
 @Component
-class MailEventAggregator {
+class EventAggregator {
 
-    public MailEventReport aggregate(String type, List<MailEvent> events) {
+    public EventReport aggregate(String type, List<MailEvent> events) {
         Map<Boolean, Long> result = events.stream()
                 .filter(it -> it.getType().startsWith(type))
                 .collect(Collectors.partitioningBy(MailEvent::isSuccess, Collectors.counting()));
 
-        return new MailEventReport(type, result.get(true), result.get(false));
+        return new EventReport(type, result.get(true), result.get(false));
     }
 }

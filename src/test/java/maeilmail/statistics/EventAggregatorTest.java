@@ -7,12 +7,12 @@ import maeilmail.mail.MailEvent;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-class MailEventAggregatorTest {
+class EventAggregatorTest {
 
     @Test
     @DisplayName("메일 이벤트를 받으면 하루 결과로 변환한다.")
     void report() {
-        MailEventAggregator mailEventAggregator = new MailEventAggregator();
+        EventAggregator eventAggregator = new EventAggregator();
         List<MailEvent> events = List.of(
                 createMailEvent(true, "type"),
                 createMailEvent(true, "none"),
@@ -20,7 +20,7 @@ class MailEventAggregatorTest {
                 createMailEvent(true, "type")
         );
 
-        MailEventReport result = mailEventAggregator.aggregate("type", events);
+        EventReport result = eventAggregator.aggregate("type", events);
 
         assertThat(result.success()).isEqualTo(2);
         assertThat(result.fail()).isEqualTo(1);
