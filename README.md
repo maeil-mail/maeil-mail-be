@@ -1,12 +1,12 @@
 ## 📮 매일메일 - 기술 면접 질문 구독 서비스
 
-[<img width="949" alt="스크린샷 2024-10-22 오후 2 03 36" src="https://github.com/user-attachments/assets/66206b1c-1556-4f66-9a46-3311b2f55abb">](https://www.maeil-mail.kr/)
+[<img width="949" alt="스크린샷 2024-10-22 오후 2 03 36" src="https://github.com/user-attachments/assets/66206b1c-1556-4f66-9a46-3311b2f55abb">](https://www.maeil-mail.kr?utm_source=github_be)
 
-[<img width="948" alt="스크린샷 2024-10-22 오후 2 04 11" src="https://github.com/user-attachments/assets/632f18f6-6842-46b1-bec8-070398318758">](https://www.maeil-mail.kr/)
+[<img width="948" alt="스크린샷 2024-10-22 오후 2 04 11" src="https://github.com/user-attachments/assets/632f18f6-6842-46b1-bec8-070398318758">](https://www.maeil-mail.kr?utm_source=github_be)
 
-[<img width="955" alt="스크린샷 2024-10-22 오후 2 05 00" src="https://github.com/user-attachments/assets/dd76e163-b568-499e-8ad2-4e14729166c9">](https://www.maeil-mail.kr/)
+[<img width="955" alt="스크린샷 2024-10-22 오후 2 05 00" src="https://github.com/user-attachments/assets/dd76e163-b568-499e-8ad2-4e14729166c9">](https://www.maeil-mail.kr?utm_source=github_be)
 
-[<img width="957" alt="스크린샷 2024-10-22 오후 2 05 27" src="https://github.com/user-attachments/assets/b4a90df6-49ca-4482-a066-2a4d4e222e9b">](https://www.maeil-mail.kr)
+[<img width="957" alt="스크린샷 2024-10-22 오후 2 05 27" src="https://github.com/user-attachments/assets/b4a90df6-49ca-4482-a066-2a4d4e222e9b">](https://www.maeil-mail.kr?utm_source=github_be)
 
 ### 🔍 어떤 서비스인가요?
 
