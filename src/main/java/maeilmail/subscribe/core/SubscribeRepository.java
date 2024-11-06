@@ -20,6 +20,10 @@ public interface SubscribeRepository extends JpaRepository<Subscribe, Long> {
     List<Subscribe> findAllByCreatedAtBefore(LocalDateTime baseDateTime);
 
     @Modifying
-    @Query("update Subscribe s set s.nextQuestionSequence = s.nextQuestionSequence + 1 where s.createdAt < :baseDateTime")
+    @Query("""
+            update Subscribe s
+            set s.nextQuestionSequence = s.nextQuestionSequence + 1
+            where s.createdAt < :baseDateTime
+            """)
     void increaseNextQuestionSequence(LocalDateTime baseDateTime);
 }
