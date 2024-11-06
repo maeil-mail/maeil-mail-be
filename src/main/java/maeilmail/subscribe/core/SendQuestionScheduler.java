@@ -22,17 +22,19 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 class SendQuestionScheduler {
 
+    private static final ZoneId KOREA_ZONE = ZoneId.of("Asia/Seoul");
+
     private final MailSender mailSender;
     private final ChoiceQuestionPolicy choiceQuestionPolicy;
     private final SubscribeQuestionView subscribeQuestionView;
     private final SubscribeRepository subscribeRepository;
     private final DistributedSupport distributedSupport;
 
-    @Scheduled(cron = "0 0 7 1/1 * ?", zone = "Asia/Seoul")
+    @Scheduled(cron = "0 0 7 * * MON-FRI", zone = "Asia/Seoul")
     public void sendMail() {
         log.info("메일 전송을 시작합니다.");
-        LocalDateTime now = ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toLocalDateTime();
-        List<Subscribe> subscribes = subscribeRepository.findAllByCreatedAtBeforeOrCreatedAtIsNull(now);
+        LocalDateTime now = ZonedDateTime.now(KOREA_ZONE).toLocalDateTime();
+        List<Subscribe> subscribes = subscribeRepository.findAllByCreatedAtBefore(now);
         log.info("{}명의 사용자에게 메일을 전송합니다.", subscribes.size());
 
         subscribes.stream()

@@ -11,16 +11,16 @@ import org.junit.jupiter.api.Test;
 class SendQuestionSchedulerTest {
 
     @Test
-    @DisplayName("매일 아침 7시에 스케줄러가 동작하는지 확인한다.")
-    void cronTest() {
-        LocalDateTime initialTime = LocalDateTime.of(2024, 8, 26, 7, 0);
+    @DisplayName("매주 월요일부터 금요일까지 평일에 한해서 아침 7시에 질문지 전송 스케줄러가 동작하는지 확인한다.")
+    void sendMailCronWeekday() {
+        LocalDateTime initialTime = LocalDateTime.of(2024, 8, 26, 7, 0); // 월요일
         List<LocalDateTime> expectedTimes = List.of(
-                LocalDateTime.of(2024, 8, 27, 7, 0),
-                LocalDateTime.of(2024, 8, 28, 7, 0),
-                LocalDateTime.of(2024, 8, 29, 7, 0),
-                LocalDateTime.of(2024, 8, 30, 7, 0),
-                LocalDateTime.of(2024, 8, 31, 7, 0),
-                LocalDateTime.of(2024, 9, 1, 7, 0)
+                LocalDateTime.of(2024, 8, 27, 7, 0),  // 화요일
+                LocalDateTime.of(2024, 8, 28, 7, 0),  // 수요일
+                LocalDateTime.of(2024, 8, 29, 7, 0),  // 목요일
+                LocalDateTime.of(2024, 8, 30, 7, 0),  // 금요일
+                LocalDateTime.of(2024, 9, 2, 7, 0),   // 다음 주 월요일
+                LocalDateTime.of(2024, 9, 3, 7, 0)    // 다음 주 화요일
         );
         SchedulerTestUtils.assertCronExpression(
                 SendQuestionScheduler.class,
