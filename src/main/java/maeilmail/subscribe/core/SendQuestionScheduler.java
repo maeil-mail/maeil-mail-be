@@ -2,7 +2,6 @@ package maeilmail.subscribe.core;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.HashMap;
@@ -17,7 +16,6 @@ import maeilmail.question.QuestionCategory;
 import maeilmail.question.QuestionSummary;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Component
@@ -44,13 +42,6 @@ class SendQuestionScheduler {
                 .map(this::choiceQuestion)
                 .filter(Objects::nonNull)
                 .forEach(mailSender::sendMail);
-    }
-
-    @Transactional
-    @Scheduled(cron = "0 0 22 * * MON-FRI")
-    public void increaseNextQuestionSequence() {
-        LocalDateTime baseDateTime = ZonedDateTime.of(LocalDate.now(), LocalTime.of(7, 0), KOREA_ZONE).toLocalDateTime();
-        subscribeRepository.increaseNextQuestionSequence(baseDateTime);
     }
 
     private MailMessage choiceQuestion(Subscribe subscribe) {
