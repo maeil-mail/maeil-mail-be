@@ -32,7 +32,7 @@ class SendQuestionScheduler {
     private final SubscribeRepository subscribeRepository;
     private final DistributedSupport distributedSupport;
 
-    @Scheduled(cron = "0 0 7 1/1 * ?", zone = "Asia/Seoul")
+    @Scheduled(cron = "0 0 7 * * MON-FRI")
     public void sendMail() {
         log.info("메일 전송을 시작합니다.");
         LocalDateTime now = ZonedDateTime.now(KOREA_ZONE).toLocalDateTime();
