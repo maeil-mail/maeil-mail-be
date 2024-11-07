@@ -1,27 +1,14 @@
 package maeilmail.subscribe.core;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
-import maeilmail.question.QuestionCategory;
 import maeilmail.support.SchedulerTestUtils;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
 class SubscribeSequenceSchedulerTest {
-
-    @Autowired
-    private SubscribeSequenceScheduler subscribeSequenceScheduler;
-
-    @Autowired
-    private SubscribeRepository subscribeRepository;
 
     @Test
     @DisplayName("매주 월요일부터 금요일까지 평일에 한해서 저녁 10시에 시퀀스 증가 스케줄러가 동작하는지 확인한다.")
@@ -41,26 +28,6 @@ class SubscribeSequenceSchedulerTest {
                 toInstant(initialTime),
                 expectedTimes.stream().map(this::toInstant).toList()
         );
-    }
-
-    @Disabled
-    @DisplayName("오전 7시 이전에 구독한 구독자의 질문지 시퀀스를 증가시킨다.")
-    @Test
-    void increaseNextQuestionSequence() {
-        LocalDateTime baseDateTime = LocalDateTime.of(2024, 11, 6, 7, 0);
-        Subscribe backend = new Subscribe("test@test.com", QuestionCategory.BACKEND);
-        Subscribe frontend = new Subscribe("test@test.com", QuestionCategory.FRONTEND);
-        Subscribe afterBaseDateTimeSubscriber = new Subscribe("after@test.com", QuestionCategory.FRONTEND);
-
-        subscribeRepository.saveAll(List.of(backend, frontend, afterBaseDateTimeSubscriber));
-
-        subscribeSequenceScheduler.increaseNextQuestionSequence();
-
-        List<Subscribe> subscribes = subscribeRepository.findAll();
-
-        assertThat(subscribes.get(0).getNextQuestionSequence()).isEqualTo(1);
-        assertThat(subscribes.get(1).getNextQuestionSequence()).isEqualTo(1);
-        assertThat(subscribes.get(2).getNextQuestionSequence()).isEqualTo(0);
     }
 
     private Instant toInstant(LocalDateTime time) {
