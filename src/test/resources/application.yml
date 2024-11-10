@@ -1,4 +1,6 @@
 spring:
+  main:
+    allow-bean-definition-overriding: true
   jpa:
     hibernate:
       ddl-auto: create
