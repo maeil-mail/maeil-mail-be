@@ -12,7 +12,7 @@ class QueryCountInspector implements StatementInspector {
 
     @Override
     public String inspect(String sql) {
-        queryCountTester.tryIncrease(sql);
+        queryCountTester.increase();
 
         return sql;
     }

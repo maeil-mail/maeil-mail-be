@@ -9,11 +9,8 @@ public class QueryCountTester {
 
     private final Map<String, Integer> counter = new ConcurrentHashMap<>();
 
-    void tryIncrease(String sql) {
+    void increase() {
         String currentTransactionName = TransactionSynchronizationManager.getCurrentTransactionName();
-        if (!sql.startsWith("select")) {
-            return;
-        }
 
         counter.compute(currentTransactionName, (key, count) -> count == null ? 1 : count + 1);
     }
