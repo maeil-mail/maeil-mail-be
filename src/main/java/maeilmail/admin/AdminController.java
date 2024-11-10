@@ -4,11 +4,14 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import maeilmail.question.QuestionQueryService;
 import maeilmail.question.QuestionSummary;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @Controller
 @RequiredArgsConstructor
@@ -35,5 +38,16 @@ class AdminController {
         }
 
         return "redirect:/admin";
+    }
+
+    @PutMapping("/admin/question")
+    public ResponseEntity<Void> putQuestion(@RequestBody AdminQuestionRequest request) {
+        if (request.isUpdate()) {
+            adminQuestionService.updateQuestion(request.toQuestion());
+        } else {
+            adminQuestionService.createQuestion(request.toQuestion());
+        }
+
+        return ResponseEntity.noContent().build();
     }
 }
