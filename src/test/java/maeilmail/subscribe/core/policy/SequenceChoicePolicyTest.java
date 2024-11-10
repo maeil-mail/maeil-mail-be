@@ -10,18 +10,15 @@ import maeilmail.question.QuestionRepository;
 import maeilmail.question.QuestionSummary;
 import maeilmail.subscribe.core.Subscribe;
 import maeilmail.subscribe.core.SubscribeRepository;
+import maeilmail.support.IntegrationTestSupport;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 9월 23일 기준으로 카테고리 별 첫 번째 질문지가 발송된다.
  */
-@SpringBootTest
-@Transactional
-class SequenceChoicePolicyTest {
+class SequenceChoicePolicyTest extends IntegrationTestSupport {
 
     @Autowired
     private QuestionRepository questionRepository;

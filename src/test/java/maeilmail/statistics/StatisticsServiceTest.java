@@ -10,15 +10,12 @@ import maeilmail.mail.MailEventRepository;
 import maeilmail.question.QuestionCategory;
 import maeilmail.subscribe.core.Subscribe;
 import maeilmail.subscribe.core.SubscribeRepository;
+import maeilmail.support.IntegrationTestSupport;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
 
-@SpringBootTest
-@Transactional
-class StatisticsServiceTest {
+class StatisticsServiceTest extends IntegrationTestSupport {
 
     @Autowired
     private StatisticsService statisticsService;

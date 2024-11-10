@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
 @Transactional
-class IntegrationTestSupport {
+public abstract class IntegrationTestSupport {
 
     @TestConfiguration
     public static class TestConfig {

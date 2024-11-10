@@ -3,13 +3,12 @@ package maeilmail.subscribe.core;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import maeilmail.support.IntegrationTestSupport;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
-class TemporalSubscribeManagerTest {
+class TemporalSubscribeManagerTest extends IntegrationTestSupport {
 
     @Autowired
     private TemporalSubscribeManager temporalSubscribeManager;
