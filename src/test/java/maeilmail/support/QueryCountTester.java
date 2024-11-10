@@ -20,10 +20,7 @@ public class QueryCountTester {
 
     public void assertQueryCount(int expected) {
         String currentTransactionName = TransactionSynchronizationManager.getCurrentTransactionName();
-        Integer count = counter.get(currentTransactionName);
-        if (count == null) {
-            return;
-        }
+        int count = counter.get(currentTransactionName);
 
         if (count != expected) {
             throw new AssertionFailedError("기대되는 select 쿼리의 수와 실제 쿼리 수가 일치하지 않습니다.", expected, count);
