@@ -7,6 +7,8 @@ import java.util.NoSuchElementException;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
+import maeilmail.PaginationResponse;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,6 +18,10 @@ import org.springframework.transaction.annotation.Transactional;
 public class QuestionQueryService {
 
     private final JPAQueryFactory queryFactory;
+
+    public PaginationResponse<QuestionSummary> pageByCategory(String category, Pageable pageable) {
+        return null;
+    }
 
     public List<QuestionSummary> queryAllByCategory(String category) {
         return queryFactory.select(projectionQuestionSummary())
