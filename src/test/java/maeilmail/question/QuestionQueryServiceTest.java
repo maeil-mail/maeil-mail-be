@@ -2,13 +2,17 @@ package maeilmail.question;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import maeilmail.PaginationResponse;
 import maeilmail.support.IntegrationTestSupport;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 
 class QuestionQueryServiceTest extends IntegrationTestSupport {
 
@@ -64,6 +68,31 @@ class QuestionQueryServiceTest extends IntegrationTestSupport {
         assertThat(all.size()).isEqualTo(3);
         assertThat(ALL.size()).isEqualTo(3);
         assertThat(nul.size()).isEqualTo(3);
+    }
+
+    @Test
+    @DisplayName("페이징처리하여 질문지를 조회한다.")
+    void pageByCategory() {
+        List<Long> backendIds = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            Question question = createQuestion(QuestionCategory.BACKEND);
+            backendIds.add(question.getId());
+            createQuestion(QuestionCategory.FRONTEND);
+        }
+
+        int pageSize = 3;
+        List<Long> expectedIds = backendIds.subList(0, pageSize);
+        PaginationResponse<QuestionSummary> response
+                = questionQueryService.pageByCategory("backend", PageRequest.of(0, pageSize));
+
+        assertAll(
+                () -> assertThat(response.isLastPage()).isFalse(),
+                () -> assertThat(response.data()).hasSize(3),
+                () -> assertThat(response.totalPage()).isEqualTo(4),
+                () -> assertThat(response.data())
+                        .map(QuestionSummary::id)
+                        .containsExactlyElementsOf(expectedIds)
+        );
     }
 
     private Question createQuestion(QuestionCategory category) {
