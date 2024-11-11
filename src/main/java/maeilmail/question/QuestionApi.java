@@ -20,7 +20,7 @@ class QuestionApi {
     @GetMapping("/question")
     public ResponseEntity<PaginationResponse<QuestionSummary>> getQuestions(
             @RequestParam(defaultValue = "all") String category,
-            @PageableDefault(sort = "created_at", direction = Sort.Direction.DESC) Pageable pageable
+            @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable
     ) {
         PaginationResponse<QuestionSummary> response = questionQueryService.pageByCategory(category, pageable);
 
