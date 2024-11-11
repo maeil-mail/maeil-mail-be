@@ -40,7 +40,7 @@ public class QuestionQueryService {
         appendOrderCondition(pageable, resultQuery);
 
         Page<QuestionSummary> pageResult = PageableExecutionUtils.getPage(resultQuery.fetch(), pageable, countQuery::fetchOne);
-        return new PaginationResponse<>(pageResult.isLast(), pageResult.getContent());
+        return new PaginationResponse<>(pageResult.isLast(), (long) pageResult.getTotalPages(), pageResult.getContent());
     }
 
     private void appendOrderCondition(Pageable pageable, JPAQuery<QuestionSummary> resultQuery) {

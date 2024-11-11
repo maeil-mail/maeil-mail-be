@@ -2,5 +2,5 @@ package maeilmail;
 
 import java.util.List;
 
-public record PaginationResponse<T>(boolean isLastPage, List<T> data) {
+public record PaginationResponse<T>(Boolean isLastPage, Long totalPage, List<T> data) {
 }

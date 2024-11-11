@@ -35,7 +35,7 @@ class QuestionApiTest {
     void getQuestionsDefault() throws Exception {
         ArgumentCaptor<Pageable> pageableCaptor = ArgumentCaptor.forClass(Pageable.class);
         ArgumentCaptor<String> categoryCaptor = ArgumentCaptor.forClass(String.class);
-        PaginationResponse<QuestionSummary> response = new PaginationResponse<>(false, Collections.emptyList());
+        PaginationResponse<QuestionSummary> response = new PaginationResponse<>(true, 0L, Collections.emptyList());
         when(questionQueryService.pageByCategory(any(), any()))
                 .thenReturn(response);
 

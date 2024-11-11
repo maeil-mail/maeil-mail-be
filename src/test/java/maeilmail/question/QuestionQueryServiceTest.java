@@ -88,6 +88,7 @@ class QuestionQueryServiceTest extends IntegrationTestSupport {
         assertAll(
                 () -> assertThat(response.isLastPage()).isFalse(),
                 () -> assertThat(response.data()).hasSize(3),
+                () -> assertThat(response.totalPage()).isEqualTo(4),
                 () -> assertThat(response.data())
                         .map(QuestionSummary::id)
                         .containsExactlyElementsOf(expectedIds)
