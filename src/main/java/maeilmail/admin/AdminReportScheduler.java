@@ -28,7 +28,7 @@ class AdminReportScheduler {
     @Scheduled(cron = "0 30 7 * * MON-FRI", zone = "Asia/Seoul")
     public void sendReport() {
         log.info("관리자 결과 전송, date = {}", LocalDate.now());
-        EventReport report = statisticsService.generateDailyMailEventReport("question");
+        EventReport report = statisticsService.generateDailySubscribeQuestionReport();
         String text = createText(report);
         String subject = "[관리자] 메일 전송 결과를 알려드립니다.";
 

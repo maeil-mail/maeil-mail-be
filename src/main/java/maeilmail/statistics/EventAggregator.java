@@ -3,17 +3,16 @@ package maeilmail.statistics;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import maeilmail.mail.MailEvent;
+import maeilmail.subscribequestion.SubscribeQuestion;
 import org.springframework.stereotype.Component;
 
 @Component
 class EventAggregator {
 
-    public EventReport aggregate(String type, List<MailEvent> events) {
-        Map<Boolean, Long> result = events.stream()
-                .filter(it -> it.getType().startsWith(type))
-                .collect(Collectors.partitioningBy(MailEvent::isSuccess, Collectors.counting()));
+    public EventReport aggregate(List<SubscribeQuestion> subscribeQuestions) {
+        Map<Boolean, Long> result = subscribeQuestions.stream()
+                .collect(Collectors.partitioningBy(SubscribeQuestion::isSuccess, Collectors.counting()));
 
-        return new EventReport(type, result.get(true), result.get(false));
+        return new EventReport("subscribeQuestion", result.get(true), result.get(false));
     }
 }

@@ -4,9 +4,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import maeilmail.mail.MailEvent;
-import maeilmail.mail.MailEventRepository;
 import maeilmail.subscribe.core.SubscribeRepository;
+import maeilmail.subscribequestion.SubscribeQuestion;
+import maeilmail.subscribequestion.SubscribeQuestionRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,16 +16,16 @@ import org.springframework.transaction.annotation.Transactional;
 public class StatisticsService {
 
     private final SubscribeRepository subscribeRepository;
-    private final MailEventRepository mailEventRepository;
+    private final SubscribeQuestionRepository subscribeQuestionRepository;
     private final EventAggregator eventAggregator;
 
-    public EventReport generateDailyMailEventReport(String type) {
+    public EventReport generateDailySubscribeQuestionReport() {
         LocalDate today = LocalDate.now();
         LocalDateTime startOfDay = today.atStartOfDay();
         LocalDateTime endOfDay = today.plusDays(1).atStartOfDay().minusNanos(1);
-        List<MailEvent> result = mailEventRepository.findMailEventByCreatedAtBetween(startOfDay, endOfDay);
+        List<SubscribeQuestion> result = subscribeQuestionRepository.findSubscribeQuestionByCreatedAtBetween(startOfDay, endOfDay);
 
-        return eventAggregator.aggregate(type, result);
+        return eventAggregator.aggregate(result);
     }
 
     public SubscribeReport generateSubscribeReport() {

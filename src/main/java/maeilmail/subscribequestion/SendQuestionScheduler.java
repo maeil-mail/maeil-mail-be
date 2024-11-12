@@ -1,4 +1,4 @@
-package maeilmail.subscribe.core;
+package maeilmail.subscribequestion;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -10,10 +10,9 @@ import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import maeilmail.DistributedSupport;
-import maeilmail.mail.MailMessage;
-import maeilmail.mail.MailSender;
-import maeilmail.question.QuestionCategory;
 import maeilmail.question.QuestionSummary;
+import maeilmail.subscribe.core.Subscribe;
+import maeilmail.subscribe.core.SubscribeRepository;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -24,7 +23,7 @@ class SendQuestionScheduler {
 
     private static final ZoneId KOREA_ZONE = ZoneId.of("Asia/Seoul");
 
-    private final MailSender mailSender;
+    private final QuestionSender questionSender;
     private final ChoiceQuestionPolicy choiceQuestionPolicy;
     private final SubscribeQuestionView subscribeQuestionView;
     private final SubscribeRepository subscribeRepository;
@@ -32,24 +31,24 @@ class SendQuestionScheduler {
 
     @Scheduled(cron = "0 0 7 * * MON-FRI", zone = "Asia/Seoul")
     public void sendMail() {
-        log.info("메일 전송을 시작합니다.");
+        log.info("구독자에게 질문지 발송을 시작합니다.");
         LocalDateTime now = ZonedDateTime.now(KOREA_ZONE).toLocalDateTime();
         List<Subscribe> subscribes = subscribeRepository.findAllByCreatedAtBefore(now);
-        log.info("{}명의 사용자에게 메일을 전송합니다.", subscribes.size());
+        log.info("{}명의 구독자에게 질문지를 발송합니다. 발송 시각 : {}", subscribes.size(), now);
 
         subscribes.stream()
                 .filter(it -> distributedSupport.isMine(it.getId()))
                 .map(this::choiceQuestion)
                 .filter(Objects::nonNull)
-                .forEach(mailSender::sendMail);
+                .forEach(questionSender::sendMail);
     }
 
-    private MailMessage choiceQuestion(Subscribe subscribe) {
+    private SubscribeQuestionMessage choiceQuestion(Subscribe subscribe) {
         try {
-            QuestionSummary question = choiceQuestionPolicy.choice(subscribe, LocalDate.now());
-            String subject = createSubject(question);
-            String text = createText(question);
-            return new MailMessage(subscribe.getEmail(), subject, text, createQuestionType(subscribe.getCategory()));
+            QuestionSummary questionSummary = choiceQuestionPolicy.choice(subscribe, LocalDate.now());
+            String subject = createSubject(questionSummary);
+            String text = createText(questionSummary);
+            return new SubscribeQuestionMessage(subscribe, questionSummary.toQuestion(), subject, text);
         } catch (Exception e) {
             log.info("면접 질문 선택 실패 = {}", e.getMessage());
             return null;
@@ -70,14 +69,5 @@ class SendQuestionScheduler {
         attribute.put("question", question.title());
 
         return subscribeQuestionView.render(attribute);
-    }
-
-    private String createQuestionType(QuestionCategory category) {
-        String type = subscribeQuestionView.getType();
-        if (QuestionCategory.BACKEND.equals(category)) {
-            return type + "-backend";
-        }
-
-        return type + "-frontend";
     }
 }
