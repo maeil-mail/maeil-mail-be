@@ -10,6 +10,7 @@ import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import maeilmail.BaseEntity;
 import maeilmail.question.Question;
 import maeilmail.subscribe.core.Subscribe;
 
@@ -17,7 +18,7 @@ import maeilmail.subscribe.core.Subscribe;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "subscribe_question")
 @Entity
-public class SubscribeQuestion {
+public class SubscribeQuestion extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,7 +32,7 @@ public class SubscribeQuestion {
 
     private boolean isSuccess;
 
-    protected SubscribeQuestion(Subscribe subscribe, Question question, boolean isSuccess) {
+    public SubscribeQuestion(Subscribe subscribe, Question question, boolean isSuccess) {
         this.subscribe = subscribe;
         this.question = question;
         this.isSuccess = isSuccess;
