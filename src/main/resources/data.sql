@@ -23,8 +23,16 @@ values ('백엔드 질문 1',
 
 insert into subscribe(email, category, next_question_sequence)
 values ('leehaneul990623@gmail.com', 'BACKEND', 0),
-       ('leehaneul0623@gmail.com', 'FRONTEND', 0);
+       ('leehaneul0623@gmail.com', 'FRONTEND', 0),
+       ('gosmdochee@gmail.com', 'BACKEND', 0)
+;
 
 insert into admin(email)
 values ('leehaneul990623@gmail.com'),
        ('leehaneul0623@gmail.com');
+
+insert into subscribe_question(subscribe_id, question_id, is_success)
+values (3, 2, true),
+       (3, 7, true),
+       (3, 1, false),
+       (3, 5, true)

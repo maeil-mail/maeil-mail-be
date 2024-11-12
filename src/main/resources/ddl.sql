@@ -51,3 +51,12 @@ create table temporal_subscribe
     updated_at  timestamp(6),
     primary key (id)
 );
+
+create table subscribe_question
+(
+    id           bigint auto_increment,
+    question_id  bigint,
+    subscribe_id bigint,
+    is_success   boolean not null,
+    primary key (id)
+);
