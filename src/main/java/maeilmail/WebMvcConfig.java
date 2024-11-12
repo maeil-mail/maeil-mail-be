@@ -22,6 +22,7 @@ class WebMvcConfig implements WebMvcConfigurer {
                 .allowedOrigins(
                         "http://localhost:5173",
                         "http://localhost:3000",
+                        "https://maeil-mail-admin.vercel.app",
                         "https://maeil-mail.vercel.app",
                         "https://www.maeil-mail.kr",
                         "https://maeil-mail.kr"
