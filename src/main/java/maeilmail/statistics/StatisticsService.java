@@ -19,7 +19,7 @@ public class StatisticsService {
     private final SubscribeQuestionRepository subscribeQuestionRepository;
     private final EventAggregator eventAggregator;
 
-    public EventReport generateDailyMailEventReport() {
+    public EventReport generateDailySubscribeQuestionReport() {
         LocalDate today = LocalDate.now();
         LocalDateTime startOfDay = today.atStartOfDay();
         LocalDateTime endOfDay = today.plusDays(1).atStartOfDay().minusNanos(1);

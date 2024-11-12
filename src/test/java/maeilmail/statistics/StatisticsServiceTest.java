@@ -5,11 +5,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.IntStream;
-import maeilmail.mail.MailEvent;
-import maeilmail.mail.MailEventRepository;
+import maeilmail.question.Question;
 import maeilmail.question.QuestionCategory;
+import maeilmail.question.QuestionRepository;
 import maeilmail.subscribe.core.Subscribe;
 import maeilmail.subscribe.core.SubscribeRepository;
+import maeilmail.subscribequestion.SubscribeQuestion;
+import maeilmail.subscribequestion.SubscribeQuestionRepository;
 import maeilmail.support.IntegrationTestSupport;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,7 +26,10 @@ class StatisticsServiceTest extends IntegrationTestSupport {
     private SubscribeRepository subscribeRepository;
 
     @Autowired
-    private MailEventRepository mailEventRepository;
+    private SubscribeQuestionRepository subscribeQuestionRepository;
+
+    @Autowired
+    private QuestionRepository questionRepository;
 
     @Test
     @DisplayName("고유한 이메일을 가진 누적 구독자 수를 반환한다.")
@@ -68,14 +73,26 @@ class StatisticsServiceTest extends IntegrationTestSupport {
 
     @Test
     @DisplayName("주어진 타입의 오늘 발생한 메일 이벤트의 성공과 실패를 집계한다.")
-    void generateDailyMailEventReport() {
-        mailEventRepository.save(MailEvent.success("temp1@gmail.com", "question"));
-        mailEventRepository.save(MailEvent.success("temp2@gmail.com", "question"));
-        mailEventRepository.save(MailEvent.fail("temp3@gmail.com", "question"));
+    void generateDailySubscribeQuestionReport() {
+        subscribeQuestionRepository.save(createSubscribeQuestion(true));
+        subscribeQuestionRepository.save(createSubscribeQuestion(true));
+        subscribeQuestionRepository.save(createSubscribeQuestion(false));
 
-        EventReport eventReport = statisticsService.generateDailyMailEventReport("question");
+        EventReport eventReport = statisticsService.generateDailySubscribeQuestionReport();
 
         assertThat(eventReport.success()).isEqualTo(2);
         assertThat(eventReport.fail()).isEqualTo(1);
+    }
+
+    private SubscribeQuestion createSubscribeQuestion(boolean isSuccess) {
+        Subscribe subscribe = subscribeRepository.save(new Subscribe("test@gmail.com", QuestionCategory.BACKEND));
+        Question question = questionRepository.save(
+                new Question(
+                        "test-title",
+                        "test-content",
+                        QuestionCategory.BACKEND
+                )
+        );
+        return new SubscribeQuestion(subscribe, question, isSuccess);
     }
 }
