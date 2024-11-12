@@ -1,4 +1,4 @@
-package maeilmail.subscribe.core.policy;
+package maeilmail.subscribequestion.policy;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -9,8 +9,8 @@ import lombok.RequiredArgsConstructor;
 import maeilmail.question.QuestionCategory;
 import maeilmail.question.QuestionQueryService;
 import maeilmail.question.QuestionSummary;
-import maeilmail.subscribe.core.ChoiceQuestionPolicy;
 import maeilmail.subscribe.core.Subscribe;
+import maeilmail.subscribequestion.ChoiceQuestionPolicy;
 import org.springframework.stereotype.Component;
 
 @Component

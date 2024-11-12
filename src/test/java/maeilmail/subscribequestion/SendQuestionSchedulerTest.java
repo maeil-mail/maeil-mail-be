@@ -1,4 +1,4 @@
-package maeilmail.subscribe.core;
+package maeilmail.subscribequestion;
 
 import java.time.Instant;
 import java.time.LocalDateTime;

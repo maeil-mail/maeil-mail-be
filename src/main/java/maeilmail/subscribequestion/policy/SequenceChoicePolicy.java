@@ -1,28 +1,35 @@
-package maeilmail.subscribe.core.policy;
+package maeilmail.subscribequestion.policy;
 
 import java.time.LocalDate;
+import java.time.Period;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import maeilmail.question.QuestionQueryService;
 import maeilmail.question.QuestionSummary;
-import maeilmail.subscribe.core.ChoiceQuestionPolicy;
 import maeilmail.subscribe.core.Subscribe;
-import org.springframework.context.annotation.Primary;
+import maeilmail.subscribequestion.ChoiceQuestionPolicy;
 import org.springframework.stereotype.Component;
 
-@Primary
 @Component
 @RequiredArgsConstructor
-class WeekdaysPersonalSequenceChoicePolicy implements ChoiceQuestionPolicy {
+class SequenceChoicePolicy implements ChoiceQuestionPolicy {
 
+    private final LocalDate baseDate = LocalDate.of(2024, 9, 23);
     private final QuestionQueryService questionQueryService;
 
     @Override
-    public QuestionSummary choice(Subscribe subscribe, LocalDate ignore) {
+    public QuestionSummary choice(Subscribe subscribe, LocalDate today) {
+        validateInvalidDate(today);
         List<QuestionSummary> questions = findQuestions(subscribe);
-        Long nextQuestionSequence = subscribe.getNextQuestionSequence();
+        Period period = Period.between(baseDate, today);
 
-        return questions.get(nextQuestionSequence.intValue() % questions.size());
+        return questions.get(period.getDays() % questions.size());
+    }
+
+    private void validateInvalidDate(LocalDate today) {
+        if (baseDate.isAfter(today)) {
+            throw new IllegalArgumentException("질문지를 결정할 수 없습니다.");
+        }
     }
 
     private List<QuestionSummary> findQuestions(Subscribe subscribe) {

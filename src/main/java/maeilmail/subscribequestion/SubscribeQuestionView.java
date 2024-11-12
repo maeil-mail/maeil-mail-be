@@ -1,4 +1,4 @@
-package maeilmail.subscribe.core;
+package maeilmail.subscribequestion;
 
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
