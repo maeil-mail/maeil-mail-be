@@ -7,4 +7,8 @@ public record QuestionSummary(Long id, String title, String content, String cust
     @QueryProjection
     public QuestionSummary {
     }
+
+    public Question toQuestion() {
+        return new Question(this.id, this.title, this.content, this.customizedTitle, QuestionCategory.from(this.category));
+    }
 }
