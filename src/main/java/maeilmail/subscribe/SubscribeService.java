@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-class SubscribeQuestionService {
+class SubscribeService {
 
     private final SubscribeRepository subscribeRepository;
     private final VerifySubscribeService verifySubscribeService;

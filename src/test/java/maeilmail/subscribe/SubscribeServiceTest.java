@@ -13,10 +13,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
-class SubscribeQuestionServiceTest extends IntegrationTestSupport {
+class SubscribeServiceTest extends IntegrationTestSupport {
 
     @Autowired
-    private SubscribeQuestionService subscribeQuestionService;
+    private SubscribeService subscribeService;
 
     @Autowired
     private SubscribeRepository subscribeRepository;
@@ -38,7 +38,7 @@ class SubscribeQuestionServiceTest extends IntegrationTestSupport {
                 .verify(any(), any());
         SubscribeQuestionRequest request = createRequest(List.of("backend"));
 
-        subscribeQuestionService.subscribe(request);
+        subscribeService.subscribe(request);
 
         List<Subscribe> result = subscribeRepository.findAll();
         assertThat(result).hasSize(1);
@@ -55,7 +55,7 @@ class SubscribeQuestionServiceTest extends IntegrationTestSupport {
                 .verify(any(), any());
         SubscribeQuestionRequest request = createRequest(List.of("backend", "frontend"));
 
-        subscribeQuestionService.subscribe(request);
+        subscribeService.subscribe(request);
 
         List<Subscribe> result = subscribeRepository.findAll();
         assertThat(result).hasSize(2);
@@ -71,9 +71,9 @@ class SubscribeQuestionServiceTest extends IntegrationTestSupport {
                 .given(verifySubscribeService)
                 .verify(any(), any());
         SubscribeQuestionRequest request = createRequest(List.of("backend", "frontend"));
-        subscribeQuestionService.subscribe(request);
+        subscribeService.subscribe(request);
 
-        subscribeQuestionService.subscribe(request);
+        subscribeService.subscribe(request);
 
         List<Subscribe> result = subscribeRepository.findAll();
 
@@ -92,10 +92,10 @@ class SubscribeQuestionServiceTest extends IntegrationTestSupport {
                 .given(verifySubscribeService)
                 .verify(any(), any());
         SubscribeQuestionRequest request = createRequest(List.of("backend"));
-        subscribeQuestionService.subscribe(request);
+        subscribeService.subscribe(request);
 
         SubscribeQuestionRequest secondRequest = createRequest(List.of("backend", "frontend"));
-        subscribeQuestionService.subscribe(secondRequest);
+        subscribeService.subscribe(secondRequest);
 
         List<Subscribe> result = subscribeRepository.findAll();
         assertThat(result)
