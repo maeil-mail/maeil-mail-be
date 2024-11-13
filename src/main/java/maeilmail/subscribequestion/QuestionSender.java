@@ -31,7 +31,7 @@ public class QuestionSender {
         QuestionCategory questionCategory = question.getCategory();
 
         String to = subscribe.getEmail();
-        String subject = message.subject();
+        String subject = "[매일메일] " + message.subject();
         String text = message.text();
         String category = questionCategory.toLowerCase();
         try {

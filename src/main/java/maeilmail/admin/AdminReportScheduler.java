@@ -30,7 +30,7 @@ class AdminReportScheduler {
         log.info("관리자 결과 전송, date = {}", LocalDate.now());
         EventReport report = statisticsService.generateDailySubscribeQuestionReport();
         String text = createText(report);
-        String subject = "[관리자] 메일 전송 결과를 알려드립니다.";
+        String subject = "관리자 전용 메일 전송 결과를 알려드립니다.";
 
         adminRepository.findAll().stream()
                 .filter(it -> distributedSupport.isMine(it.getId()))
