@@ -4,7 +4,7 @@ import java.util.Random;
 import org.springframework.stereotype.Component;
 
 @Component
-class CodeGenerator {
+class VerifyCodeGenerator {
 
     private static final int CODE_LENGTH = 4;
     private static final int RAND_BOUND = 10;

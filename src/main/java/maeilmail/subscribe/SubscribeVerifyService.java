@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 class SubscribeVerifyService {
 
-    private final CodeGenerator codeGenerator;
+    private final VerifyCodeGenerator codeGenerator;
     private final VerifyMailView verifyMailView;
     private final MailSender mailSender;
     private final TemporalSubscribeManager temporalSubscribeManager;
