@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-class SubscribeVerifyService {
+class VerifySubscribeService {
 
     private final VerifyCodeGenerator codeGenerator;
     private final VerifyMailView verifyMailView;

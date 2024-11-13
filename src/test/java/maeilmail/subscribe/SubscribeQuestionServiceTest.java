@@ -25,7 +25,7 @@ class SubscribeQuestionServiceTest extends IntegrationTestSupport {
     private MailSender mailSender;
 
     @MockBean
-    private SubscribeVerifyService subscribeVerifyService;
+    private VerifySubscribeService verifySubscribeService;
 
     @Test
     @DisplayName("신규 구독자를 생성한다.")
@@ -34,7 +34,7 @@ class SubscribeQuestionServiceTest extends IntegrationTestSupport {
                 .given(mailSender)
                 .sendMail(any());
         willDoNothing()
-                .given(subscribeVerifyService)
+                .given(verifySubscribeService)
                 .verify(any(), any());
         SubscribeQuestionRequest request = createRequest(List.of("backend"));
 
@@ -51,7 +51,7 @@ class SubscribeQuestionServiceTest extends IntegrationTestSupport {
                 .given(mailSender)
                 .sendMail(any());
         willDoNothing()
-                .given(subscribeVerifyService)
+                .given(verifySubscribeService)
                 .verify(any(), any());
         SubscribeQuestionRequest request = createRequest(List.of("backend", "frontend"));
 
@@ -68,7 +68,7 @@ class SubscribeQuestionServiceTest extends IntegrationTestSupport {
                 .given(mailSender)
                 .sendMail(any());
         willDoNothing()
-                .given(subscribeVerifyService)
+                .given(verifySubscribeService)
                 .verify(any(), any());
         SubscribeQuestionRequest request = createRequest(List.of("backend", "frontend"));
         subscribeQuestionService.subscribe(request);
@@ -89,7 +89,7 @@ class SubscribeQuestionServiceTest extends IntegrationTestSupport {
                 .given(mailSender)
                 .sendMail(any());
         willDoNothing()
-                .given(subscribeVerifyService)
+                .given(verifySubscribeService)
                 .verify(any(), any());
         SubscribeQuestionRequest request = createRequest(List.of("backend"));
         subscribeQuestionService.subscribe(request);

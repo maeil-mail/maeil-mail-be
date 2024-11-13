@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 class SubscribeQuestionService {
 
     private final SubscribeRepository subscribeRepository;
-    private final SubscribeVerifyService subscribeVerifyService;
+    private final VerifySubscribeService verifySubscribeService;
     private final SubscribeWelcomeView welcomeView;
     private final MailSender mailSender;
 
@@ -29,7 +29,7 @@ class SubscribeQuestionService {
     }
 
     private void trySubscribe(SubscribeQuestionRequest request) {
-        subscribeVerifyService.verify(request.email(), request.code());
+        verifySubscribeService.verify(request.email(), request.code());
 
         for (String requestCategory : request.category()) {
             subscribeIfAbsent(request.email(), QuestionCategory.from(requestCategory));
@@ -46,7 +46,7 @@ class SubscribeQuestionService {
     }
 
     public void sendCodeIncludedMail(VerifyEmailRequest request) {
-        subscribeVerifyService.sendCodeIncludedMail(request);
+        verifySubscribeService.sendCodeIncludedMail(request);
     }
 
     private void sendSubscribeWelcomeMail(String email) {
