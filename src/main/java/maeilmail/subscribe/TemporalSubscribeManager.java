@@ -1,4 +1,4 @@
-package maeilmail.subscribe.core;
+package maeilmail.subscribe;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

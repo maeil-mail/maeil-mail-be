@@ -1,4 +1,4 @@
-package maeilmail.subscribe.core;
+package maeilmail.subscribe;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -7,17 +7,16 @@ import static org.mockito.BDDMockito.willDoNothing;
 import java.util.List;
 import maeilmail.mail.MailSender;
 import maeilmail.question.QuestionCategory;
-import maeilmail.subscribe.core.request.SubscribeQuestionRequest;
 import maeilmail.support.IntegrationTestSupport;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
-class SubscribeQuestionServiceTest extends IntegrationTestSupport {
+class SubscribeServiceTest extends IntegrationTestSupport {
 
     @Autowired
-    private SubscribeQuestionService subscribeQuestionService;
+    private SubscribeService subscribeService;
 
     @Autowired
     private SubscribeRepository subscribeRepository;
@@ -26,7 +25,7 @@ class SubscribeQuestionServiceTest extends IntegrationTestSupport {
     private MailSender mailSender;
 
     @MockBean
-    private SubscribeVerifyService subscribeVerifyService;
+    private VerifySubscribeService verifySubscribeService;
 
     @Test
     @DisplayName("신규 구독자를 생성한다.")
@@ -35,11 +34,11 @@ class SubscribeQuestionServiceTest extends IntegrationTestSupport {
                 .given(mailSender)
                 .sendMail(any());
         willDoNothing()
-                .given(subscribeVerifyService)
+                .given(verifySubscribeService)
                 .verify(any(), any());
-        SubscribeQuestionRequest request = createRequest(List.of("backend"));
+        SubscribeRequest request = createRequest(List.of("backend"));
 
-        subscribeQuestionService.subscribe(request);
+        subscribeService.subscribe(request);
 
         List<Subscribe> result = subscribeRepository.findAll();
         assertThat(result).hasSize(1);
@@ -52,11 +51,11 @@ class SubscribeQuestionServiceTest extends IntegrationTestSupport {
                 .given(mailSender)
                 .sendMail(any());
         willDoNothing()
-                .given(subscribeVerifyService)
+                .given(verifySubscribeService)
                 .verify(any(), any());
-        SubscribeQuestionRequest request = createRequest(List.of("backend", "frontend"));
+        SubscribeRequest request = createRequest(List.of("backend", "frontend"));
 
-        subscribeQuestionService.subscribe(request);
+        subscribeService.subscribe(request);
 
         List<Subscribe> result = subscribeRepository.findAll();
         assertThat(result).hasSize(2);
@@ -69,12 +68,12 @@ class SubscribeQuestionServiceTest extends IntegrationTestSupport {
                 .given(mailSender)
                 .sendMail(any());
         willDoNothing()
-                .given(subscribeVerifyService)
+                .given(verifySubscribeService)
                 .verify(any(), any());
-        SubscribeQuestionRequest request = createRequest(List.of("backend", "frontend"));
-        subscribeQuestionService.subscribe(request);
+        SubscribeRequest request = createRequest(List.of("backend", "frontend"));
+        subscribeService.subscribe(request);
 
-        subscribeQuestionService.subscribe(request);
+        subscribeService.subscribe(request);
 
         List<Subscribe> result = subscribeRepository.findAll();
 
@@ -90,13 +89,13 @@ class SubscribeQuestionServiceTest extends IntegrationTestSupport {
                 .given(mailSender)
                 .sendMail(any());
         willDoNothing()
-                .given(subscribeVerifyService)
+                .given(verifySubscribeService)
                 .verify(any(), any());
-        SubscribeQuestionRequest request = createRequest(List.of("backend"));
-        subscribeQuestionService.subscribe(request);
+        SubscribeRequest request = createRequest(List.of("backend"));
+        subscribeService.subscribe(request);
 
-        SubscribeQuestionRequest secondRequest = createRequest(List.of("backend", "frontend"));
-        subscribeQuestionService.subscribe(secondRequest);
+        SubscribeRequest secondRequest = createRequest(List.of("backend", "frontend"));
+        subscribeService.subscribe(secondRequest);
 
         List<Subscribe> result = subscribeRepository.findAll();
         assertThat(result)
@@ -104,7 +103,7 @@ class SubscribeQuestionServiceTest extends IntegrationTestSupport {
                 .containsExactly(QuestionCategory.BACKEND, QuestionCategory.FRONTEND);
     }
 
-    private SubscribeQuestionRequest createRequest(List<String> category) {
-        return new SubscribeQuestionRequest("test@gmail.com", category, "1234");
+    private SubscribeRequest createRequest(List<String> category) {
+        return new SubscribeRequest("test@gmail.com", category, "1234");
     }
 }

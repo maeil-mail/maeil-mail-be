@@ -1,4 +1,4 @@
-package maeilmail.subscribe.core;
+package maeilmail.subscribe;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -7,31 +7,29 @@ import lombok.extern.slf4j.Slf4j;
 import maeilmail.mail.MailMessage;
 import maeilmail.mail.MailSender;
 import maeilmail.question.QuestionCategory;
-import maeilmail.subscribe.core.request.SubscribeQuestionRequest;
-import maeilmail.subscribe.core.request.VerifyEmailRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class SubscribeQuestionService {
+class SubscribeService {
 
     private final SubscribeRepository subscribeRepository;
-    private final SubscribeVerifyService subscribeVerifyService;
+    private final VerifySubscribeService verifySubscribeService;
     private final SubscribeWelcomeView welcomeView;
     private final MailSender mailSender;
 
     @Transactional
-    public void subscribe(SubscribeQuestionRequest request) {
+    public void subscribe(SubscribeRequest request) {
         log.info("이메일 구독 요청, 이메일 = {}", request.email());
         trySubscribe(request);
         sendSubscribeWelcomeMail(request.email());
         log.info("이메일 구독 성공, 이메일 = {}", request.email());
     }
 
-    private void trySubscribe(SubscribeQuestionRequest request) {
-        subscribeVerifyService.verify(request.email(), request.code());
+    private void trySubscribe(SubscribeRequest request) {
+        verifySubscribeService.verify(request.email(), request.code());
 
         for (String requestCategory : request.category()) {
             subscribeIfAbsent(request.email(), QuestionCategory.from(requestCategory));
@@ -48,7 +46,7 @@ public class SubscribeQuestionService {
     }
 
     public void sendCodeIncludedMail(VerifyEmailRequest request) {
-        subscribeVerifyService.sendCodeIncludedMail(request);
+        verifySubscribeService.sendCodeIncludedMail(request);
     }
 
     private void sendSubscribeWelcomeMail(String email) {

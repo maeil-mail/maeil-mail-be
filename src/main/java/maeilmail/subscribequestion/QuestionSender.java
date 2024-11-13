@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import maeilmail.question.Question;
 import maeilmail.question.QuestionCategory;
-import maeilmail.subscribe.core.Subscribe;
+import maeilmail.subscribe.Subscribe;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;

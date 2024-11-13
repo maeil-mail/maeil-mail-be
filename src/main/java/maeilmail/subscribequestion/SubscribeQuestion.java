@@ -12,7 +12,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import maeilmail.BaseEntity;
 import maeilmail.question.Question;
-import maeilmail.subscribe.core.Subscribe;
+import maeilmail.subscribe.Subscribe;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

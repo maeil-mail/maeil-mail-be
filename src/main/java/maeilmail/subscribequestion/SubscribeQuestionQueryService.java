@@ -1,7 +1,7 @@
 package maeilmail.subscribequestion;
 
 import static maeilmail.question.QQuestion.question;
-import static maeilmail.subscribe.core.QSubscribe.subscribe;
+import static maeilmail.subscribe.QSubscribe.subscribe;
 import static maeilmail.subscribequestion.QSubscribeQuestion.subscribeQuestion;
 
 import com.querydsl.core.types.Expression;
