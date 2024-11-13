@@ -1,4 +1,4 @@
-package maeilmail.subscribe.core;
+package maeilmail.subscribe;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

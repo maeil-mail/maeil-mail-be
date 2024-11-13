@@ -11,7 +11,7 @@ import maeilmail.question.Question;
 import maeilmail.question.QuestionCategory;
 import maeilmail.question.QuestionRepository;
 import maeilmail.question.QuestionSummary;
-import maeilmail.subscribe.core.Subscribe;
+import maeilmail.subscribe.Subscribe;
 import maeilmail.support.IntegrationTestSupport;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

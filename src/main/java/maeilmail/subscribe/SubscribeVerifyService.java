@@ -1,4 +1,4 @@
-package maeilmail.subscribe.core;
+package maeilmail.subscribe;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import maeilmail.mail.MailMessage;
 import maeilmail.mail.MailSender;
-import maeilmail.subscribe.core.request.VerifyEmailRequest;
 import org.springframework.stereotype.Service;
 
 @Service

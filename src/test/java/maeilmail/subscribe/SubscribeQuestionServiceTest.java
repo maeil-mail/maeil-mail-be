@@ -1,4 +1,4 @@
-package maeilmail.subscribe.core;
+package maeilmail.subscribe;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -7,7 +7,6 @@ import static org.mockito.BDDMockito.willDoNothing;
 import java.util.List;
 import maeilmail.mail.MailSender;
 import maeilmail.question.QuestionCategory;
-import maeilmail.subscribe.core.request.SubscribeQuestionRequest;
 import maeilmail.support.IntegrationTestSupport;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

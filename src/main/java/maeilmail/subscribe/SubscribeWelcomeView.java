@@ -1,4 +1,4 @@
-package maeilmail.subscribe.core;
+package maeilmail.subscribe;
 
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
@@ -9,20 +9,18 @@ import org.thymeleaf.spring6.SpringTemplateEngine;
 
 @Component
 @RequiredArgsConstructor
-class VerifyMailView implements MailView {
+class SubscribeWelcomeView implements MailView {
 
     private final SpringTemplateEngine templateEngine;
 
     @Override
     public String render(Map<Object, Object> attribute) {
         Context context = new Context();
-        context.setVariable("code", attribute.get("code"));
-
-        return templateEngine.process("verify-email-v2", context);
+        return templateEngine.process("subscribe-welcome", context);
     }
 
     @Override
     public String getType() {
-        return "verify";
+        return "welcome";
     }
 }

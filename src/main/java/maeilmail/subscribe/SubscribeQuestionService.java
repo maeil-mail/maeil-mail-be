@@ -1,4 +1,4 @@
-package maeilmail.subscribe.core;
+package maeilmail.subscribe;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -7,15 +7,13 @@ import lombok.extern.slf4j.Slf4j;
 import maeilmail.mail.MailMessage;
 import maeilmail.mail.MailSender;
 import maeilmail.question.QuestionCategory;
-import maeilmail.subscribe.core.request.SubscribeQuestionRequest;
-import maeilmail.subscribe.core.request.VerifyEmailRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class SubscribeQuestionService {
+class SubscribeQuestionService {
 
     private final SubscribeRepository subscribeRepository;
     private final SubscribeVerifyService subscribeVerifyService;

@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 import maeilmail.question.QuestionCategory;
 import maeilmail.question.QuestionQueryService;
 import maeilmail.question.QuestionSummary;
-import maeilmail.subscribe.core.Subscribe;
+import maeilmail.subscribe.Subscribe;
 import maeilmail.subscribequestion.ChoiceQuestionPolicy;
 import org.springframework.stereotype.Component;
 
