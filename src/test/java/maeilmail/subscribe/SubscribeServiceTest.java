@@ -36,7 +36,7 @@ class SubscribeServiceTest extends IntegrationTestSupport {
         willDoNothing()
                 .given(verifySubscribeService)
                 .verify(any(), any());
-        SubscribeQuestionRequest request = createRequest(List.of("backend"));
+        SubscribeRequest request = createRequest(List.of("backend"));
 
         subscribeService.subscribe(request);
 
@@ -53,7 +53,7 @@ class SubscribeServiceTest extends IntegrationTestSupport {
         willDoNothing()
                 .given(verifySubscribeService)
                 .verify(any(), any());
-        SubscribeQuestionRequest request = createRequest(List.of("backend", "frontend"));
+        SubscribeRequest request = createRequest(List.of("backend", "frontend"));
 
         subscribeService.subscribe(request);
 
@@ -70,7 +70,7 @@ class SubscribeServiceTest extends IntegrationTestSupport {
         willDoNothing()
                 .given(verifySubscribeService)
                 .verify(any(), any());
-        SubscribeQuestionRequest request = createRequest(List.of("backend", "frontend"));
+        SubscribeRequest request = createRequest(List.of("backend", "frontend"));
         subscribeService.subscribe(request);
 
         subscribeService.subscribe(request);
@@ -91,10 +91,10 @@ class SubscribeServiceTest extends IntegrationTestSupport {
         willDoNothing()
                 .given(verifySubscribeService)
                 .verify(any(), any());
-        SubscribeQuestionRequest request = createRequest(List.of("backend"));
+        SubscribeRequest request = createRequest(List.of("backend"));
         subscribeService.subscribe(request);
 
-        SubscribeQuestionRequest secondRequest = createRequest(List.of("backend", "frontend"));
+        SubscribeRequest secondRequest = createRequest(List.of("backend", "frontend"));
         subscribeService.subscribe(secondRequest);
 
         List<Subscribe> result = subscribeRepository.findAll();
@@ -103,7 +103,7 @@ class SubscribeServiceTest extends IntegrationTestSupport {
                 .containsExactly(QuestionCategory.BACKEND, QuestionCategory.FRONTEND);
     }
 
-    private SubscribeQuestionRequest createRequest(List<String> category) {
-        return new SubscribeQuestionRequest("test@gmail.com", category, "1234");
+    private SubscribeRequest createRequest(List<String> category) {
+        return new SubscribeRequest("test@gmail.com", category, "1234");
     }
 }

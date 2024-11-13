@@ -20,7 +20,7 @@ class SubscribeApi {
     }
 
     @PostMapping("/subscribe")
-    public ResponseEntity<Void> subscribe(@RequestBody SubscribeQuestionRequest request) {
+    public ResponseEntity<Void> subscribe(@RequestBody SubscribeRequest request) {
         subscribeService.subscribe(request);
 
         return ResponseEntity.noContent().build();

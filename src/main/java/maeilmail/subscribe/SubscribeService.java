@@ -21,14 +21,14 @@ class SubscribeService {
     private final MailSender mailSender;
 
     @Transactional
-    public void subscribe(SubscribeQuestionRequest request) {
+    public void subscribe(SubscribeRequest request) {
         log.info("이메일 구독 요청, 이메일 = {}", request.email());
         trySubscribe(request);
         sendSubscribeWelcomeMail(request.email());
         log.info("이메일 구독 성공, 이메일 = {}", request.email());
     }
 
-    private void trySubscribe(SubscribeQuestionRequest request) {
+    private void trySubscribe(SubscribeRequest request) {
         verifySubscribeService.verify(request.email(), request.code());
 
         for (String requestCategory : request.category()) {
