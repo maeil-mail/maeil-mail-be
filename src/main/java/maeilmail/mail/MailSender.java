@@ -48,7 +48,7 @@ public class MailSender {
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, false, "UTF-8");
         mimeMessageHelper.setFrom(FROM_EMAIL);
         mimeMessageHelper.setTo(message.to());
-        mimeMessageHelper.setSubject(message.subject());
+        mimeMessageHelper.setSubject("[매일메일] " + message.subject());
         mimeMessageHelper.setText(message.text(), true);
         return mimeMessage;
     }
