@@ -37,6 +37,6 @@ public class Subscribe extends BaseEntity {
     public Subscribe(String email, QuestionCategory category) {
         this.email = email;
         this.category = category;
-        this.nextQuestionSequence = 0L;
+        this.nextQuestionSequence = 15L;
     }
 }
