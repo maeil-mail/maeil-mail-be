@@ -22,14 +22,14 @@
       &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy;
       &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp;
       &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy;
-              &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp;
+      &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp;
       &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj;
       &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy;
       &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp;
       &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy;
       &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp;
       &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy;
-              &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp;
+      &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp;
       &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj;
       &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy;
       &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp;
@@ -42,6 +42,7 @@
       &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy;
     </span>
 </section>
+
 <div style="
         height: 100%;
         width: 100%;
@@ -58,6 +59,7 @@
           width: 100%;
           margin: 0 auto;
         ">
+
         <a href="https://www.maeil-mail.kr/" style="
             display: block;
             margin-bottom: 40px;
@@ -78,7 +80,7 @@
           ">
             <p style="
               font-size: 22px;
-              color: &quot;#2b2b2b&quot;;
+              color: #2b2b2b;
               font-weight: bold;
               line-height: 1.5;
             " th:text="${question}">
@@ -96,20 +98,75 @@
             아래 버튼을 눌러 답변을 확인해 보시길 권장드려요!
         </p>
         <a th:href="@{https://www.maeil-mail.kr/question/{id}(id = ${questionId})}" style="
-            display: inline-block;
-            padding: 15px 35px;
-            background-color: #00a86b;
-            color: white;
-            text-decoration: none;
-            border-radius: 30px;
-            font-size: 18px;
-            font-weight: 600;
-            cursor: pointer;
-
-            transition: transform 0.4s ease-in-out;
-          " onmouseover="this.style.transform='scale(1.03)';" onmouseout="this.style.transform='scale(1)';">
+              display: inline-block;
+              padding: 15px 35px;
+              background-color: #00a86b;
+              color: white;
+              text-decoration: none;
+              border-radius: 30px;
+              font-size: 18px;
+              font-weight: 600;
+              cursor: pointer;
+            ">
             답변 확인
         </a>
+        <table role="presentation" style="width: 100%; border-collapse: collapse;">
+            <tr style="height: 5rem"></tr>
+            <tr>
+                <td align="right"
+                    style="margin-top: 5rem; font-size: 12px; padding-left: 1rem; color: #888888; width: auto; white-space: nowrap;">
+                    <a th:href="@{https://www.maeil-mail.kr/question/mine/{email}(email = ${email})}" style="
+              color: #888888;
+              text-decoration: none;
+              ">
+                        <div style="
+              display: inline;
+                cursor: pointer;
+                text-decoration: underline;
+                text-underline-offset: 3px;
+                text-decoration-thickness: 0.3px;
+                ">
+                            📮 질문 모아보기
+                        </div>
+                    </a>
+                    &nbsp;
+                    <span>|</span>
+                    &nbsp;
+                    <a style="
+            color: #888888;
+            text-decoration: none;
+            " href="https://forms.gle/8AqXv4kBqiBVVQMk8" target="_blank">
+                        <div style="
+              display: inline;
+              cursor: pointer;
+              text-decoration: underline;
+              text-underline-offset: 3px;
+              text-decoration-thickness: 0.3px;
+              ">
+                            피드백하기
+                        </div>
+                    </a>
+                    &nbsp;
+                    <span>|</span>
+                    &nbsp;
+                    <a th:href="@{https://www.maeil-mail.kr/unsubscribe(email=${email}, token=${token})}"
+                       target="_blank" style="
+            color: #888888;
+            text-decoration: none;
+            ">
+                        <div style="
+              display: inline;
+              cursor: pointer;
+              text-decoration: underline;
+              text-underline-offset: 3px;
+              text-decoration-thickness: 0.3px;
+              ">
+                            구독해지
+                        </div>
+                    </a>
+                </td>
+            </tr>
+        </table>
     </div>
 </div>
 </body>
