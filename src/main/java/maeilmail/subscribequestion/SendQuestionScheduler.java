@@ -47,7 +47,7 @@ class SendQuestionScheduler {
         try {
             QuestionSummary questionSummary = choiceQuestionPolicy.choice(subscribe, LocalDate.now());
             String subject = createSubject(questionSummary);
-            String text = createText(questionSummary);
+            String text = createText(subscribe, questionSummary);
             return new SubscribeQuestionMessage(subscribe, questionSummary.toQuestion(), subject, text);
         } catch (Exception e) {
             log.info("면접 질문 선택 실패 = {}", e.getMessage());
@@ -63,10 +63,12 @@ class SendQuestionScheduler {
         return question.customizedTitle();
     }
 
-    private String createText(QuestionSummary question) {
+    private String createText(Subscribe subscribe, QuestionSummary question) {
         HashMap<Object, Object> attribute = new HashMap<>();
         attribute.put("questionId", question.id());
         attribute.put("question", question.title());
+        attribute.put("email", subscribe.getEmail());
+        attribute.put("token", subscribe.getToken());
 
         return subscribeQuestionView.render(attribute);
     }
