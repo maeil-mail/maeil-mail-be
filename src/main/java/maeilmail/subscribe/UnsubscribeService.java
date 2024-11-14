@@ -18,6 +18,7 @@ class UnsubscribeService {
         Subscribe subscribe = subscribeRepository.findByEmailAndToken(request.email(), request.token())
                 .orElseThrow(NoSuchElementException::new);
 
+        log.info("구독 해지 요청, 이메일 = {} 구독 분야 = {}", subscribe.getEmail(), subscribe.getCategory().name());
         subscribe.unsubscribe();
     }
 }
