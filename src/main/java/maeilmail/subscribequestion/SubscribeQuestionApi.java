@@ -20,7 +20,7 @@ public class SubscribeQuestionApi {
     public ResponseEntity<PaginationResponse<QuestionSummary>> getSubscribeQuestion(
             @RequestParam String email,
             @RequestParam(defaultValue = "all") String category,
-            @PageableDefault(sort = {"category", "id"}) Pageable pageable
+            @PageableDefault(sort = {"category", "id"}, size = 200) Pageable pageable
     ) {
         PaginationResponse<QuestionSummary> response = subscribeQuestionQueryService.pageByEmailAndCategory(email, category, pageable);
 
