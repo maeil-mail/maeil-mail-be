@@ -39,6 +39,7 @@ public class SubscribeQuestionQueryService {
                         .and(subscribe.deletedAt.isNull())
                         .and(eqCategory(category))
                         .and(subscribeQuestion.isSuccess));
+
         JPAQuery<QuestionSummary> resultQuery = queryFactory.select(projectionQuestionSummary())
                 .from(subscribeQuestion)
                 .join(subscribe).on(subscribeQuestion.subscribe.eq(subscribe))

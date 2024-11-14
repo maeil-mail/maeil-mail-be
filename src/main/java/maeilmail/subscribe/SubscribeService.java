@@ -10,8 +10,8 @@ import maeilmail.question.QuestionCategory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Service
 @Slf4j
+@Service
 @RequiredArgsConstructor
 class SubscribeService {
 
@@ -37,7 +37,7 @@ class SubscribeService {
     }
 
     private void subscribeIfAbsent(String email, QuestionCategory category) {
-        boolean alreadyExist = subscribeRepository.existsByEmailAndCategory(email, category);
+        boolean alreadyExist = subscribeRepository.existsByEmailAndCategoryAndDeletedAtIsNull(email, category);
 
         if (!alreadyExist) {
             Subscribe subscribe = new Subscribe(email, category);

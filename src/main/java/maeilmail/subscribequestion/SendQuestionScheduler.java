@@ -33,7 +33,7 @@ class SendQuestionScheduler {
     public void sendMail() {
         log.info("구독자에게 질문지 발송을 시작합니다.");
         LocalDateTime now = ZonedDateTime.now(KOREA_ZONE).toLocalDateTime();
-        List<Subscribe> subscribes = subscribeRepository.findAllByCreatedAtBefore(now);
+        List<Subscribe> subscribes = subscribeRepository.findAllByCreatedAtBeforeAndDeletedAtIsNull(now);
         log.info("{}명의 구독자에게 질문지를 발송합니다. 발송 시각 : {}", subscribes.size(), now);
 
         subscribes.stream()
