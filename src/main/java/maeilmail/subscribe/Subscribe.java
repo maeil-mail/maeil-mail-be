@@ -37,6 +37,13 @@ public class Subscribe extends BaseEntity {
     public Subscribe(String email, QuestionCategory category) {
         this.email = email;
         this.category = category;
-        this.nextQuestionSequence = 15L;
+        this.nextQuestionSequence = determineSequenceByCategory(category);
+    }
+
+    private long determineSequenceByCategory(QuestionCategory category) {
+        if (category == QuestionCategory.BACKEND) {
+            return 15L;
+        }
+        return 0L;
     }
 }
