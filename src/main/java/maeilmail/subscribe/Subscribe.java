@@ -1,5 +1,7 @@
 package maeilmail.subscribe;
 
+import java.time.LocalDateTime;
+import java.util.UUID;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -34,16 +36,29 @@ public class Subscribe extends BaseEntity {
     @Column(nullable = false)
     private Long nextQuestionSequence;
 
+    @Column(nullable = false, unique = true)
+    private String token;
+
+    @Column(nullable = true)
+    private LocalDateTime deletedAt;
+
     public Subscribe(String email, QuestionCategory category) {
         this.email = email;
         this.category = category;
         this.nextQuestionSequence = determineSequenceByCategory(category);
+        this.token = UUID.randomUUID().toString();
+        this.deletedAt = null;
     }
 
     private long determineSequenceByCategory(QuestionCategory category) {
         if (category == QuestionCategory.BACKEND) {
             return 15L;
         }
+
         return 0L;
+    }
+
+    public void unsubscribe() {
+        this.deletedAt = LocalDateTime.now();
     }
 }
