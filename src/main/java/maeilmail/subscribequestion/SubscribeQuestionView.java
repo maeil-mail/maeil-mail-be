@@ -16,8 +16,7 @@ class SubscribeQuestionView implements MailView {
     @Override
     public String render(Map<Object, Object> attribute) {
         Context context = new Context();
-        context.setVariable("questionId", attribute.get("questionId"));
-        context.setVariable("question", attribute.get("question"));
+        attribute.forEach((key, value) -> context.setVariable(key.toString(), value.toString()));
 
         return templateEngine.process("question-v3", context);
     }

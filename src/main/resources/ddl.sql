@@ -15,9 +15,11 @@ create table subscribe
     id                     bigint auto_increment,
     email                  varchar(255) not null,
     category               enum ('BACKEND','FRONTEND') not null,
+    next_question_sequence bigint       not null default '0',
+    token                  varchar(255) not null unique,
     created_at             timestamp(6),
     updated_at             timestamp(6),
-    next_question_sequence bigint       not null default '0',
+    deleted_at             timestamp(6),
     primary key (id)
 );
 
@@ -58,5 +60,7 @@ create table subscribe_question
     question_id  bigint,
     subscribe_id bigint,
     is_success   boolean not null,
+    created_at   timestamp(6),
+    updated_at   timestamp(6),
     primary key (id)
 );

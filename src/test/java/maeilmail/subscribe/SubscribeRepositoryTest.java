@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
 import maeilmail.question.QuestionCategory;
@@ -43,12 +44,13 @@ class SubscribeRepositoryTest extends IntegrationTestSupport {
             QuestionCategory category,
             LocalDateTime createdAt
     ) {
-        String sql = "insert into subscribe(email, category, next_question_sequence, created_at) values(?, ?, ?, ?);";
+        String sql = "insert into subscribe(email, category, next_question_sequence, created_at, token) values(?, ?, ?, ?, ?);";
         Query nativeQuery = entityManager.createNativeQuery(sql);
         nativeQuery.setParameter(1, email);
         nativeQuery.setParameter(2, category.toLowerCase());
         nativeQuery.setParameter(3, 0);
         nativeQuery.setParameter(4, createdAt);
+        nativeQuery.setParameter(5, UUID.randomUUID().toString());
         nativeQuery.executeUpdate();
     }
 }

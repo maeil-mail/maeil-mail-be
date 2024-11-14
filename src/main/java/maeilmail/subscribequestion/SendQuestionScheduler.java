@@ -33,7 +33,7 @@ class SendQuestionScheduler {
     public void sendMail() {
         log.info("구독자에게 질문지 발송을 시작합니다.");
         LocalDateTime now = ZonedDateTime.now(KOREA_ZONE).toLocalDateTime();
-        List<Subscribe> subscribes = subscribeRepository.findAllByCreatedAtBefore(now);
+        List<Subscribe> subscribes = subscribeRepository.findAllByCreatedAtBeforeAndDeletedAtIsNull(now);
         log.info("{}명의 구독자에게 질문지를 발송합니다. 발송 시각 : {}", subscribes.size(), now);
 
         subscribes.stream()
@@ -47,7 +47,7 @@ class SendQuestionScheduler {
         try {
             QuestionSummary questionSummary = choiceQuestionPolicy.choice(subscribe, LocalDate.now());
             String subject = createSubject(questionSummary);
-            String text = createText(questionSummary);
+            String text = createText(subscribe, questionSummary);
             return new SubscribeQuestionMessage(subscribe, questionSummary.toQuestion(), subject, text);
         } catch (Exception e) {
             log.info("면접 질문 선택 실패 = {}", e.getMessage());
@@ -63,10 +63,12 @@ class SendQuestionScheduler {
         return question.customizedTitle();
     }
 
-    private String createText(QuestionSummary question) {
+    private String createText(Subscribe subscribe, QuestionSummary question) {
         HashMap<Object, Object> attribute = new HashMap<>();
         attribute.put("questionId", question.id());
         attribute.put("question", question.title());
+        attribute.put("email", subscribe.getEmail());
+        attribute.put("token", subscribe.getToken());
 
         return subscribeQuestionView.render(attribute);
     }

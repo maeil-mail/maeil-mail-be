@@ -36,13 +36,16 @@ public class SubscribeQuestionQueryService {
                 .from(subscribeQuestion)
                 .join(subscribe).on(subscribeQuestion.subscribe.eq(subscribe))
                 .where(eqEmail(email)
+                        .and(subscribe.deletedAt.isNull())
                         .and(eqCategory(category))
                         .and(subscribeQuestion.isSuccess));
+
         JPAQuery<QuestionSummary> resultQuery = queryFactory.select(projectionQuestionSummary())
                 .from(subscribeQuestion)
                 .join(subscribe).on(subscribeQuestion.subscribe.eq(subscribe))
                 .join(question).on(subscribeQuestion.question.eq(question))
                 .where(eqEmail(email)
+                        .and(subscribe.deletedAt.isNull())
                         .and(eqCategory(category))
                         .and(subscribeQuestion.isSuccess))
                 .offset(pageable.getOffset())
