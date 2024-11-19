@@ -1,14 +1,20 @@
 package maeilmail.support;
 
+import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 
 import maeilmail.mail.MailSender;
+import maeilmail.subscribe.VerifySubscribeService;
+import maeilmail.subscribequestion.QuestionSender;
 import org.hibernate.cfg.AvailableSettings;
+import org.junit.jupiter.api.AfterEach;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernatePropertiesCustomizer;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.cache.CacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +23,14 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @Import(IntegrationTestSupport.TestConfig.class)
 public abstract class IntegrationTestSupport {
+
+    @Autowired
+    private CacheManager cacheManager;
+
+    @AfterEach
+    void tearDown() {
+        cacheManager.getCacheNames().forEach(name -> cacheManager.getCache(name).clear());
+    }
 
     @TestConfiguration
     public static class TestConfig {
@@ -29,6 +43,26 @@ public abstract class IntegrationTestSupport {
                     .sendMail(any());
 
             return mailSender;
+        }
+
+        @Bean
+        public QuestionSender questionSender() {
+            QuestionSender questionSender = mock(QuestionSender.class);
+            doNothing()
+                    .when(questionSender)
+                    .sendMail(any());
+
+            return questionSender;
+        }
+
+        @Bean
+        public VerifySubscribeService verifySubscribeService() {
+            VerifySubscribeService verifySubscribeService = mock(VerifySubscribeService.class);
+            willDoNothing()
+                    .given(verifySubscribeService)
+                    .verify(any(), any());
+
+            return verifySubscribeService;
         }
 
         @Bean
