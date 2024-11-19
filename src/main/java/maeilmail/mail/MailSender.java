@@ -2,61 +2,46 @@ package maeilmail.mail;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.mail.MailException;
+import maeilmail.AbstractMailSender;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 @Slf4j
-@Component(value = "emailSender")
-@RequiredArgsConstructor
-public class MailSender {
+@Component("emailSender")
+public class MailSender extends AbstractMailSender<MailMessage> {
 
-    private static final int MAIL_SENDER_RATE_MILLISECONDS = 500;
-    private static final String FROM_EMAIL = "maeil-mail <maeil-mail-noreply@maeil-mail.site>";
-
-    private final JavaMailSender javaMailSender;
     private final MailEventRepository mailEventRepository;
 
-    @Async
-    public void sendMail(MailMessage message) {
-        try {
-            log.info("메일을 전송합니다. email = {} question = {} type = {}", message.to(), message.subject(), message.type());
-            MimeMessage mimeMessage = convertToMime(message);
-            javaMailSender.send(mimeMessage);
-            mailEventRepository.save(MailEvent.success(message.to(), message.type()));
-        } catch (MessagingException | MailException e) {
-            log.error("메일 전송 실패: email = {}, type = {}, 오류 = {}", message.to(), message.type(), e.getMessage(), e);
-            mailEventRepository.save(MailEvent.fail(message.to(), message.type()));
-        } catch (Exception e) {
-            log.error("예기치 않은 오류 발생: email = {}, type = {}, 오류 = {}", message.to(), message.type(), e.getMessage(), e);
-            mailEventRepository.save(MailEvent.fail(message.to(), message.type()));
-        } finally {
-            try {
-                Thread.sleep(MAIL_SENDER_RATE_MILLISECONDS);
-            } catch (InterruptedException ignored) {
-            }
-        }
+    public MailSender(JavaMailSender javaMailSender, MailEventRepository mailEventRepository) {
+        super(javaMailSender);
+        this.mailEventRepository = mailEventRepository;
     }
 
-    private MimeMessage convertToMime(MailMessage message) throws MessagingException {
+    @Override
+    protected void logSending(MailMessage message) {
+        log.info("메일을 전송합니다. email = {} subject = {} type = {}", message.to(), message.subject(), message.type());
+    }
+
+    @Override
+    protected MimeMessage createMimeMessage(MailMessage message) throws MessagingException {
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
-        tryAppendOpenEventTrace(message, mimeMessage);
-        MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, false, "UTF-8");
-        mimeMessageHelper.setFrom(FROM_EMAIL);
-        mimeMessageHelper.setTo(message.to());
-        mimeMessageHelper.setSubject("[매일메일] " + message.subject());
-        mimeMessageHelper.setText(message.text(), true);
+        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, false, "UTF-8");
+        helper.setFrom(FROM_EMAIL);
+        helper.setTo(message.to());
+        helper.setSubject("[매일메일] " + message.subject());
+        helper.setText(message.text(), true);
         return mimeMessage;
     }
 
-    private void tryAppendOpenEventTrace(MailMessage message, MimeMessage mimeMessage) throws MessagingException {
-        if (message.type().startsWith("question")) {
-            mimeMessage.setHeader("X-SES-CONFIGURATION-SET", "my-first-configuration-set");
-            mimeMessage.setHeader("X-SES-MESSAGE_TAGS", "mail-open");
-        }
+    @Override
+    protected void handleSuccess(MailMessage message) {
+        mailEventRepository.save(MailEvent.success(message.to(), message.type()));
+    }
+
+    @Override
+    protected void handleFailure(MailMessage message) {
+        mailEventRepository.save(MailEvent.fail(message.to(), message.type()));
     }
 }
