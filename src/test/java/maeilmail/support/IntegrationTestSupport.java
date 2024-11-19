@@ -1,10 +1,12 @@
 package maeilmail.support;
 
+import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 
 import maeilmail.mail.MailSender;
+import maeilmail.subscribe.VerifySubscribeService;
 import maeilmail.subscribequestion.QuestionSender;
 import org.hibernate.cfg.AvailableSettings;
 import org.junit.jupiter.api.AfterEach;
@@ -51,6 +53,16 @@ public abstract class IntegrationTestSupport {
                     .sendMail(any());
 
             return questionSender;
+        }
+
+        @Bean
+        public VerifySubscribeService verifySubscribeService() {
+            VerifySubscribeService verifySubscribeService = mock(VerifySubscribeService.class);
+            willDoNothing()
+                    .given(verifySubscribeService)
+                    .verify(any(), any());
+
+            return verifySubscribeService;
         }
 
         @Bean
