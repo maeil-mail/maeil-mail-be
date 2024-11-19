@@ -12,7 +12,9 @@ import com.querydsl.core.types.dsl.PathBuilder;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import maeilmail.PaginationResponse;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -20,6 +22,7 @@ import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -52,10 +55,11 @@ public class QuestionQueryService {
         }
     }
 
+    @Cacheable(key = "#category", cacheNames = {"question"})
     public List<QuestionSummary> queryAllByCategory(String category) {
         return queryFactory.select(projectionQuestionSummary())
                 .from(question)
-                .where(eqCategory(category))
+                .where(question.category.eq(QuestionCategory.from(category)))
                 .orderBy(question.id.asc())
                 .fetch();
     }

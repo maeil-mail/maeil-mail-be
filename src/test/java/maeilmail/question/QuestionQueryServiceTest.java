@@ -55,22 +55,6 @@ class QuestionQueryServiceTest extends IntegrationTestSupport {
     }
 
     @Test
-    @DisplayName("all이나 ALL, null이 들어오면 모든 질문지를 조회한다.")
-    void queryAll() {
-        createQuestion(QuestionCategory.BACKEND);
-        createQuestion(QuestionCategory.BACKEND);
-        createQuestion(QuestionCategory.FRONTEND);
-
-        List<QuestionSummary> all = questionQueryService.queryAllByCategory("all");
-        List<QuestionSummary> ALL = questionQueryService.queryAllByCategory("ALL");
-        List<QuestionSummary> nul = questionQueryService.queryAllByCategory(null);
-
-        assertThat(all.size()).isEqualTo(3);
-        assertThat(ALL.size()).isEqualTo(3);
-        assertThat(nul.size()).isEqualTo(3);
-    }
-
-    @Test
     @DisplayName("페이징처리하여 질문지를 조회한다.")
     void pageByCategory() {
         List<Long> backendIds = new ArrayList<>();
