@@ -1,0 +1,2 @@
+package maeilmail;class CacheConfig {
+}
