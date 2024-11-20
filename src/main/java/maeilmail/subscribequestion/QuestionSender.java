@@ -3,7 +3,7 @@ package maeilmail.subscribequestion;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.extern.slf4j.Slf4j;
-import maeilmail.AbstractMailSender;
+import maeilmail.mail.AbstractMailSender;
 import maeilmail.question.Question;
 import maeilmail.question.QuestionCategory;
 import maeilmail.subscribe.Subscribe;

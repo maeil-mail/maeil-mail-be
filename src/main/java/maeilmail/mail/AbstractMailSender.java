@@ -1,4 +1,4 @@
-package maeilmail;
+package maeilmail.mail;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
