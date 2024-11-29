@@ -37,4 +37,15 @@ class TransmissionFrequencyService {
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("자신의 이메일 전송 주기만 변경 가능합니다."));
     }
+
+    @Transactional(readOnly = true)
+    public TransmissionFrequencyResponse getFrequency(String email) {
+        List<Subscribe> subscribes = subscribeRepository.findAllByEmailAndDeletedAtIsNull(email);
+        SubscribeFrequency frequency = subscribes.stream()
+                .map(Subscribe::getFrequency)
+                .findFirst()
+                .orElseThrow(NoSuchElementException::new);
+
+        return new TransmissionFrequencyResponse(frequency.toLowerCase());
+    }
 }

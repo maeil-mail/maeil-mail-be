@@ -80,6 +80,16 @@ class TransmissionFrequencyServiceTest extends IntegrationTestSupport {
                 .containsExactlyInAnyOrder(SubscribeFrequency.DAILY, SubscribeFrequency.WEEKLY);
     }
 
+    @Test
+    @DisplayName("구독자의 전송 주기를 조회한다.")
+    void getFrequency() {
+        Subscribe subscribe = createSubscribe(QuestionCategory.BACKEND);
+
+        TransmissionFrequencyResponse result = transmissionFrequencyService.getFrequency(subscribe.getEmail());
+
+        assertThat(result.frequency()).isEqualTo(SubscribeFrequency.DAILY.toLowerCase());
+    }
+
     private TransmissionFrequencyRequest createRequest(String token, String email) {
         return new TransmissionFrequencyRequest(email, token, "weekly");
     }
