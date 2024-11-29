@@ -74,8 +74,8 @@ class ChangeFrequencyServiceTest extends IntegrationTestSupport {
 
         changeFrequencyService.changeFrequency(request);
 
-        List<Subscribe> subscribes = subscribeRepository.findAll();
-        assertThat(subscribes)
+        List<Subscribe> result = subscribeRepository.findAll();
+        assertThat(result)
                 .map(Subscribe::getFrequency)
                 .containsExactlyInAnyOrder(SubscribeFrequency.DAILY, SubscribeFrequency.WEEKLY);
     }
@@ -85,7 +85,7 @@ class ChangeFrequencyServiceTest extends IntegrationTestSupport {
     }
 
     private Subscribe createSubscribe(QuestionCategory category) {
-        Subscribe subscribe = new Subscribe("email@test.com", category);
+        Subscribe subscribe = new Subscribe("email@test.com", category, SubscribeFrequency.DAILY);
 
         return subscribeRepository.save(subscribe);
     }
