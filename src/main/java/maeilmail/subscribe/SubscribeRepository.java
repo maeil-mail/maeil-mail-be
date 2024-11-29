@@ -11,10 +11,6 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface SubscribeRepository extends JpaRepository<Subscribe, Long> {
 
-    boolean existsByEmailAndCategoryAndDeletedAtIsNull(String email, QuestionCategory category);
-
-    Optional<Subscribe> findByEmailAndTokenAndDeletedAtIsNull(String email, String token);
-
     @Query("""
             select distinct s.email
             from Subscribe s
@@ -33,6 +29,12 @@ public interface SubscribeRepository extends JpaRepository<Subscribe, Long> {
             where s.createdAt between :startOfDay and :endOfDay
             """)
     List<String> findDistinctEmailsByCreatedAtBetween(LocalDateTime startOfDay, LocalDateTime endOfDay);
+
+    boolean existsByEmailAndCategoryAndDeletedAtIsNull(String email, QuestionCategory category);
+
+    Optional<Subscribe> findByEmailAndTokenAndDeletedAtIsNull(String email, String token);
+
+    List<Subscribe> findAllByEmailAndDeletedAtIsNull(String email);
 
     List<Subscribe> findAllByCreatedAtBeforeAndDeletedAtIsNull(LocalDateTime baseDateTime);
 
