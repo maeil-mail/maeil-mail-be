@@ -70,6 +70,6 @@ class SubscribeServiceTest extends IntegrationTestSupport {
     }
 
     private SubscribeRequest createRequest(List<String> category) {
-        return new SubscribeRequest("test@gmail.com", category, "1234");
+        return new SubscribeRequest("test@gmail.com", category, "1234", "daily");
     }
 }
