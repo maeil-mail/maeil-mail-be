@@ -13,6 +13,7 @@ class SubscribeApi {
 
     private final SubscribeService subscribeService;
     private final UnsubscribeService unsubscribeService;
+    private final ChangeFrequencyService changeFrequencyService;
 
     @PostMapping("/subscribe/verify/send")
     public ResponseEntity<Void> send(@RequestBody VerifyEmailRequest request) {
@@ -24,6 +25,13 @@ class SubscribeApi {
     @PostMapping("/subscribe")
     public ResponseEntity<Void> subscribe(@RequestBody SubscribeRequest request) {
         subscribeService.subscribe(request);
+
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/subscribe/email-frequency")
+    public ResponseEntity<Void> changeFrequency(@RequestBody ChangeFrequencyRequest request) {
+        changeFrequencyService.changeFrequency(request);
 
         return ResponseEntity.noContent().build();
     }
