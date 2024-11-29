@@ -51,7 +51,7 @@ public class Subscribe extends BaseEntity {
         this.category = category;
         this.nextQuestionSequence = determineSequenceByCategory(category);
         this.token = UUID.randomUUID().toString();
-        this.frequency = SubscribeFrequency.DAILY; // TODO : 주입 받도록 해야함
+        this.frequency = SubscribeFrequency.DAILY;
         this.deletedAt = null;
     }
 
@@ -66,5 +66,13 @@ public class Subscribe extends BaseEntity {
     // TODO: 기삭제 여부 판단
     public void unsubscribe() {
         this.deletedAt = LocalDateTime.now();
+    }
+
+    public void changeFrequency(SubscribeFrequency frequency) {
+        this.frequency = frequency;
+    }
+
+    public boolean isMine(String token) {
+        return this.token.equals(token);
     }
 }
