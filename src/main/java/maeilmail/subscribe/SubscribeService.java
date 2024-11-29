@@ -1,6 +1,7 @@
 package maeilmail.subscribe;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,18 +31,22 @@ class SubscribeService {
 
     private void trySubscribe(SubscribeRequest request) {
         verifySubscribeService.verify(request.email(), request.code());
+        List<String> categories = request.category();
 
-        for (String requestCategory : request.category()) {
-            subscribeIfAbsent(request.email(), QuestionCategory.from(requestCategory));
+        for (String category : categories) {
+            subscribeIfAbsent(request.email(), QuestionCategory.from(category), SubscribeFrequency.from(request.frequency()));
         }
     }
 
-    private void subscribeIfAbsent(String email, QuestionCategory category) {
-        boolean alreadyExist = subscribeRepository.existsByEmailAndCategoryAndDeletedAtIsNull(email, category);
+    private void subscribeIfAbsent(String email, QuestionCategory category, SubscribeFrequency frequency) {
+        List<Subscribe> subscribes = subscribeRepository.findAllByEmailAndDeletedAtIsNull(email);
+        boolean alreadyExist = subscribes.stream()
+                .anyMatch(it -> it.getCategory() == category);
 
         if (!alreadyExist) {
-            Subscribe subscribe = new Subscribe(email, category);
+            Subscribe subscribe = new Subscribe(email, category, frequency);
             subscribeRepository.save(subscribe);
+            subscribes.forEach(it -> it.changeFrequency(frequency)); // 전송 주기 통일 작업
         }
     }
 
