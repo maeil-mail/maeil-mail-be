@@ -2,7 +2,6 @@ package maeilmail.support;
 
 import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 
 import maeilmail.mail.MailSender;
@@ -36,10 +35,10 @@ public abstract class IntegrationTestSupport {
     public static class TestConfig {
 
         @Bean
-        public MailSender mailSender() {
+        public MailSender emailSender() {
             MailSender mailSender = mock(MailSender.class);
-            doNothing()
-                    .when(mailSender)
+            willDoNothing()
+                    .given(mailSender)
                     .sendMail(any());
 
             return mailSender;
@@ -48,8 +47,8 @@ public abstract class IntegrationTestSupport {
         @Bean
         public QuestionSender questionSender() {
             QuestionSender questionSender = mock(QuestionSender.class);
-            doNothing()
-                    .when(questionSender)
+            willDoNothing()
+                    .given(questionSender)
                     .sendMail(any());
 
             return questionSender;
