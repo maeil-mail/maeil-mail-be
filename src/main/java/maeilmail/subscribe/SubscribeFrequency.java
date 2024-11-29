@@ -13,4 +13,8 @@ enum SubscribeFrequency {
                 .findFirst()
                 .orElseThrow(NoSuchElementException::new);
     }
+
+    public String toLowerCase() {
+        return this.name().toLowerCase();
+    }
 }
