@@ -3,7 +3,7 @@ package maeilmail.subscribe;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
 
-enum SubscribeFrequency {
+public enum SubscribeFrequency {
 
     DAILY, WEEKLY;
 

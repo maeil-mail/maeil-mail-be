@@ -6,6 +6,7 @@ import java.util.List;
 import maeilmail.question.Question;
 import maeilmail.question.QuestionCategory;
 import maeilmail.subscribe.Subscribe;
+import maeilmail.subscribe.SubscribeFrequency;
 import maeilmail.subscribequestion.SubscribeQuestion;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,7 +33,7 @@ class EventAggregatorTest {
 
     private SubscribeQuestion createSubscribeQuestion(boolean isSuccess) {
         return new SubscribeQuestion(
-                new Subscribe("test@gmail.com", QuestionCategory.BACKEND),
+                new Subscribe("test@gmail.com", QuestionCategory.BACKEND, SubscribeFrequency.DAILY),
                 new Question("test-title", "test-content", QuestionCategory.BACKEND),
                 isSuccess
         );

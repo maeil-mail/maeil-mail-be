@@ -9,6 +9,7 @@ import maeilmail.question.Question;
 import maeilmail.question.QuestionCategory;
 import maeilmail.question.QuestionRepository;
 import maeilmail.subscribe.Subscribe;
+import maeilmail.subscribe.SubscribeFrequency;
 import maeilmail.subscribe.SubscribeRepository;
 import maeilmail.subscribequestion.SubscribeQuestion;
 import maeilmail.subscribequestion.SubscribeQuestionRepository;
@@ -35,11 +36,11 @@ class StatisticsServiceTest extends IntegrationTestSupport {
     @DisplayName("고유한 이메일을 가진 누적 구독자 수를 반환한다.")
     void generateSubscribeReport() {
         List<Subscribe> subscribes = IntStream.rangeClosed(1, 10)
-                .mapToObj(index -> new Subscribe("test" + index, QuestionCategory.BACKEND))
+                .mapToObj(index -> new Subscribe("test" + index, QuestionCategory.BACKEND, SubscribeFrequency.DAILY))
                 .toList();
-        subscribeRepository.save(new Subscribe("test" + 1, QuestionCategory.FRONTEND));
-        subscribeRepository.save(new Subscribe("test" + 2, QuestionCategory.FRONTEND));
-        subscribeRepository.save(new Subscribe("test" + 3, QuestionCategory.FRONTEND));
+        subscribeRepository.save(new Subscribe("test" + 1, QuestionCategory.FRONTEND, SubscribeFrequency.DAILY));
+        subscribeRepository.save(new Subscribe("test" + 2, QuestionCategory.FRONTEND, SubscribeFrequency.DAILY));
+        subscribeRepository.save(new Subscribe("test" + 3, QuestionCategory.FRONTEND, SubscribeFrequency.DAILY));
         subscribeRepository.saveAll(subscribes);
 
         SubscribeReport subscribeReport = statisticsService.generateSubscribeReport();
@@ -50,11 +51,11 @@ class StatisticsServiceTest extends IntegrationTestSupport {
     @Test
     @DisplayName("고유한 이메일을 가진 일별 신규 구독자 수를 반환한다.")
     void countNewSubscribersOnSpecificDate() {
-        subscribeRepository.save(new Subscribe("test" + 1, QuestionCategory.FRONTEND));
-        subscribeRepository.save(new Subscribe("test" + 1, QuestionCategory.BACKEND));
-        subscribeRepository.save(new Subscribe("test" + 2, QuestionCategory.BACKEND));
-        subscribeRepository.save(new Subscribe("test" + 2, QuestionCategory.FRONTEND));
-        subscribeRepository.save(new Subscribe("test" + 2, QuestionCategory.FRONTEND));
+        subscribeRepository.save(new Subscribe("test" + 1, QuestionCategory.FRONTEND, SubscribeFrequency.DAILY));
+        subscribeRepository.save(new Subscribe("test" + 1, QuestionCategory.BACKEND, SubscribeFrequency.DAILY));
+        subscribeRepository.save(new Subscribe("test" + 2, QuestionCategory.BACKEND, SubscribeFrequency.DAILY));
+        subscribeRepository.save(new Subscribe("test" + 2, QuestionCategory.FRONTEND, SubscribeFrequency.DAILY));
+        subscribeRepository.save(new Subscribe("test" + 2, QuestionCategory.FRONTEND, SubscribeFrequency.DAILY));
 
         int distinctEmailsCount = statisticsService.countNewSubscribersOnSpecificDate(LocalDate.now());
 
@@ -64,7 +65,7 @@ class StatisticsServiceTest extends IntegrationTestSupport {
     @Test
     @DisplayName("해당 날짜에 구독한 신규 구독자가 없으면 0명을 반환한다.")
     void countNewSubscribersOnSpecificDate2() {
-        subscribeRepository.save(new Subscribe("test" + 1, QuestionCategory.FRONTEND));
+        subscribeRepository.save(new Subscribe("test" + 1, QuestionCategory.FRONTEND, SubscribeFrequency.DAILY));
 
         int distinctEmailsCount = statisticsService.countNewSubscribersOnSpecificDate(LocalDate.now().minusDays(1));
 
@@ -85,7 +86,7 @@ class StatisticsServiceTest extends IntegrationTestSupport {
     }
 
     private SubscribeQuestion createSubscribeQuestion(boolean isSuccess) {
-        Subscribe subscribe = subscribeRepository.save(new Subscribe("test@gmail.com", QuestionCategory.BACKEND));
+        Subscribe subscribe = subscribeRepository.save(new Subscribe("test@gmail.com", QuestionCategory.BACKEND, SubscribeFrequency.DAILY));
         Question question = questionRepository.save(
                 new Question(
                         "test-title",
