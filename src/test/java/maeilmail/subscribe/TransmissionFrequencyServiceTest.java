@@ -11,21 +11,21 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-class ChangeFrequencyServiceTest extends IntegrationTestSupport {
+class TransmissionFrequencyServiceTest extends IntegrationTestSupport {
 
     @Autowired
     private SubscribeRepository subscribeRepository;
 
     @Autowired
-    private ChangeFrequencyService changeFrequencyService;
+    private TransmissionFrequencyService transmissionFrequencyService;
 
     @Test
     @DisplayName("구독자의 주기를 변경한다.")
     void changeFrequency() {
         Subscribe subscribe = createSubscribe(QuestionCategory.BACKEND);
-        ChangeFrequencyRequest request = createRequest(subscribe.getToken(), subscribe.getEmail());
+        TransmissionFrequencyRequest request = createRequest(subscribe.getToken(), subscribe.getEmail());
 
-        changeFrequencyService.changeFrequency(request);
+        transmissionFrequencyService.changeFrequency(request);
 
         assertThat(subscribe.getFrequency()).isEqualTo(SubscribeFrequency.WEEKLY);
     }
@@ -35,9 +35,9 @@ class ChangeFrequencyServiceTest extends IntegrationTestSupport {
     void changeFrequencyTotal() {
         Subscribe subscribe1 = createSubscribe(QuestionCategory.BACKEND);
         Subscribe subscribe2 = createSubscribe(QuestionCategory.FRONTEND);
-        ChangeFrequencyRequest request = createRequest(subscribe1.getToken(), subscribe1.getEmail());
+        TransmissionFrequencyRequest request = createRequest(subscribe1.getToken(), subscribe1.getEmail());
 
-        changeFrequencyService.changeFrequency(request);
+        transmissionFrequencyService.changeFrequency(request);
 
         assertThat(subscribe1.getFrequency()).isEqualTo(SubscribeFrequency.WEEKLY);
         assertThat(subscribe2.getFrequency()).isEqualTo(SubscribeFrequency.WEEKLY);
@@ -48,9 +48,9 @@ class ChangeFrequencyServiceTest extends IntegrationTestSupport {
     void cantChange() {
         Subscribe subscribe1 = createSubscribe(QuestionCategory.BACKEND);
         Subscribe subscribe2 = createSubscribe(QuestionCategory.FRONTEND);
-        ChangeFrequencyRequest request = createRequest("unknown-token", subscribe1.getEmail());
+        TransmissionFrequencyRequest request = createRequest("unknown-token", subscribe1.getEmail());
 
-        assertThatThrownBy(() -> changeFrequencyService.changeFrequency(request))
+        assertThatThrownBy(() -> transmissionFrequencyService.changeFrequency(request))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("자신의 이메일 전송 주기만 변경 가능합니다.");
     }
@@ -58,9 +58,9 @@ class ChangeFrequencyServiceTest extends IntegrationTestSupport {
     @Test
     @DisplayName("존재하지 않는 이메일에 대한 주기는 변경이 불가하다.")
     void noneExist() {
-        ChangeFrequencyRequest request = createRequest("unknown-token", "unknown-email");
+        TransmissionFrequencyRequest request = createRequest("unknown-token", "unknown-email");
 
-        assertThatThrownBy(() -> changeFrequencyService.changeFrequency(request))
+        assertThatThrownBy(() -> transmissionFrequencyService.changeFrequency(request))
                 .isInstanceOf(NoSuchElementException.class);
     }
 
@@ -70,9 +70,9 @@ class ChangeFrequencyServiceTest extends IntegrationTestSupport {
         Subscribe subscribe1 = createSubscribe(QuestionCategory.BACKEND);
         Subscribe subscribe2 = createSubscribe(QuestionCategory.FRONTEND);
         subscribe1.unsubscribe();
-        ChangeFrequencyRequest request = createRequest(subscribe2.getToken(), subscribe2.getEmail());
+        TransmissionFrequencyRequest request = createRequest(subscribe2.getToken(), subscribe2.getEmail());
 
-        changeFrequencyService.changeFrequency(request);
+        transmissionFrequencyService.changeFrequency(request);
 
         List<Subscribe> result = subscribeRepository.findAll();
         assertThat(result)
@@ -80,8 +80,8 @@ class ChangeFrequencyServiceTest extends IntegrationTestSupport {
                 .containsExactlyInAnyOrder(SubscribeFrequency.DAILY, SubscribeFrequency.WEEKLY);
     }
 
-    private ChangeFrequencyRequest createRequest(String token, String email) {
-        return new ChangeFrequencyRequest(email, token, "weekly");
+    private TransmissionFrequencyRequest createRequest(String token, String email) {
+        return new TransmissionFrequencyRequest(email, token, "weekly");
     }
 
     private Subscribe createSubscribe(QuestionCategory category) {

@@ -10,12 +10,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-class ChangeFrequencyService {
+class TransmissionFrequencyService {
 
     private final SubscribeRepository subscribeRepository;
 
     @Transactional
-    public void changeFrequency(ChangeFrequencyRequest request) {
+    public void changeFrequency(TransmissionFrequencyRequest request) {
         log.info("질문 전송 주기 변경 요청, email = {}", request.email());
         List<Subscribe> subscribes = subscribeRepository.findAllByEmailAndDeletedAtIsNull(request.email());
         SubscribeFrequency frequency = SubscribeFrequency.from(request.frequency());
