@@ -31,23 +31,25 @@ class SubscribeService {
 
     private void trySubscribe(SubscribeRequest request) {
         verifySubscribeService.verify(request.email(), request.code());
+        List<Subscribe> subscribes = subscribeRepository.findAllByEmailAndDeletedAtIsNull(request.email());
         List<String> categories = request.category();
 
-        for (String category : categories) {
-            subscribeIfAbsent(request.email(), QuestionCategory.from(category), SubscribeFrequency.from(request.frequency()));
-        }
+        categories.stream()
+                .map(QuestionCategory::from)
+                .filter(it -> isNotSubscribed(it, subscribes))
+                .forEach(it -> subscribe(it, subscribes, request));
     }
 
-    private void subscribeIfAbsent(String email, QuestionCategory category, SubscribeFrequency frequency) {
-        List<Subscribe> subscribes = subscribeRepository.findAllByEmailAndDeletedAtIsNull(email);
-        boolean alreadyExist = subscribes.stream()
-                .anyMatch(it -> it.getCategory() == category);
+    private boolean isNotSubscribed(QuestionCategory category, List<Subscribe> subscribes) {
+        return subscribes.stream()
+                .noneMatch(it -> it.getCategory() == category);
+    }
 
-        if (!alreadyExist) {
-            Subscribe subscribe = new Subscribe(email, category, frequency);
-            subscribeRepository.save(subscribe);
-            subscribes.forEach(it -> it.changeFrequency(frequency)); // 전송 주기 통일 작업
-        }
+    private void subscribe(QuestionCategory category, List<Subscribe> subscribes, SubscribeRequest request) {
+        SubscribeFrequency frequency = SubscribeFrequency.from(request.frequency());
+        Subscribe subscribe = new Subscribe(request.email(), category, frequency);
+        subscribeRepository.save(subscribe);
+        subscribes.forEach(it -> it.changeFrequency(frequency)); // 전송 주기 통일 작업
     }
 
     public void sendCodeIncludedMail(VerifyEmailRequest request) {
