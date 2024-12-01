@@ -41,6 +41,7 @@ public class WeeklyQuestionSender extends AbstractMailSender<WeeklySubscribeQues
 
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         mimeMessage.setHeader("X-SES-CONFIGURATION-SET", "my-first-configuration-set");
+        mimeMessage.setHeader("X-SES-MESSAGE-TAGS", "mail-open=default");
 
         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, false, "UTF-8");
         helper.setFrom(FROM_EMAIL);
