@@ -32,12 +32,20 @@ class SubscribeService {
     private void trySubscribe(SubscribeRequest request) {
         verifySubscribeService.verify(request.email(), request.code());
         List<Subscribe> subscribes = subscribeRepository.findAllByEmailAndDeletedAtIsNull(request.email());
-        List<String> categories = request.category();
+        List<QuestionCategory> newSubscribeCategories = findNewSubscribeCategories(request, subscribes);
+        if (newSubscribeCategories.isEmpty()) {
+            return;
+        }
 
-        categories.stream()
+        newSubscribeCategories.forEach(it -> subscribe(it, request));
+        synchronizeFrequency(request, subscribes);
+    }
+
+    private List<QuestionCategory> findNewSubscribeCategories(SubscribeRequest request, List<Subscribe> subscribes) {
+        return request.category().stream()
                 .map(QuestionCategory::from)
                 .filter(it -> isNotSubscribed(it, subscribes))
-                .forEach(it -> subscribe(it, subscribes, request));
+                .toList();
     }
 
     private boolean isNotSubscribed(QuestionCategory category, List<Subscribe> subscribes) {
@@ -45,11 +53,15 @@ class SubscribeService {
                 .noneMatch(it -> it.getCategory() == category);
     }
 
-    private void subscribe(QuestionCategory category, List<Subscribe> subscribes, SubscribeRequest request) {
+    private void subscribe(QuestionCategory category, SubscribeRequest request) {
         SubscribeFrequency frequency = SubscribeFrequency.from(request.frequency());
         Subscribe subscribe = new Subscribe(request.email(), category, frequency);
         subscribeRepository.save(subscribe);
-        subscribes.forEach(it -> it.changeFrequency(frequency)); // 전송 주기 통일 작업
+    }
+
+    private void synchronizeFrequency(SubscribeRequest request, List<Subscribe> subscribes) {
+        SubscribeFrequency frequency = SubscribeFrequency.from(request.frequency());
+        subscribes.forEach(it -> it.changeFrequency(frequency));
     }
 
     public void sendCodeIncludedMail(VerifyEmailRequest request) {
