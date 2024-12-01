@@ -42,7 +42,7 @@ class SendQuestionScheduler {
     @Scheduled(cron = "0 0 7 * * MON-FRI", zone = "Asia/Seoul")
     public void sendMail() {
         log.info("일간 메일 구독자에게 질문지 발송을 시작합니다.");
-        List<Subscribe> subscribes = getSubscribes(SubscribeFrequency.DAILY);
+        List<Subscribe> subscribes = getSubscribes();
         log.info("{}명의 일간 구독자에게 질문지를 발송합니다.", subscribes.size());
 
         subscribes.stream()
@@ -52,10 +52,10 @@ class SendQuestionScheduler {
                 .forEach(questionSender::sendMail);
     }
 
-    private List<Subscribe> getSubscribes(SubscribeFrequency daily) {
+    private List<Subscribe> getSubscribes() {
         LocalDateTime now = ZonedDateTime.now(KOREA_ZONE).toLocalDateTime();
 
-        return subscribeRepository.findAllByCreatedAtBeforeAndDeletedAtIsNullAndFrequency(now, daily);
+        return subscribeRepository.findAllByCreatedAtBeforeAndDeletedAtIsNullAndFrequency(now, SubscribeFrequency.DAILY);
     }
 
     private SubscribeQuestionMessage choiceQuestion(Subscribe subscribe) {

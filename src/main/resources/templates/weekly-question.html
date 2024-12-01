@@ -84,18 +84,17 @@
           ">
             <!-- for문으로 렌더링 -->
             <p
-                    th:each="question:${questions}"
-                    th:object="question"
+                    th:each="question : ${questions}"
                     style="
-              background-color: #F5FAF8;
-              font-size: 15px;
-              color: #2b2b2b;
-              line-height: 1.5;
-              border: 0.5px solid #00a86b;
-              border-radius: 6px;
-              padding: 0.5rem 1.2rem;
-            ">
-                <span th:text="${title}"></span>
+          background-color: #F5FAF8;
+          font-size: 15px;
+          color: #2b2b2b;
+          line-height: 1.5;
+          border: 0.5px solid #00a86b;
+          border-radius: 6px;
+          padding: 0.5rem 1.2rem;
+    ">
+                <span th:text="${question.title}"></span>
             </p>
         </div>
         <p style="
