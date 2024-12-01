@@ -14,6 +14,7 @@ import maeilmail.question.QuestionCategory;
 import maeilmail.question.QuestionQueryService;
 import maeilmail.question.QuestionSummary;
 import maeilmail.subscribe.Subscribe;
+import maeilmail.subscribe.SubscribeFrequency;
 import maeilmail.subscribe.SubscribeRepository;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -32,14 +33,17 @@ class SendQuestionScheduler {
     private final DistributedSupport distributedSupport;
     private final QuestionQueryService questionQueryService;
 
-    @Scheduled(cron = "0 0 7 * * MON-FRI", zone = "Asia/Seoul")
-    public void sendMail() {
-        cacheWarmUp();
+    @Scheduled(cron = "0 55 6 * * MON-FRI", zone = "Asia/Seoul")
+    public void cacheWarmUp() {
+        questionQueryService.queryAllByCategory(QuestionCategory.BACKEND.name());
+        questionQueryService.queryAllByCategory(QuestionCategory.FRONTEND.name());
+    }
 
-        log.info("구독자에게 질문지 발송을 시작합니다.");
-        LocalDateTime now = ZonedDateTime.now(KOREA_ZONE).toLocalDateTime();
-        List<Subscribe> subscribes = subscribeRepository.findAllByCreatedAtBeforeAndDeletedAtIsNull(now);
-        log.info("{}명의 구독자에게 질문지를 발송합니다.", subscribes.size());
+    @Scheduled(cron = "0 0 7 * * MON", zone = "Asia/Seoul")
+    public void sendMailWeekly() {
+        log.info("주간 메일 구독자에게 질문지 발송을 시작합니다.");
+        List<Subscribe> subscribes = getSubscribes(SubscribeFrequency.WEEKLY);
+        log.info("{}명의 주간 메일 구독자에게 질문지를 발송합니다.", subscribes.size());
 
         subscribes.stream()
                 .filter(it -> distributedSupport.isMine(it.getId()))
@@ -48,9 +52,23 @@ class SendQuestionScheduler {
                 .forEach(questionSender::sendMail);
     }
 
-    private void cacheWarmUp() {
-        questionQueryService.queryAllByCategory(QuestionCategory.BACKEND.name());
-        questionQueryService.queryAllByCategory(QuestionCategory.FRONTEND.name());
+    @Scheduled(cron = "0 0 7 * * MON-FRI", zone = "Asia/Seoul")
+    public void sendMailDaily() {
+        log.info("일간 메일 구독자에게 질문지 발송을 시작합니다.");
+        List<Subscribe> subscribes = getSubscribes(SubscribeFrequency.DAILY);
+        log.info("{}명의 일간 구독자에게 질문지를 발송합니다.", subscribes.size());
+
+        subscribes.stream()
+                .filter(it -> distributedSupport.isMine(it.getId()))
+                .map(this::choiceQuestion)
+                .filter(Objects::nonNull)
+                .forEach(questionSender::sendMail);
+    }
+
+    private List<Subscribe> getSubscribes(SubscribeFrequency daily) {
+        LocalDateTime now = ZonedDateTime.now(KOREA_ZONE).toLocalDateTime();
+
+        return subscribeRepository.findAllByCreatedAtBeforeAndDeletedAtIsNullAndFrequency(now, daily);
     }
 
     private SubscribeQuestionMessage choiceQuestion(Subscribe subscribe) {

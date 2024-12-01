@@ -32,6 +32,26 @@ class SendQuestionSchedulerTest extends IntegrationTestSupport {
     private QueryCountTester queryCountTester;
 
     @Test
+    @DisplayName("주에 1번 주간 전송 스케줄러가 동작하는지 확인한다.")
+    void sendMailCronWeekly() {
+        LocalDateTime initialTime = LocalDateTime.of(2024, 12, 1, 7, 0); // 월요일
+        List<LocalDateTime> expectedTimes = List.of(
+                LocalDateTime.of(2024, 12, 2, 7, 0),    // 월요일
+                LocalDateTime.of(2024, 12, 9, 7, 0),  // 월요일
+                LocalDateTime.of(2024, 12, 16, 7, 0),  // 월요일
+                LocalDateTime.of(2024, 12, 23, 7, 0),  // 월요일
+                LocalDateTime.of(2024, 12, 30, 7, 0),  // 월요일
+                LocalDateTime.of(2025, 1, 6, 7, 0)   // 월요일
+        );
+        SchedulerTestUtils.assertCronExpression(
+                SendQuestionScheduler.class,
+                "sendMailWeekly",
+                toInstant(initialTime),
+                expectedTimes.stream().map(this::toInstant).toList()
+        );
+    }
+
+    @Test
     @DisplayName("매주 월요일부터 금요일까지 평일에 한해서 아침 7시에 질문지 전송 스케줄러가 동작하는지 확인한다.")
     void sendMailCronWeekday() {
         LocalDateTime initialTime = LocalDateTime.of(2024, 8, 26, 7, 0); // 월요일
@@ -45,7 +65,7 @@ class SendQuestionSchedulerTest extends IntegrationTestSupport {
         );
         SchedulerTestUtils.assertCronExpression(
                 SendQuestionScheduler.class,
-                "sendMail",
+                "sendMailDaily",
                 toInstant(initialTime),
                 expectedTimes.stream().map(this::toInstant).toList()
         );
@@ -67,7 +87,7 @@ class SendQuestionSchedulerTest extends IntegrationTestSupport {
         }
 
         // sendMail = 3건
-        sendQuestionScheduler.sendMail();
+        sendQuestionScheduler.sendMailDaily();
 
         queryCountTester.assertQueryCount(11);
     }

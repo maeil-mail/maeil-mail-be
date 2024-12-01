@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import maeilmail.question.Question;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -33,7 +34,7 @@ public interface SubscribeRepository extends JpaRepository<Subscribe, Long> {
 
     List<Subscribe> findAllByEmailAndDeletedAtIsNull(String email);
 
-    List<Subscribe> findAllByCreatedAtBeforeAndDeletedAtIsNull(LocalDateTime baseDateTime);
+    List<Subscribe> findAllByCreatedAtBeforeAndDeletedAtIsNullAndFrequency(LocalDateTime baseDateTime, SubscribeFrequency frequency);
 
     @Query("""
             update Subscribe s
