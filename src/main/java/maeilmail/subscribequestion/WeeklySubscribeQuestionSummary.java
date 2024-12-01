@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-class WeeklySubscribeQuestionSummary {
+public class WeeklySubscribeQuestionSummary {
 
     private Long index;
     private final Long id;

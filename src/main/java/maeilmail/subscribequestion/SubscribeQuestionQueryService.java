@@ -48,8 +48,8 @@ public class SubscribeQuestionQueryService {
                         .and(subscribeQuestion.createdAt.between(baseDateStart.atStartOfDay(), baseDateEnd.atStartOfDay())))
                 .fetch();
         int size = result.size();
-        for (int i = 1; i <= size; i++) {
-            result.get(i).setIndex((long) i);
+        for (int i = 0; i < size; i++) {
+            result.get(i).setIndex((long) i + 1);
         }
         String weekLabel = month + "월 " + week + "주차";
 
