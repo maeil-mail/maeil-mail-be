@@ -37,7 +37,7 @@ public class QuestionSender extends AbstractMailSender<SubscribeQuestionMessage>
 
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         mimeMessage.setHeader("X-SES-CONFIGURATION-SET", "my-first-configuration-set");
-        mimeMessage.setHeader("X-SES-MESSAGE-TAGS", "mail-open");
+        mimeMessage.setHeader("X-SES-MESSAGE-TAGS", "mail-open=default");
 
         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, false, "UTF-8");
         helper.setFrom(FROM_EMAIL);
