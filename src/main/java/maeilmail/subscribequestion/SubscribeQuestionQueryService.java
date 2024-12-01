@@ -80,7 +80,6 @@ public class SubscribeQuestionQueryService {
         return new QSubscribeQuestionSummary(
                 question.id,
                 question.title,
-                question.customizedTitle,
                 question.category.stringValue().lower()
         );
     }
