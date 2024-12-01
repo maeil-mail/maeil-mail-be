@@ -3,50 +3,13 @@
     <meta charset="UTF-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <!--
-    아톰과 할일
-    1. 요일별 질문 채우기 (기존 텍스트는 삭제)
-    2. 제목에 분야(BE/FE) 및 주차 채우기 (기존 텍스트는 삭제)
-    3. 설정 링크에 이메일 토큰 채워넣기 (데일리 메일 쪽도 동일하게 수정해야 함!)
-    4. 답변 확인 버튼 이메일, 카테고리, 기간에 대한 정보 채워넣기
-    -->
-
     <title>매일 메일</title>
 </head>
 <body style="margin: 0; padding: 0">
 <section class="mail-preview" aria-hidden="true">
     <span
             style="display:none;font-size:1px;color:#ffffff;line-height:1px;max-height:0px;max-width:0px;opacity:0;overflow:hidden">
-      이번주 질문이 도착했습니다.
-    </span>
-    <span
-            style="display:none;font-size:1px;color:#ffffff;line-height:1px;max-height:0px;max-width:0px;opacity:0;overflow:hidden">
-      &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp;
-      &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj;
-      &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy;
-      &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp;
-      &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj;
-      &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy;
-      &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp;
-      &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy;
-      &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp;
-      &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj;
-      &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy;
-      &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp;
-      &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy;
-      &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp;
-      &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy;
-      &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp;
-      &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj;
-      &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy;
-      &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp;
-      &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj;
-      &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy;
-      &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp;
-      &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj;
-      &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy;
-      &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp;
-      &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy; &zwnj; &nbsp; &shy;
+        이번주 질문이 도착했습니다.
     </span>
 </section>
 
@@ -107,7 +70,7 @@
           ">
             아래 버튼을 눌러 이번 주차 질문들의 답변을 확인해 보세요!
         </p>
-        <a th:href="@{https://www.maeil-mail.kr/question/mine/weekly(email=${email}, year=${year}, month =${month}, week=${week})}"
+        <a th:href="@{https://www.maeil-mail.kr/question/mine/weekly(email=${email}, category=${category}, year=${year}, month =${month}, week=${week})}"
            style="
               display: inline-block;
               padding: 15px 35px;
