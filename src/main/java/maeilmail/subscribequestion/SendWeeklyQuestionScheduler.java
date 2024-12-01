@@ -10,8 +10,6 @@ import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import maeilmail.DistributedSupport;
-import maeilmail.question.QuestionCategory;
-import maeilmail.question.QuestionQueryService;
 import maeilmail.question.QuestionSummary;
 import maeilmail.subscribe.Subscribe;
 import maeilmail.subscribe.SubscribeFrequency;
@@ -22,7 +20,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-class SendQuestionScheduler {
+class SendWeeklyQuestionScheduler {
 
     private static final ZoneId KOREA_ZONE = ZoneId.of("Asia/Seoul");
 
@@ -31,19 +29,12 @@ class SendQuestionScheduler {
     private final SubscribeQuestionView subscribeQuestionView;
     private final SubscribeRepository subscribeRepository;
     private final DistributedSupport distributedSupport;
-    private final QuestionQueryService questionQueryService;
 
-    @Scheduled(cron = "0 55 6 * * MON-FRI", zone = "Asia/Seoul")
-    public void cacheWarmUp() {
-        questionQueryService.queryAllByCategory(QuestionCategory.BACKEND.name());
-        questionQueryService.queryAllByCategory(QuestionCategory.FRONTEND.name());
-    }
-
-    @Scheduled(cron = "0 0 7 * * MON-FRI", zone = "Asia/Seoul")
+    @Scheduled(cron = "0 0 7 * * MON", zone = "Asia/Seoul")
     public void sendMail() {
-        log.info("일간 메일 구독자에게 질문지 발송을 시작합니다.");
-        List<Subscribe> subscribes = getSubscribes(SubscribeFrequency.DAILY);
-        log.info("{}명의 일간 구독자에게 질문지를 발송합니다.", subscribes.size());
+        log.info("주간 메일 구독자에게 질문지 발송을 시작합니다.");
+        List<Subscribe> subscribes = getSubscribes(SubscribeFrequency.WEEKLY);
+        log.info("{}명의 주간 메일 구독자에게 질문지를 발송합니다.", subscribes.size());
 
         subscribes.stream()
                 .filter(it -> distributedSupport.isMine(it.getId()))
@@ -71,7 +62,11 @@ class SendQuestionScheduler {
     }
 
     private String createSubject(QuestionSummary question) {
-        return question.title();
+        if (question.customizedTitle() == null) {
+            return "오늘의 면접 질문을 보내드려요.";
+        }
+
+        return question.customizedTitle();
     }
 
     private String createText(Subscribe subscribe, QuestionSummary question) {
