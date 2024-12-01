@@ -40,7 +40,7 @@ class SubscribeQuestionApiTest {
         String email = "test@gmail.com";
         ArgumentCaptor<String> categoryCaptor = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<Pageable> pageableCaptor = ArgumentCaptor.forClass(Pageable.class);
-        PaginationResponse<QuestionSummary> response = new PaginationResponse<>(true, 0L, Collections.emptyList());
+        PaginationResponse<SubscribeQuestionSummary> response = new PaginationResponse<>(true, 0L, Collections.emptyList());
 
         when(subscribeQuestionQueryService.pageByEmailAndCategory(anyString(), anyString(), any()))
                 .thenReturn(response);

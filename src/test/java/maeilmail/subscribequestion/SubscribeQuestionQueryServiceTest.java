@@ -8,7 +8,6 @@ import maeilmail.PaginationResponse;
 import maeilmail.question.Question;
 import maeilmail.question.QuestionCategory;
 import maeilmail.question.QuestionRepository;
-import maeilmail.question.QuestionSummary;
 import maeilmail.subscribe.Subscribe;
 import maeilmail.subscribe.SubscribeFrequency;
 import maeilmail.subscribe.SubscribeRepository;
@@ -73,7 +72,7 @@ class SubscribeQuestionQueryServiceTest extends IntegrationTestSupport {
     @DisplayName("구독자의 이메일과 카테고리에 따라 여태까지 받은 모든 질문지를 조회한다.")
     @Test
     void pageByEmailAndCategory() {
-        PaginationResponse<QuestionSummary> response =
+        PaginationResponse<SubscribeQuestionSummary> response =
                 subscribeQuestionQueryService.pageByEmailAndCategory(
                         "111@gmail.com",
                         "backend",
@@ -85,7 +84,7 @@ class SubscribeQuestionQueryServiceTest extends IntegrationTestSupport {
                 () -> assertThat(response.data()).hasSize(2),
                 () -> assertThat(response.totalPage()).isEqualTo(1),
                 () -> assertThat(response.data())
-                        .map(QuestionSummary::title)
+                        .map(SubscribeQuestionSummary::title)
                         .containsExactlyElementsOf(List.of("title-1", "title-2"))
         );
     }
@@ -93,7 +92,7 @@ class SubscribeQuestionQueryServiceTest extends IntegrationTestSupport {
     @DisplayName("카테고리가 all 이면 구독자가 받은 모든 카테고리의 질문을 조회한다.")
     @Test
     void pageByEmailAndDefaultCategory() {
-        PaginationResponse<QuestionSummary> response =
+        PaginationResponse<SubscribeQuestionSummary> response =
                 subscribeQuestionQueryService.pageByEmailAndCategory(
                         "111@gmail.com",
                         "all",
@@ -105,7 +104,7 @@ class SubscribeQuestionQueryServiceTest extends IntegrationTestSupport {
                 () -> assertThat(response.data()).hasSize(3),
                 () -> assertThat(response.totalPage()).isEqualTo(1),
                 () -> assertThat(response.data())
-                        .map(QuestionSummary::title)
+                        .map(SubscribeQuestionSummary::title)
                         .containsExactlyElementsOf(List.of("title-1", "title-2", "title-4"))
         );
     }

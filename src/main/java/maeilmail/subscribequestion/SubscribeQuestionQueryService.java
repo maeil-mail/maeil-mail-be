@@ -13,10 +13,8 @@ import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import maeilmail.PaginationResponse;
-import maeilmail.question.QQuestionSummary;
 import maeilmail.question.Question;
 import maeilmail.question.QuestionCategory;
-import maeilmail.question.QuestionSummary;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -31,7 +29,7 @@ public class SubscribeQuestionQueryService {
 
     private final JPAQueryFactory queryFactory;
 
-    public PaginationResponse<QuestionSummary> pageByEmailAndCategory(String email, String category, Pageable pageable) {
+    public PaginationResponse<SubscribeQuestionSummary> pageByEmailAndCategory(String email, String category, Pageable pageable) {
         JPAQuery<Long> countQuery = queryFactory.select(subscribeQuestion.count())
                 .from(subscribeQuestion)
                 .join(subscribe).on(subscribeQuestion.subscribe.eq(subscribe))
@@ -40,7 +38,7 @@ public class SubscribeQuestionQueryService {
                         .and(eqCategory(category))
                         .and(subscribeQuestion.isSuccess));
 
-        JPAQuery<QuestionSummary> resultQuery = queryFactory.select(projectionQuestionSummary())
+        JPAQuery<SubscribeQuestionSummary> resultQuery = queryFactory.select(projectionSubscribeQuestionSummary())
                 .from(subscribeQuestion)
                 .join(subscribe).on(subscribeQuestion.subscribe.eq(subscribe))
                 .join(question).on(subscribeQuestion.question.eq(question))
@@ -53,7 +51,7 @@ public class SubscribeQuestionQueryService {
 
         appendOrderCondition(pageable, resultQuery);
 
-        Page<QuestionSummary> pageResult = PageableExecutionUtils.getPage(resultQuery.fetch(), pageable, countQuery::fetchOne);
+        Page<SubscribeQuestionSummary> pageResult = PageableExecutionUtils.getPage(resultQuery.fetch(), pageable, countQuery::fetchOne);
         return new PaginationResponse<>(pageResult.isLast(), (long) pageResult.getTotalPages(), pageResult.getContent());
     }
 
@@ -69,7 +67,7 @@ public class SubscribeQuestionQueryService {
         return question.category.eq(QuestionCategory.from(category));
     }
 
-    private void appendOrderCondition(Pageable pageable, JPAQuery<QuestionSummary> resultQuery) {
+    private void appendOrderCondition(Pageable pageable, JPAQuery<SubscribeQuestionSummary> resultQuery) {
         for (Sort.Order order : pageable.getSort()) {
             PathBuilder<Question> entityPath = new PathBuilder<>(question.getType(), question.getMetadata());
             Expression orderExpression = entityPath.get(order.getProperty());
@@ -78,12 +76,10 @@ public class SubscribeQuestionQueryService {
         }
     }
 
-    private QQuestionSummary projectionQuestionSummary() {
-        return new QQuestionSummary(
+    private QSubscribeQuestionSummary projectionSubscribeQuestionSummary() {
+        return new QSubscribeQuestionSummary(
                 question.id,
                 question.title,
-                question.content,
-                question.customizedTitle,
                 question.category.stringValue().lower()
         );
     }
