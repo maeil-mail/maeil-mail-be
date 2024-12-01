@@ -10,6 +10,7 @@ import maeilmail.question.QuestionCategory;
 import maeilmail.question.QuestionRepository;
 import maeilmail.question.QuestionSummary;
 import maeilmail.subscribe.Subscribe;
+import maeilmail.subscribe.SubscribeFrequency;
 import maeilmail.subscribe.SubscribeRepository;
 import maeilmail.support.IntegrationTestSupport;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,9 +36,9 @@ class SubscribeQuestionQueryServiceTest extends IntegrationTestSupport {
     @BeforeEach
     void setUp() {
         // subscribers
-        Subscribe subscribe1 = new Subscribe("111@gmail.com", QuestionCategory.BACKEND);
-        Subscribe subscribe2 = new Subscribe("222@gmail.com", QuestionCategory.BACKEND);
-        Subscribe subscribe3 = new Subscribe("333@gmail.com", QuestionCategory.FRONTEND);
+        Subscribe subscribe1 = new Subscribe("111@gmail.com", QuestionCategory.BACKEND, SubscribeFrequency.DAILY);
+        Subscribe subscribe2 = new Subscribe("222@gmail.com", QuestionCategory.BACKEND, SubscribeFrequency.DAILY);
+        Subscribe subscribe3 = new Subscribe("333@gmail.com", QuestionCategory.FRONTEND, SubscribeFrequency.DAILY);
         subscribeRepository.saveAll(List.of(subscribe1, subscribe2, subscribe3));
 
         // questions

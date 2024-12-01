@@ -44,13 +44,14 @@ class SubscribeRepositoryTest extends IntegrationTestSupport {
             QuestionCategory category,
             LocalDateTime createdAt
     ) {
-        String sql = "insert into subscribe(email, category, next_question_sequence, created_at, token) values(?, ?, ?, ?, ?);";
+        String sql = "insert into subscribe(email, category, next_question_sequence, created_at, token, frequency) values(?, ?, ?, ?, ?, ?);";
         Query nativeQuery = entityManager.createNativeQuery(sql);
         nativeQuery.setParameter(1, email);
         nativeQuery.setParameter(2, category.toLowerCase());
         nativeQuery.setParameter(3, 0);
         nativeQuery.setParameter(4, createdAt);
         nativeQuery.setParameter(5, UUID.randomUUID().toString());
+        nativeQuery.setParameter(6, "daily");
         nativeQuery.executeUpdate();
     }
 }

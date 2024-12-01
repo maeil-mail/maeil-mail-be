@@ -1,6 +1,7 @@
 package maeilmail.subscribe;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,19 +31,37 @@ class SubscribeService {
 
     private void trySubscribe(SubscribeRequest request) {
         verifySubscribeService.verify(request.email(), request.code());
-
-        for (String requestCategory : request.category()) {
-            subscribeIfAbsent(request.email(), QuestionCategory.from(requestCategory));
+        List<Subscribe> subscribes = subscribeRepository.findAllByEmailAndDeletedAtIsNull(request.email());
+        List<QuestionCategory> newSubscribeCategories = findNewSubscribeCategories(request, subscribes);
+        if (newSubscribeCategories.isEmpty()) {
+            return;
         }
+
+        newSubscribeCategories.forEach(it -> subscribe(it, request));
+        synchronizeFrequency(request, subscribes);
     }
 
-    private void subscribeIfAbsent(String email, QuestionCategory category) {
-        boolean alreadyExist = subscribeRepository.existsByEmailAndCategoryAndDeletedAtIsNull(email, category);
+    private List<QuestionCategory> findNewSubscribeCategories(SubscribeRequest request, List<Subscribe> subscribes) {
+        return request.category().stream()
+                .map(QuestionCategory::from)
+                .filter(it -> isNotSubscribed(it, subscribes))
+                .toList();
+    }
 
-        if (!alreadyExist) {
-            Subscribe subscribe = new Subscribe(email, category);
-            subscribeRepository.save(subscribe);
-        }
+    private boolean isNotSubscribed(QuestionCategory category, List<Subscribe> subscribes) {
+        return subscribes.stream()
+                .noneMatch(it -> it.getCategory() == category);
+    }
+
+    private void subscribe(QuestionCategory category, SubscribeRequest request) {
+        SubscribeFrequency frequency = SubscribeFrequency.from(request.frequency());
+        Subscribe subscribe = new Subscribe(request.email(), category, frequency);
+        subscribeRepository.save(subscribe);
+    }
+
+    private void synchronizeFrequency(SubscribeRequest request, List<Subscribe> subscribes) {
+        SubscribeFrequency frequency = SubscribeFrequency.from(request.frequency());
+        subscribes.forEach(it -> it.changeFrequency(frequency));
     }
 
     public void sendCodeIncludedMail(VerifyEmailRequest request) {

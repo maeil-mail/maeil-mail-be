@@ -8,6 +8,7 @@ import maeilmail.question.Question;
 import maeilmail.question.QuestionCategory;
 import maeilmail.question.QuestionRepository;
 import maeilmail.subscribe.Subscribe;
+import maeilmail.subscribe.SubscribeFrequency;
 import maeilmail.subscribe.SubscribeRepository;
 import maeilmail.support.IntegrationTestSupport;
 import maeilmail.support.QueryCountTester;
@@ -82,7 +83,7 @@ class SendQuestionSchedulerTest extends IntegrationTestSupport {
     }
 
     private Subscribe createSubscribe(QuestionCategory category) {
-        Subscribe subscribe = new Subscribe("email@test.com", category);
+        Subscribe subscribe = new Subscribe("email@test.com", category, SubscribeFrequency.DAILY);
 
         return subscribeRepository.save(subscribe);
     }

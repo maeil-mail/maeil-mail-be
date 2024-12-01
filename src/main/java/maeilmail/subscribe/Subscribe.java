@@ -42,11 +42,16 @@ public class Subscribe extends BaseEntity {
     @Column(nullable = true)
     private LocalDateTime deletedAt;
 
-    public Subscribe(String email, QuestionCategory category) {
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private SubscribeFrequency frequency;
+
+    public Subscribe(String email, QuestionCategory category, SubscribeFrequency frequency) {
         this.email = email;
         this.category = category;
         this.nextQuestionSequence = determineSequenceByCategory(category);
         this.token = UUID.randomUUID().toString();
+        this.frequency = frequency;
         this.deletedAt = null;
     }
 
@@ -58,7 +63,16 @@ public class Subscribe extends BaseEntity {
         return 0L;
     }
 
+    // TODO: 기삭제 여부 판단
     public void unsubscribe() {
         this.deletedAt = LocalDateTime.now();
+    }
+
+    public void changeFrequency(SubscribeFrequency frequency) {
+        this.frequency = frequency;
+    }
+
+    public boolean isMine(String token) {
+        return this.token.equals(token);
     }
 }

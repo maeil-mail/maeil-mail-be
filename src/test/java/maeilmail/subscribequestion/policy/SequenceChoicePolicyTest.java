@@ -9,6 +9,7 @@ import maeilmail.question.QuestionCategory;
 import maeilmail.question.QuestionRepository;
 import maeilmail.question.QuestionSummary;
 import maeilmail.subscribe.Subscribe;
+import maeilmail.subscribe.SubscribeFrequency;
 import maeilmail.subscribe.SubscribeRepository;
 import maeilmail.support.IntegrationTestSupport;
 import org.junit.jupiter.api.DisplayName;
@@ -82,7 +83,7 @@ class SequenceChoicePolicyTest extends IntegrationTestSupport {
     }
 
     private Subscribe createBackendSubscribe() {
-        Subscribe subscribe = new Subscribe("lee@gmail.com", QuestionCategory.BACKEND);
+        Subscribe subscribe = new Subscribe("lee@gmail.com", QuestionCategory.BACKEND, SubscribeFrequency.DAILY);
 
         return subscribeRepository.save(subscribe);
     }
