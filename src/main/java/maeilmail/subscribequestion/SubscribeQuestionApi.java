@@ -2,7 +2,6 @@ package maeilmail.subscribequestion;
 
 import lombok.RequiredArgsConstructor;
 import maeilmail.PaginationResponse;
-import maeilmail.question.QuestionSummary;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
@@ -17,12 +16,12 @@ public class SubscribeQuestionApi {
     private final SubscribeQuestionQueryService subscribeQuestionQueryService;
 
     @GetMapping("/subscribe-question")
-    public ResponseEntity<PaginationResponse<QuestionSummary>> getSubscribeQuestion(
+    public ResponseEntity<PaginationResponse<SubscribeQuestionSummary>> getSubscribeQuestion(
             @RequestParam String email,
             @RequestParam(defaultValue = "all") String category,
             @PageableDefault(sort = {"category", "id"}, size = 200) Pageable pageable
     ) {
-        PaginationResponse<QuestionSummary> response = subscribeQuestionQueryService.pageByEmailAndCategory(email, category, pageable);
+        PaginationResponse<SubscribeQuestionSummary> response = subscribeQuestionQueryService.pageByEmailAndCategory(email, category, pageable);
 
         return ResponseEntity.ok(response);
     }
