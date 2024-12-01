@@ -61,7 +61,7 @@ class SendWeeklyQuestionScheduler {
         try {
             QuestionSummary baseQuestionSummary = choiceQuestionPolicy.choice(subscribe, LocalDate.now());
             List<QuestionSummary> questions = choiceWeeklyQuestions(subscribe, baseQuestionSummary);
-            String subject = "금주의 면접 질문을 보내드려요.";
+            String subject = "이번주 면접 질문을 보내드려요.";
             String text = createText(subscribe, questions);
 
             return createWeeklySubscribeQuestionMessage(subscribe, questions, subject, text);
@@ -82,6 +82,7 @@ class SendWeeklyQuestionScheduler {
         LocalDate today = LocalDate.now();
         HashMap<Object, Object> attribute = new HashMap<>();
         attribute.put("questions", questions);
+        attribute.put("category", subscribe.getCategory().toLowerCase());
         attribute.put("email", subscribe.getEmail());
         attribute.put("token", subscribe.getToken());
         attribute.put("weekLabel", createWeekLabel(subscribe, today));
