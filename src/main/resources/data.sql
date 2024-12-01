@@ -21,10 +21,10 @@ values ('백엔드 질문 1',
         '프론트 질문 3 내용',
         'FRONTEND');
 
-insert into subscribe(email, category, next_question_sequence, token, created_at)
-values ('leehaneul990623@gmail.com', 'BACKEND', 0, 'test-token-1', '2024-11-01'),
-       ('leehaneul0623@gmail.com', 'FRONTEND', 0, 'test-token-2', '2024-11-01'),
-       ('gosmdochee@gmail.com', 'BACKEND', 0, 'test-token-3', '2024-11-01');
+insert into subscribe(email, category, next_question_sequence, token, created_at, frequency)
+values ('leehaneul990623@gmail.com', 'BACKEND', 0, 'test-token-1', '2024-11-01', 'DAILY'),
+       ('leehaneul0623@gmail.com', 'FRONTEND', 0, 'test-token-2', '2024-11-01', 'DAILY'),
+       ('gosmdochee2@naver.com', 'BACKEND', 0, 'test-token-3', '2024-11-01', 'DAILY');
 
 insert into admin(email)
 values ('leehaneul990623@gmail.com'),
