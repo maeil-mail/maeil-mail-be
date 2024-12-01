@@ -25,4 +25,17 @@ public class SubscribeQuestionApi {
 
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/subscribe-question/weekly")
+    public ResponseEntity<WeeklySubscribeQuestionResponse> getSubscribeQuestion(
+            @RequestParam String email,
+            @RequestParam String category,
+            @RequestParam Long year,
+            @RequestParam Long month,
+            @RequestParam Long week
+    ) {
+        WeeklySubscribeQuestionResponse response = subscribeQuestionQueryService.queryWeeklyQuestions(email, category, year, month, week);
+
+        return ResponseEntity.ok(response);
+    }
 }

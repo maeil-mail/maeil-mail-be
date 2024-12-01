@@ -33,11 +33,11 @@ public class SubscribeQuestionQueryService {
 
     private final JPAQueryFactory queryFactory;
 
-    public WeeklySubscribeQuestionResponse queryWeeklyQuestions(String email, String category, Integer year, Integer month, Integer week) {
-        LocalDate firstDayOfMonth = LocalDate.of(year, month, 1);
+    public WeeklySubscribeQuestionResponse queryWeeklyQuestions(String email, String category, Long year, Long month, Long week) {
+        LocalDate firstDayOfMonth = LocalDate.of(Math.toIntExact(year), Math.toIntExact(month), 1);
         LocalDate firstMonday = firstDayOfMonth.with(TemporalAdjusters.firstInMonth(DayOfWeek.MONDAY));
         LocalDate baseDateStart = firstMonday.plusWeeks(week - 1);
-        LocalDate baseDateEnd = baseDateStart.plusWeeks(1).minusDays(1);
+        LocalDate baseDateEnd = baseDateStart.plusDays(1);
         List<WeeklySubscribeQuestionSummary> result = queryFactory.select(projectionWeeklySubscribeQuestionSummary())
                 .from(subscribeQuestion)
                 .join(subscribe).on(subscribeQuestion.subscribe.eq(subscribe))
@@ -47,7 +47,8 @@ public class SubscribeQuestionQueryService {
                         .and(subscribeQuestion.isSuccess)
                         .and(subscribeQuestion.createdAt.between(baseDateStart.atStartOfDay(), baseDateEnd.atStartOfDay())))
                 .fetch();
-        for (int i = 0; i < result.size(); i++) {
+        int size = result.size();
+        for (int i = 1; i <= size; i++) {
             result.get(i).setIndex((long) i);
         }
         String weekLabel = month + "월 " + week + "주차";

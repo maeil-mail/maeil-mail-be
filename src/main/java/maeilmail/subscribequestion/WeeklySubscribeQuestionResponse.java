@@ -2,5 +2,5 @@ package maeilmail.subscribequestion;
 
 import java.util.List;
 
-record WeeklySubscribeQuestionResponse(String weekLabel, List<WeeklySubscribeQuestionSummary> questions) {
+public record WeeklySubscribeQuestionResponse(String weekLabel, List<WeeklySubscribeQuestionSummary> questions) {
 }
