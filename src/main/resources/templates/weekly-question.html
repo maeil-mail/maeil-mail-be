@@ -76,14 +76,17 @@
           ">
             <p style="color: #00a86b; text-align: start; font-size: 1rem;">매주메일</p>
         </a>
-        <h1 style="font-size: 18px; font-weight: 600; margin-bottom: 20px" th:text="${분야및몇주차}">
-            BE 11월 2주차 질문
+        <h1 style="font-size: 18px; font-weight: 600; margin-bottom: 20px" th:text="${weekLabel}">
         </h1>
         <div style="
             padding: 0 20px;
             text-align: left;
           ">
-            <p style="
+            <!-- for문으로 렌더링 -->
+            <p
+                    th:each="question:${questions}"
+                    th:object="question"
+                    style="
               background-color: #F5FAF8;
               font-size: 15px;
               color: #2b2b2b;
@@ -92,51 +95,7 @@
               border-radius: 6px;
               padding: 0.5rem 1.2rem;
             ">
-                <span th:text="${질문1}">CSS Flexbox와 Grid의 차이점과 사용 사례에 대해 설명해주세요</span>
-            </p>
-            <p style="
-              font-size: 15px;
-              background-color: #F5FAF8;
-              color: #2b2b2b;
-              line-height: 1.5;
-              border: 0.5px solid #00a86b;
-              border-radius: 6px;
-              padding: 0.5rem 1.2rem;
-            ">
-                <span th:text="${질문2}">CSS Flexbox와 Grid의 차이점과 사용 사례에 대해 설명해주세요</span>
-            </p>
-            <p style="
-              font-size: 15px;
-              background-color: #F5FAF8;
-              color: #2b2b2b;
-              line-height: 1.5;
-              border: 0.5px solid #00a86b;
-              border-radius: 6px;
-              padding: 0.5rem 1.2rem;
-            ">
-                <span th:text="${질문3}">CSS Flexbox와 Grid의 차이점과 사용 사례에 대해 설명해주세요</span>
-            </p>
-            <p style="
-             font-size: 15px;
-              background-color: #F5FAF8;
-              color: #2b2b2b;
-              line-height: 1.5;
-              border: 0.5px solid #00a86b;
-              border-radius: 6px;
-              padding: 0.5rem 1.2rem;
-            ">
-                <span th:text="${질문4}">CSS Flexbox와 Grid의 차이점과 사용 사례에 대해 설명해주세요</span>
-            </p>
-            <p style="
-             font-size: 15px;
-              background-color: #F5FAF8;
-              color: #2b2b2b;
-              line-height: 1.5;
-              border: 0.5px solid #00a86b;
-              border-radius: 6px;
-              padding: 0.5rem 1.2rem;
-            ">
-                <span th:text="${질문5}">CSS Flexbox와 Grid의 차이점과 사용 사례에 대해 설명해주세요</span>
+                <span th:text="${title}"></span>
             </p>
         </div>
         <p style="
@@ -149,7 +108,7 @@
           ">
             아래 버튼을 눌러 이번 주차 질문들의 답변을 확인해 보세요!
         </p>
-        <a th:href="www.maeil-mail.kr/question/mine/weekly?email=${이메일}&category=${카테고리 ex. backend}&year=${년도}&month=${달}&week=${주차}"
+        <a th:href="@{https://www.maeil-mail.kr/question/mine/weekly(email=${email}, year=${year}, month =${month}, week=${week})}"
            style="
               display: inline-block;
               padding: 15px 35px;
