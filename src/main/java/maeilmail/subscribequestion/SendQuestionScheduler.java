@@ -66,11 +66,7 @@ class SendQuestionScheduler {
     }
 
     private String createSubject(QuestionSummary question) {
-        if (question.customizedTitle() == null) {
-            return "오늘의 면접 질문을 보내드려요.";
-        }
-
-        return question.customizedTitle();
+        return question.title();
     }
 
     private String createText(Subscribe subscribe, QuestionSummary question) {
