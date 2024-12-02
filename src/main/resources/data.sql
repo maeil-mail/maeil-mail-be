@@ -19,7 +19,10 @@ values ('백엔드 질문 1',
         'BACKEND'),
        ('프론트 질문 3',
         '프론트 질문 3 내용',
-        'FRONTEND');
+        'FRONTEND'),
+       ('백엔드 질문 5',
+        '백엔드 질문 5 내용',
+        'BACKEND');
 
 insert into subscribe(email, category, next_question_sequence, token, created_at, frequency)
 values ('leehaneul990623@gmail.com', 'BACKEND', 0, 'test-token-1', '2024-11-01', 'DAILY'),

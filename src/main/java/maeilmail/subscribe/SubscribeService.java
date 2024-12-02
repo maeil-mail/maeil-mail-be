@@ -69,7 +69,7 @@ class SubscribeService {
     }
 
     private void sendSubscribeWelcomeMail(String email) {
-        String subject = "앞으로 매일 면접 질문을 보내드릴게요.";
+        String subject = "앞으로 면접 질문을 보내드릴게요.";
         String text = createText();
         MailMessage mailMessage = new MailMessage(email, subject, text, welcomeView.getType());
         mailSender.sendMail(mailMessage);
