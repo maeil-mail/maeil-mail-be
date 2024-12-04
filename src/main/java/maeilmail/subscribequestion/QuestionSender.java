@@ -1,24 +1,21 @@
 package maeilmail.subscribequestion;
 
-import jakarta.mail.MessagingException;
-import jakarta.mail.internet.MimeMessage;
 import lombok.extern.slf4j.Slf4j;
 import maeilmail.mail.AbstractMailSender;
 import maeilmail.question.Question;
 import maeilmail.question.QuestionCategory;
 import maeilmail.subscribe.Subscribe;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component("questionSender")
-public class QuestionSender extends AbstractMailSender<SubscribeQuestionMessage> {
+public class QuestionSender extends AbstractMailSender<SubscribeQuestionMessage, QuestionMimeMessageCreator> {
 
     private final SubscribeQuestionRepository subscribeQuestionRepository;
 
-    public QuestionSender(JavaMailSender javaMailSender, SubscribeQuestionRepository subscribeQuestionRepository) {
-        super(javaMailSender);
+    public QuestionSender(JavaMailSender javaMailSender, QuestionMimeMessageCreator mimeMessageCreator, SubscribeQuestionRepository subscribeQuestionRepository) {
+        super(javaMailSender, mimeMessageCreator);
         this.subscribeQuestionRepository = subscribeQuestionRepository;
     }
 
@@ -29,22 +26,6 @@ public class QuestionSender extends AbstractMailSender<SubscribeQuestionMessage>
         QuestionCategory category = question.getCategory();
         log.info("질문지를 전송합니다. email = {}, questionId = {}, subject = {}, category = {}",
                 subscribe.getEmail(), question.getId(), message.subject(), category.toLowerCase());
-    }
-
-    @Override
-    protected MimeMessage createMimeMessage(SubscribeQuestionMessage message) throws MessagingException {
-        Subscribe subscribe = message.subscribe();
-
-        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
-        mimeMessage.setHeader("X-SES-CONFIGURATION-SET", "my-first-configuration-set");
-        mimeMessage.setHeader("X-SES-MESSAGE-TAGS", "mail-open=default");
-
-        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, false, "UTF-8");
-        helper.setFrom(FROM_EMAIL);
-        helper.setTo(subscribe.getEmail());
-        helper.setSubject("[매일메일] " + message.subject());
-        helper.setText(message.text(), true);
-        return mimeMessage;
     }
 
     @Override
