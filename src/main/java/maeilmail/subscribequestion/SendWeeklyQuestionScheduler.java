@@ -66,7 +66,7 @@ class SendWeeklyQuestionScheduler {
 
             return createWeeklySubscribeQuestionMessage(subscribe, questions, subject, text);
         } catch (Exception e) {
-            log.info("면접 질문 선택 실패 = {}", e.getMessage());
+            log.error("주간 면접 질문 선택 실패. 구독자 id = {}", subscribe.getId(), e);
             return null;
         }
     }
