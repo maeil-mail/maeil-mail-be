@@ -10,18 +10,18 @@ import org.springframework.scheduling.annotation.Async;
 
 @Slf4j
 @RequiredArgsConstructor
-public abstract class AbstractMailSender<T> {
+public abstract class AbstractMailSender<T, U extends MimeMessageCreator<T>> {
 
     private static final int MAIL_SENDER_RATE_MILLISECONDS = 500;
-    protected static final String FROM_EMAIL = "maeil-mail <maeil-mail-noreply@maeil-mail.site>";
 
     protected final JavaMailSender javaMailSender;
+    protected final U mimeMessageCreator;
 
     @Async
     public void sendMail(T message) {
         try {
             logSending(message);
-            MimeMessage mimeMessage = createMimeMessage(message);
+            MimeMessage mimeMessage = mimeMessageCreator.createMimeMessage(javaMailSender.createMimeMessage(), message);
             javaMailSender.send(mimeMessage);
             handleSuccess(message);
         } catch (MessagingException | MailException e) {
@@ -40,8 +40,6 @@ public abstract class AbstractMailSender<T> {
     }
 
     protected abstract void logSending(T message);
-
-    protected abstract MimeMessage createMimeMessage(T message) throws MessagingException;
 
     protected abstract void handleSuccess(T message);
 

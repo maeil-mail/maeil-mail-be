@@ -65,7 +65,7 @@ class SendQuestionScheduler {
             String text = createText(subscribe, questionSummary);
             return new SubscribeQuestionMessage(subscribe, questionSummary.toQuestion(), subject, text);
         } catch (Exception e) {
-            log.info("면접 질문 선택 실패 = {}", e.getMessage());
+            log.error("일간 면접 질문 선택 실패. 구독자 id = {}", subscribe.getId(), e);
             return null;
         }
     }
