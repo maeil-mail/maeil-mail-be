@@ -85,7 +85,7 @@ class SubscribeQuestionQueryServiceTest extends IntegrationTestSupport {
                 () -> assertThat(response.totalPage()).isEqualTo(1),
                 () -> assertThat(response.data())
                         .map(SubscribeQuestionSummary::title)
-                        .containsExactlyElementsOf(List.of("title-1", "title-2"))
+                        .containsExactlyElementsOf(List.of("title-2", "title-1"))
         );
     }
 
@@ -105,7 +105,7 @@ class SubscribeQuestionQueryServiceTest extends IntegrationTestSupport {
                 () -> assertThat(response.totalPage()).isEqualTo(1),
                 () -> assertThat(response.data())
                         .map(SubscribeQuestionSummary::title)
-                        .containsExactlyElementsOf(List.of("title-1", "title-2", "title-4"))
+                        .containsExactlyElementsOf(List.of("title-4", "title-2", "title-1"))
         );
     }
 }
