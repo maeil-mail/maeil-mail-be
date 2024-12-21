@@ -74,6 +74,7 @@ public class SubscribeQuestionQueryService {
                         .and(eqCategory(category))
                         .and(subscribeQuestion.isSuccess))
                 .offset(pageable.getOffset())
+                .orderBy(subscribeQuestion.id.desc())
                 .limit(pageable.getPageSize());
 
         appendOrderCondition(pageable, resultQuery);
