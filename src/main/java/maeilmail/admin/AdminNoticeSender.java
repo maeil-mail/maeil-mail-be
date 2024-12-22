@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class AdminNoticeService {
+public class AdminNoticeSender {
 
     private final MailSender mailSender;
     private final SubscribeRepository subscribeRepository;

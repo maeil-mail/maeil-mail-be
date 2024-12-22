@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 class AdminApi {
 
     private final AdminQuestionService adminQuestionService;
-    private final AdminNoticeService adminNoticeService;
+    private final AdminNoticeSender adminNoticeSender;
 
     @PutMapping("/admin/question")
     public ResponseEntity<Void> putQuestion(@RequestBody AdminQuestionRequest request) {
@@ -27,7 +27,7 @@ class AdminApi {
 
     @PostMapping("/admin/notice")
     public ResponseEntity<Void> sendNotice(@RequestBody AdminNoticeRequest request) {
-        adminNoticeService.sendNotice(request);
+        adminNoticeSender.sendNotice(request);
 
         return ResponseEntity.noContent().build();
     }
