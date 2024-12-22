@@ -65,3 +65,14 @@ create table subscribe_question
     updated_at   timestamp(6),
     primary key (id)
 );
+
+create table admin_notice
+(
+    id          bigint auto_increment,
+    title       varchar(255) not null,
+    content     text         not null,
+    reserved_at timestamp(6) not null,
+    created_at  timestamp(6),
+    updated_at  timestamp(6),
+    primary key (id)
+)
