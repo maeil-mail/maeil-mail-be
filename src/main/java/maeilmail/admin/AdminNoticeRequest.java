@@ -1,10 +1,19 @@
 package maeilmail.admin;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 public record AdminNoticeRequest(
+        Long id,
         String title,
         String content,
-        LocalDateTime reservedTime
+        LocalDate date
 ) {
+
+    public AdminNotice toAdminNotice() {
+        return new AdminNotice(id, title, content, date);
+    }
+
+    public boolean isUpdate() {
+        return id != null;
+    }
 }
