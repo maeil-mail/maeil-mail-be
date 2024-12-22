@@ -31,6 +31,11 @@ class AdminNoticeService {
         adminNoticeSender.sendOne(adminNoticeRequest, request.target());
     }
 
+    @Transactional
+    public void deleteNotice(Long id) {
+        adminNoticeRepository.delete(findNotice(id));
+    }
+
     private AdminNotice findNotice(Long id) {
         return adminNoticeRepository.findById(id)
                 .orElseThrow(NoSuchElementException::new);
