@@ -33,7 +33,7 @@ public class AdminNoticeSender {
 
     public void sendOne(AdminNoticeRequest request, String email) {
         log.info("테스트 발송을 시작합니다.");
-        mailSender.sendMail(createMailMessage(email, request.title(), request.title()));
+        mailSender.sendMail(createMailMessage(email, request.title(), request.content()));
     }
 
     private MailMessage createMailMessage(String email, String title, String content) {
