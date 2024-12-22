@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 class AdminNoticeService {
 
     private final AdminNoticeRepository adminNoticeRepository;
+    private final AdminNoticeSender adminNoticeSender;
 
     @Transactional
     public void createNotice(AdminNotice notice) {
@@ -18,11 +19,20 @@ class AdminNoticeService {
 
     @Transactional
     public void updateNotice(AdminNotice notice) {
-        AdminNotice found = adminNoticeRepository.findById(notice.getId())
-                .orElseThrow(NoSuchElementException::new);
+        AdminNotice found = findNotice(notice.getId());
 
         found.setTitle(notice.getTitle());
         found.setContent(notice.getContent());
         found.setReservedAt(notice.getReservedAt());
+    }
+
+    public void sendTest(Long id, AdminNoticeTestRequest request) {
+        AdminNoticeRequest adminNoticeRequest = AdminNoticeRequest.from(findNotice(id));
+        adminNoticeSender.sendOne(adminNoticeRequest, request.target());
+    }
+
+    private AdminNotice findNotice(Long id) {
+        return adminNoticeRepository.findById(id)
+                .orElseThrow(NoSuchElementException::new);
     }
 }

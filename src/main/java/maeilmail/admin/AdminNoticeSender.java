@@ -25,13 +25,18 @@ public class AdminNoticeSender {
         log.info("{}명의 구독자에게 공지 메일을 발송합니다.", distinctEmails.size());
 
         distinctEmails.stream()
-                .map(it -> createNotice(it, request.title(), request.content()))
+                .map(it -> createMailMessage(it, request.title(), request.content()))
                 .forEach(mailSender::sendMail);
 
         log.info("공지 전송을 종료합니다.");
     }
 
-    private MailMessage createNotice(String email, String title, String content) {
+    public void sendOne(AdminNoticeRequest request, String email) {
+        log.info("테스트 발송을 시작합니다.");
+        mailSender.sendMail(createMailMessage(email, request.title(), request.title()));
+    }
+
+    private MailMessage createMailMessage(String email, String title, String content) {
         return new MailMessage(email, title, content, "notice");
     }
 }
