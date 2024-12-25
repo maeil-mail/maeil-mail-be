@@ -13,7 +13,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.Collections;
 import maeilmail.support.PaginationResponse;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -32,9 +31,8 @@ class SubscribeQuestionApiTest {
     @MockBean
     private SubscribeQuestionQueryService subscribeQuestionQueryService;
 
-    @Disabled
-    @DisplayName("페이징 처리된 질문지를 조회할때 기본 값은 page = 0, pageSize = 10, category = 'all' 이다.")
     @Test
+    @DisplayName("페이징 처리된 질문지를 조회할때 기본 값은 page = 0, pageSize = 10, category = 'all' 이다.")
     void getSubscribeQuestionDefault() throws Exception {
         String email = "test@gmail.com";
         ArgumentCaptor<String> categoryCaptor = ArgumentCaptor.forClass(String.class);
