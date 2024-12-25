@@ -10,9 +10,9 @@ import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import maeilmail.BaseEntity;
 import maeilmail.question.Question;
 import maeilmail.subscribe.Subscribe;
+import maeilmail.support.BaseEntity;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

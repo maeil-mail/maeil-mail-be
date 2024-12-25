@@ -1,4 +1,4 @@
-package maeilmail;
+package maeilmail.support;
 
 import java.util.List;
 

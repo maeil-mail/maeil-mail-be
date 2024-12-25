@@ -1,4 +1,4 @@
-package maeilmail;
+package maeilmail.support;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;

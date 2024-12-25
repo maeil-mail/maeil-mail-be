@@ -11,7 +11,6 @@ import java.util.Locale;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import maeilmail.DistributedSupport;
 import maeilmail.question.Question;
 import maeilmail.question.QuestionCategory;
 import maeilmail.question.QuestionQueryService;
@@ -19,6 +18,7 @@ import maeilmail.question.QuestionSummary;
 import maeilmail.subscribe.Subscribe;
 import maeilmail.subscribe.SubscribeFrequency;
 import maeilmail.subscribe.SubscribeRepository;
+import maeilmail.support.DistributedSupport;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
