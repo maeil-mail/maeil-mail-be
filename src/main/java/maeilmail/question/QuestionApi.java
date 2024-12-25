@@ -3,7 +3,6 @@ package maeilmail.question;
 import lombok.RequiredArgsConstructor;
 import maeilmail.support.PaginationResponse;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,7 +19,7 @@ class QuestionApi {
     @GetMapping("/question")
     public ResponseEntity<PaginationResponse<QuestionSummary>> getQuestions(
             @RequestParam(defaultValue = "all") String category,
-            @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable
+            @PageableDefault Pageable pageable
     ) {
         PaginationResponse<QuestionSummary> response = questionQueryService.pageByCategory(category, pageable);
 
