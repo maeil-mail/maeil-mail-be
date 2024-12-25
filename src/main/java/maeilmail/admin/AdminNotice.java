@@ -10,7 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import maeilmail.BaseEntity;
+import maeilmail.support.BaseEntity;
 
 @Entity
 @Getter

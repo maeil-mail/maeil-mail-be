@@ -13,8 +13,8 @@ import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import maeilmail.BaseEntity;
 import maeilmail.question.QuestionCategory;
+import maeilmail.support.BaseEntity;
 
 @Entity
 @Getter
