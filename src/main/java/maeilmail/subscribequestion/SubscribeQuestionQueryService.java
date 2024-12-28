@@ -1,7 +1,7 @@
 package maeilmail.subscribequestion;
 
 import static maeilmail.question.QQuestion.question;
-import static maeilmail.subscribe.QSubscribe.subscribe;
+import static maeilmail.subscribe.command.domain.QSubscribe.subscribe;
 import static maeilmail.subscribequestion.QSubscribeQuestion.subscribeQuestion;
 
 import java.time.LocalDate;

@@ -5,7 +5,7 @@ import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.mock;
 
 import maeilmail.mail.MailSender;
-import maeilmail.subscribe.VerifySubscribeService;
+import maeilmail.subscribe.command.application.VerifySubscribeService;
 import maeilmail.subscribequestion.QuestionSender;
 import org.hibernate.cfg.AvailableSettings;
 import org.junit.jupiter.api.AfterEach;

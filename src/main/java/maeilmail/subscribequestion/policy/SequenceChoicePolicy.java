@@ -6,7 +6,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import maeilmail.question.QuestionQueryService;
 import maeilmail.question.QuestionSummary;
-import maeilmail.subscribe.Subscribe;
+import maeilmail.subscribe.command.domain.Subscribe;
 import maeilmail.subscribequestion.ChoiceQuestionPolicy;
 import org.springframework.stereotype.Component;
 

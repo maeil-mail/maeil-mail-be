@@ -1,7 +1,7 @@
 package maeilmail.subscribequestion;
 
 import maeilmail.question.Question;
-import maeilmail.subscribe.Subscribe;
+import maeilmail.subscribe.command.domain.Subscribe;
 
 public record SubscribeQuestionMessage(
         Subscribe subscribe,
