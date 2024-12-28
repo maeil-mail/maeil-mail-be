@@ -1,4 +1,4 @@
-package maeilmail.subscribequestion;
+package maeilmail.bulksend;
 
 import lombok.extern.slf4j.Slf4j;
 import maeilmail.mail.AbstractMailSender;

@@ -1,4 +1,4 @@
-package maeilmail.subscribequestion;
+package maeilmail.bulksend;
 
 import java.util.List;
 import maeilmail.question.Question;

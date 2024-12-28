@@ -1,4 +1,4 @@
-package maeilmail.subscribequestion.policy;
+package maeilmail.bulksend.policy;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -6,11 +6,11 @@ import java.time.LocalTime;
 import java.time.Period;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import maeilmail.bulksend.ChoiceQuestionPolicy;
 import maeilmail.question.QuestionCategory;
 import maeilmail.question.QuestionQueryService;
 import maeilmail.question.QuestionSummary;
 import maeilmail.subscribe.command.domain.Subscribe;
-import maeilmail.subscribequestion.ChoiceQuestionPolicy;
 import org.springframework.stereotype.Component;
 
 @Component

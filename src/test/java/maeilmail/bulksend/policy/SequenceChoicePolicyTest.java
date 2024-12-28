@@ -1,4 +1,4 @@
-package maeilmail.subscribequestion.policy;
+package maeilmail.bulksend.policy;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;

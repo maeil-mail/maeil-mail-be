@@ -1,4 +1,4 @@
-package maeilmail.subscribequestion;
+package maeilmail.bulksend;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;

@@ -2,7 +2,7 @@ package maeilmail.subscribe.query;
 
 import static maeilmail.question.QQuestion.question;
 import static maeilmail.subscribe.command.domain.QSubscribe.subscribe;
-import static maeilmail.subscribequestion.QSubscribeQuestion.subscribeQuestion;
+import static maeilmail.subscribe.command.domain.QSubscribeQuestion.subscribeQuestion;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -11,8 +11,6 @@ import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import maeilmail.question.QuestionCategory;
-import maeilmail.subscribequestion.QSubscribeQuestionSummary;
-import maeilmail.subscribequestion.QWeeklySubscribeQuestionSummary;
 import maeilmail.support.DateUtils;
 import maeilmail.support.PaginationResponse;
 import org.springframework.data.domain.Page;

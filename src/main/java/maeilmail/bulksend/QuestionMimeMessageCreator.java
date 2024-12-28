@@ -1,4 +1,4 @@
-package maeilmail.subscribequestion;
+package maeilmail.bulksend;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;

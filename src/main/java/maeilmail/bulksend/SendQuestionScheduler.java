@@ -1,4 +1,4 @@
-package maeilmail.subscribequestion;
+package maeilmail.bulksend;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
