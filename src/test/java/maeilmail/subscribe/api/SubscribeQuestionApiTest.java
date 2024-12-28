@@ -1,4 +1,4 @@
-package maeilmail.subscribequestion;
+package maeilmail.subscribe.api;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -12,6 +12,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.Collections;
+import maeilmail.subscribe.query.SubscribeQuestionQueryService;
+import maeilmail.subscribe.query.SubscribeQuestionSummary;
 import maeilmail.support.PaginationResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

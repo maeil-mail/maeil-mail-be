@@ -5,6 +5,8 @@ import maeilmail.mail.AbstractMailSender;
 import maeilmail.question.Question;
 import maeilmail.question.QuestionCategory;
 import maeilmail.subscribe.command.domain.Subscribe;
+import maeilmail.subscribe.command.domain.SubscribeQuestion;
+import maeilmail.subscribe.command.domain.SubscribeQuestionRepository;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
 

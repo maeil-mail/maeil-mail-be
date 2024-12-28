@@ -1,4 +1,4 @@
-package maeilmail.subscribequestion;
+package maeilmail.subscribe.query;
 
 import com.querydsl.core.annotations.QueryProjection;
 import lombok.Getter;

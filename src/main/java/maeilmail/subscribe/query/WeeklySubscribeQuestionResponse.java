@@ -1,4 +1,4 @@
-package maeilmail.subscribequestion;
+package maeilmail.subscribe.query;
 
 import java.util.ArrayList;
 import java.util.List;

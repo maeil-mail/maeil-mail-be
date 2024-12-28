@@ -1,4 +1,4 @@
-package maeilmail.subscribequestion;
+package maeilmail.subscribe.command.domain;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -11,7 +11,6 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import maeilmail.question.Question;
-import maeilmail.subscribe.command.domain.Subscribe;
 import maeilmail.support.BaseEntity;
 
 @Getter
