@@ -4,20 +4,18 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.time.temporal.WeekFields;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import maeilmail.question.Question;
-import maeilmail.question.QuestionCategory;
 import maeilmail.question.QuestionQueryService;
 import maeilmail.question.QuestionSummary;
 import maeilmail.subscribe.Subscribe;
 import maeilmail.subscribe.SubscribeFrequency;
 import maeilmail.subscribe.SubscribeRepository;
+import maeilmail.support.DateUtils;
 import maeilmail.support.DistributedSupport;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -81,41 +79,30 @@ class SendWeeklyQuestionScheduler {
     private String createText(Subscribe subscribe, List<QuestionSummary> questions) {
         LocalDate today = LocalDate.now();
         HashMap<Object, Object> attribute = new HashMap<>();
+        String category = subscribe.getCategory().getDescription();
+        int weekOfMonth = DateUtils.getWeekOfMonth(today);
         attribute.put("questions", questions);
         attribute.put("category", subscribe.getCategory().toLowerCase());
         attribute.put("email", subscribe.getEmail());
         attribute.put("token", subscribe.getToken());
-        attribute.put("weekLabel", createWeekLabel(subscribe, today));
+        attribute.put("weekLabel", category + " " + today.getMonthValue() + "월 " + weekOfMonth + "주차 질문");
         attribute.put("year", today.getYear());
         attribute.put("month", today.getMonthValue());
-        attribute.put("week", getWeekOfMonth(today));
+        attribute.put("week", weekOfMonth);
 
         return weeklySubscribeQuestionView.render(attribute);
     }
 
     private WeeklySubscribeQuestionMessage createWeeklySubscribeQuestionMessage(
             Subscribe subscribe,
-            List<QuestionSummary> questions,
+            List<QuestionSummary> summaries,
             String subject,
             String text
     ) {
-        List<Question> list = questions.stream()
+        List<Question> questions = summaries.stream()
                 .map(QuestionSummary::toQuestion)
                 .toList();
 
-        return new WeeklySubscribeQuestionMessage(subscribe, list, subject, text);
-    }
-
-    private String createWeekLabel(Subscribe subscribe, LocalDate date) {
-        int weekOfMonth = getWeekOfMonth(date);
-        String category = subscribe.getCategory() == QuestionCategory.BACKEND ? "BE" : "FE";
-
-        return category + " " + date.getMonthValue() + "월 " + weekOfMonth + "주차 질문";
-    }
-
-    private int getWeekOfMonth(LocalDate today) {
-        WeekFields weekFields = WeekFields.of(Locale.KOREA);
-
-        return today.get(weekFields.weekOfMonth());
+        return new WeeklySubscribeQuestionMessage(subscribe, questions, subject, text);
     }
 }

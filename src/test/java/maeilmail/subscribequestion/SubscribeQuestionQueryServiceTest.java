@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.List;
-import maeilmail.support.PaginationResponse;
 import maeilmail.question.Question;
 import maeilmail.question.QuestionCategory;
 import maeilmail.question.QuestionRepository;
@@ -12,6 +11,7 @@ import maeilmail.subscribe.Subscribe;
 import maeilmail.subscribe.SubscribeFrequency;
 import maeilmail.subscribe.SubscribeRepository;
 import maeilmail.support.IntegrationTestSupport;
+import maeilmail.support.PaginationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
