@@ -4,9 +4,7 @@ import static maeilmail.question.QQuestion.question;
 import static maeilmail.subscribe.QSubscribe.subscribe;
 import static maeilmail.subscribequestion.QSubscribeQuestion.subscribeQuestion;
 
-import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -41,14 +39,7 @@ public class SubscribeQuestionQueryService {
                         .and(subscribeQuestion.createdAt.between(baseDateStart.atStartOfDay(), baseDateEnd.atStartOfDay())))
                 .fetch();
 
-        int size = result.size();
-        for (int i = 0; i < size; i++) {
-            result.get(i).setIndex((long) i + 1);
-        }
-
-        String weekLabel = month + "월 " + week + "주차";
-
-        return new WeeklySubscribeQuestionResponse(weekLabel, result);
+        return WeeklySubscribeQuestionResponse.of(result, month, week);
     }
 
     public PaginationResponse<SubscribeQuestionSummary> pageByEmailAndCategory(String email, String category, Pageable pageable) {
