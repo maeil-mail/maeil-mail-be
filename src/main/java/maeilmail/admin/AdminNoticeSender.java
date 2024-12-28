@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import maeilmail.mail.MailMessage;
 import maeilmail.mail.MailSender;
-import maeilmail.subscribe.SubscribeRepository;
+import maeilmail.subscribe.command.domain.SubscribeRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

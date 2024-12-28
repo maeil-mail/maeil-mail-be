@@ -11,7 +11,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import maeilmail.question.Question;
-import maeilmail.subscribe.Subscribe;
+import maeilmail.subscribe.command.domain.Subscribe;
 import maeilmail.support.BaseEntity;
 
 @Getter

@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import maeilmail.mail.AbstractMailSender;
 import maeilmail.question.Question;
 import maeilmail.question.QuestionCategory;
-import maeilmail.subscribe.Subscribe;
+import maeilmail.subscribe.command.domain.Subscribe;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
 

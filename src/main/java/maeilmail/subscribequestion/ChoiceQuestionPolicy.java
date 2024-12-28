@@ -2,7 +2,7 @@ package maeilmail.subscribequestion;
 
 import java.time.LocalDate;
 import maeilmail.question.QuestionSummary;
-import maeilmail.subscribe.Subscribe;
+import maeilmail.subscribe.command.domain.Subscribe;
 
 public interface ChoiceQuestionPolicy {
 

@@ -3,7 +3,7 @@ package maeilmail.subscribequestion;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import maeilmail.mail.MimeMessageCreator;
-import maeilmail.subscribe.Subscribe;
+import maeilmail.subscribe.command.domain.Subscribe;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
 
