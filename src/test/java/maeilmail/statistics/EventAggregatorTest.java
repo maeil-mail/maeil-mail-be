@@ -7,7 +7,7 @@ import maeilmail.question.Question;
 import maeilmail.question.QuestionCategory;
 import maeilmail.subscribe.command.domain.Subscribe;
 import maeilmail.subscribe.command.domain.SubscribeFrequency;
-import maeilmail.subscribequestion.SubscribeQuestion;
+import maeilmail.subscribe.command.domain.SubscribeQuestion;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

@@ -11,8 +11,6 @@ import jakarta.persistence.Query;
 import maeilmail.question.Question;
 import maeilmail.question.QuestionCategory;
 import maeilmail.question.QuestionRepository;
-import maeilmail.subscribequestion.SubscribeQuestion;
-import maeilmail.subscribequestion.SubscribeQuestionRepository;
 import maeilmail.support.IntegrationTestSupport;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

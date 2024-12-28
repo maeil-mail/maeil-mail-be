@@ -4,9 +4,9 @@ import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.mock;
 
+import maeilmail.bulksend.sender.QuestionSender;
 import maeilmail.mail.MailSender;
 import maeilmail.subscribe.command.application.VerifySubscribeService;
-import maeilmail.subscribequestion.QuestionSender;
 import org.hibernate.cfg.AvailableSettings;
 import org.junit.jupiter.api.AfterEach;
 import org.springframework.beans.factory.annotation.Autowired;

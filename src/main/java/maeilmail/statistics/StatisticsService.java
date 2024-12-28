@@ -4,9 +4,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import maeilmail.subscribe.command.domain.SubscribeQuestion;
+import maeilmail.subscribe.command.domain.SubscribeQuestionRepository;
 import maeilmail.subscribe.command.domain.SubscribeRepository;
-import maeilmail.subscribequestion.SubscribeQuestion;
-import maeilmail.subscribequestion.SubscribeQuestionRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
