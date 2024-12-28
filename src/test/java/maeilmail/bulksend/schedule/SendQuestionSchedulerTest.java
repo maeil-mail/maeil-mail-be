@@ -1,4 +1,4 @@
-package maeilmail.bulksend;
+package maeilmail.bulksend.schedule;
 
 import java.time.Instant;
 import java.time.LocalDateTime;

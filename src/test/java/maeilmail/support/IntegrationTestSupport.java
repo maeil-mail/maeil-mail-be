@@ -4,7 +4,7 @@ import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.mock;
 
-import maeilmail.bulksend.QuestionSender;
+import maeilmail.bulksend.sender.QuestionSender;
 import maeilmail.mail.MailSender;
 import maeilmail.subscribe.command.application.VerifySubscribeService;
 import org.hibernate.cfg.AvailableSettings;

@@ -1,4 +1,4 @@
-package maeilmail.bulksend;
+package maeilmail.bulksend.sender;
 
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;

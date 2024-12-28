@@ -1,4 +1,4 @@
-package maeilmail.bulksend;
+package maeilmail.bulksend.view;
 
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
@@ -9,7 +9,7 @@ import org.thymeleaf.spring6.SpringTemplateEngine;
 
 @Component
 @RequiredArgsConstructor
-class WeeklySubscribeQuestionView implements MailView {
+public class WeeklySubscribeQuestionView implements MailView {
 
     private final SpringTemplateEngine templateEngine;
 

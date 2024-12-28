@@ -1,4 +1,4 @@
-package maeilmail.bulksend;
+package maeilmail.bulksend.sender;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -8,10 +8,10 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
 
 @Component
-public class QuestionMimeMessageCreator extends MimeMessageCreator<SubscribeQuestionMessage> {
+public class WeeklyQuestionMimeMessageCreator extends MimeMessageCreator<WeeklySubscribeQuestionMessage> {
 
     @Override
-    public MimeMessage createMimeMessage(MimeMessage mimeMessage, SubscribeQuestionMessage message) throws MessagingException {
+    public MimeMessage createMimeMessage(MimeMessage mimeMessage, WeeklySubscribeQuestionMessage message) throws MessagingException {
         Subscribe subscribe = message.subscribe();
 
         mimeMessage.setHeader("X-SES-CONFIGURATION-SET", "my-first-configuration-set");

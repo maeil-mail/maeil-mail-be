@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import maeilmail.bulksend.ChoiceQuestionPolicy;
+import maeilmail.bulksend.sender.ChoiceQuestionPolicy;
 import maeilmail.question.QuestionQueryService;
 import maeilmail.question.QuestionSummary;
 import maeilmail.subscribe.command.domain.Subscribe;

@@ -1,4 +1,4 @@
-package maeilmail.bulksend;
+package maeilmail.bulksend.sender;
 
 import maeilmail.question.Question;
 import maeilmail.subscribe.command.domain.Subscribe;
