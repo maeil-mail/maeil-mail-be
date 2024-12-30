@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import maeilmail.support.IntegrationTestSupport;
@@ -65,7 +66,11 @@ class QuestionQueryServiceTest extends IntegrationTestSupport {
         }
 
         int pageSize = 3;
-        List<Long> expectedIds = backendIds.subList(0, pageSize);
+        List<Long> expectedIds = backendIds.stream()
+                .sorted(Comparator.reverseOrder())
+                .toList()
+                .subList(0, pageSize);
+
         PaginationResponse<QuestionSummary> response
                 = questionQueryService.pageByCategory("backend", PageRequest.of(0, pageSize));
 
