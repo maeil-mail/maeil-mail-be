@@ -33,7 +33,7 @@ public class QuestionQueryService {
                 .from(question)
                 .where(eqCategory(category))
                 .offset(pageable.getOffset())
-                .orderBy(question.id.asc())
+                .orderBy(question.id.desc())
                 .limit(pageable.getPageSize());
 
         Page<QuestionSummary> pageResult = PageableExecutionUtils.getPage(resultQuery.fetch(), pageable, countQuery::fetchOne);
