@@ -27,10 +27,10 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-class SendWeeklyQuestionScheduler {
+public class SendWeeklyQuestionScheduler {
 
+    public static final int WEEKLY_MAIL_SEND_COUNT = 5;
     private static final ZoneId KOREA_ZONE = ZoneId.of("Asia/Seoul");
-    private static final int WEEKLY_MAIL_SEND_COUNT = 5;
 
     private final ChoiceQuestionPolicy choiceQuestionPolicy;
     private final WeeklyQuestionSender weeklyQuestionSender;
