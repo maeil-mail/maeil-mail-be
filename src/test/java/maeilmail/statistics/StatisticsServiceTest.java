@@ -15,10 +15,10 @@ import maeilmail.subscribe.command.domain.SubscribeQuestion;
 import maeilmail.subscribe.command.domain.SubscribeQuestionRepository;
 import maeilmail.subscribe.command.domain.SubscribeRepository;
 import maeilmail.support.IntegrationTestSupport;
+import maeilmail.support.data.SendReportCountingCase;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.jdbc.Sql;
 
 class StatisticsServiceTest extends IntegrationTestSupport {
 
@@ -33,6 +33,9 @@ class StatisticsServiceTest extends IntegrationTestSupport {
 
     @Autowired
     private QuestionRepository questionRepository;
+
+    @Autowired
+    private SendReportCountingCase sendReportCountingCase;
 
     @Test
     @DisplayName("고유한 이메일을 가진 누적 구독자 수를 반환한다.")
@@ -88,9 +91,10 @@ class StatisticsServiceTest extends IntegrationTestSupport {
     }
 
     @Test
-    @Sql("/counting.sql")
     @DisplayName("주어진 일자의 전송 통계를 생성한다.")
     void generateDailySendReport() {
+        sendReportCountingCase.createData();
+
         LocalDate monday = LocalDate.of(2024, 12, 30);
         LocalDate tuesday = LocalDate.of(2024, 12, 31);
 

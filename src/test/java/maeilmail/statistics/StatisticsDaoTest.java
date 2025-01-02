@@ -7,20 +7,24 @@ import java.time.LocalDateTime;
 import java.util.Map;
 import maeilmail.subscribe.command.domain.SubscribeFrequency;
 import maeilmail.support.IntegrationTestSupport;
+import maeilmail.support.data.SendReportCountingCase;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.jdbc.Sql;
 
-@Sql(value = "/counting.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_CLASS)
 class StatisticsDaoTest extends IntegrationTestSupport {
 
     @Autowired
     private StatisticsDao statisticsDao;
 
+    @Autowired
+    SendReportCountingCase sendReportCountingCase;
+
     @Test
     @DisplayName("특정 날짜에 대한 성공 실패 카운트를 조회한다.")
     void querySuccessFailCount() {
+        sendReportCountingCase.createData();
+
         LocalDateTime monday = LocalDateTime.of(2024, 12, 30, 7, 0, 0);
         LocalDateTime tuesday = LocalDateTime.of(2024, 12, 31, 7, 0, 0);
 
@@ -38,6 +42,8 @@ class StatisticsDaoTest extends IntegrationTestSupport {
     @Test
     @DisplayName("구독 주기별 전송 대상의 수를 반환한다.")
     void querySubscribeCountForFrequency() {
+        sendReportCountingCase.createData();
+
         LocalDateTime monday = LocalDateTime.of(2024, 12, 30, 7, 0, 0);
         LocalDateTime tuesday = LocalDateTime.of(2024, 12, 31, 7, 0, 0);
 
