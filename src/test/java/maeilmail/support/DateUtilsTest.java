@@ -48,4 +48,16 @@ class DateUtilsTest {
         assertThatThrownBy(() -> DateUtils.getWeekOfMonth(이번달_마지막_주차_수요일))
                 .isInstanceOf(IllegalStateException.class);
     }
+
+    @Test
+    @DisplayName("주어진 날짜가 월요일인지 판단할 수 있다.")
+    void isMonday() {
+        LocalDate monday = LocalDate.of(2024, 12, 30);
+        LocalDate notMonday = LocalDate.of(2024, 12, 31);
+
+        assertAll(
+                () -> assertThat(DateUtils.isMonday(monday)).isTrue(),
+                () -> assertThat(DateUtils.isMonday(notMonday)).isFalse()
+        );
+    }
 }
