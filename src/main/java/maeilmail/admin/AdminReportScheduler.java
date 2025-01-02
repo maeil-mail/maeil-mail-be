@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 class AdminReportScheduler {
 
-    private static final String REPORT_FORMAT = "질문 전송 카운트(타입/성공/실패) : %s/%d/%d";
+    private static final String REPORT_FORMAT = "질문 전송 카운트(성공/실패) : %d/%d";
 
     private final MailSender mailSender;
     private final AdminRepository adminRepository;
@@ -39,7 +39,7 @@ class AdminReportScheduler {
     }
 
     private String createText(EventReport report) {
-        String reportText = String.format(REPORT_FORMAT, report.type(), report.success(), report.fail());
+        String reportText = String.format(REPORT_FORMAT, report.success(), report.fail());
 
         return adminReportView.render(Map.of("report", reportText));
     }

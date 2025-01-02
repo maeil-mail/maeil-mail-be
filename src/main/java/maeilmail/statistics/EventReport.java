@@ -1,4 +1,4 @@
 package maeilmail.statistics;
 
-public record EventReport(String type, Long success, Long fail) {
+public record EventReport(Long success, Long fail) {
 }

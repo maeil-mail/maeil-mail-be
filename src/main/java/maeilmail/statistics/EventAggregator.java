@@ -13,6 +13,6 @@ class EventAggregator {
         Map<Boolean, Long> result = subscribeQuestions.stream()
                 .collect(Collectors.partitioningBy(SubscribeQuestion::isSuccess, Collectors.counting()));
 
-        return new EventReport("subscribeQuestion", result.get(true), result.get(false));
+        return new EventReport(result.get(true), result.get(false));
     }
 }
