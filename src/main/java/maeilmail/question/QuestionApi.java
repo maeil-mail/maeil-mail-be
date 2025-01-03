@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-class QuestionApi {
+public class QuestionApi {
 
     private final QuestionQueryService questionQueryService;
 

@@ -5,9 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.Query;
 import maeilmail.question.Question;
 import maeilmail.question.QuestionCategory;
 import maeilmail.question.QuestionRepository;
@@ -22,9 +19,6 @@ class SubscribeRepositoryTest extends IntegrationTestSupport {
     private SubscribeRepository subscribeRepository;
 
     @Autowired
-    private EntityManager entityManager;
-
-    @Autowired
     private QuestionRepository questionRepository;
 
     @Autowired
@@ -35,9 +29,10 @@ class SubscribeRepositoryTest extends IntegrationTestSupport {
     void increaseNextQuestionSequence() {
         LocalDateTime baseDateTime = LocalDateTime.of(2024, 11, 7, 7, 0);
         LocalDateTime expectedChangeTime = baseDateTime.minusSeconds(1);
-        createSubscribe("test1@test.com", QuestionCategory.BACKEND, expectedChangeTime);
-        createSubscribe("test2@test.com", QuestionCategory.FRONTEND, expectedChangeTime);
-        createSubscribe("test3@test.com", QuestionCategory.BACKEND, baseDateTime);
+        createSubscribe("test1@test.com", expectedChangeTime, SubscribeFrequency.DAILY);
+        createSubscribe("test2@test.com", expectedChangeTime, SubscribeFrequency.DAILY);
+        createSubscribe("test3@test.com", baseDateTime, SubscribeFrequency.DAILY);
+        setJpaAuditingTime(LocalDateTime.now());
         for (Subscribe subscribe : subscribeRepository.findAll()) {
             createSubscribeQuestion(subscribe, createQuestion(subscribe.getCategory()));
         }
@@ -45,6 +40,7 @@ class SubscribeRepositoryTest extends IntegrationTestSupport {
         subscribeRepository.increaseNextQuestionSequence(baseDateTime);
 
         List<Subscribe> subscribes = subscribeRepository.findAll();
+
         assertThat(subscribes)
                 .filteredOn("nextQuestionSequence", 1L)
                 .map(Subscribe::getEmail)
@@ -56,18 +52,18 @@ class SubscribeRepositoryTest extends IntegrationTestSupport {
     void increaseNextQuestionSequenceWithOffset() {
         LocalDateTime baseDateTime = LocalDateTime.of(2024, 11, 7, 7, 0);
         LocalDateTime expectedChangeTime = baseDateTime.minusSeconds(1);
-        createSubscribe("test1@test.com", QuestionCategory.BACKEND, expectedChangeTime);
-        createSubscribe("test2@test.com", QuestionCategory.FRONTEND, expectedChangeTime);
-        createSubscribe("test3@test.com", QuestionCategory.BACKEND, baseDateTime);
+        createSubscribe("test1@test.com", expectedChangeTime, SubscribeFrequency.WEEKLY);
+        createSubscribe("test2@test.com", expectedChangeTime, SubscribeFrequency.DAILY);
+        createSubscribe("test3@test.com", baseDateTime, SubscribeFrequency.DAILY);
 
         /**
-         * 테스트 가정)
-         * 프론트엔드 구독자는 데일리라서 1을 기대한다.
-         * 백엔드 구독자는 위클리라서 5를 기대한다.
+         * 1. 주간 메일을 받은 케이스
+         * 2. 일간 메일을 받은 케이스
+         * 3. 메일을 받지 못한 케이스
          */
-        int frontendCount = 1;
+        setJpaAuditingTime(LocalDateTime.now());
         for (Subscribe subscribe : subscribeRepository.findAll()) {
-            if (subscribe.getCategory() == QuestionCategory.FRONTEND && frontendCount-- != 0) {
+            if (subscribe.getFrequency() == SubscribeFrequency.DAILY) {
                 createSubscribeQuestion(subscribe, createQuestion(subscribe.getCategory()));
             } else {
                 createSubscribeQuestion(subscribe, createQuestion(subscribe.getCategory()));
@@ -81,9 +77,9 @@ class SubscribeRepositoryTest extends IntegrationTestSupport {
         subscribeRepository.increaseNextQuestionSequence(baseDateTime);
 
         List<Subscribe> subscribes = subscribeRepository.findAll();
-        Subscribe subscribe1 = subscribes.get(0); // 백엔드 유저, 질문 받음
-        Subscribe subscribe2 = subscribes.get(1); // 프론트 유저, 질문 1개
-        Subscribe subscribe3 = subscribes.get(2); // 백엔드 유저, 질문 못받은 케이스
+        Subscribe subscribe1 = subscribes.get(0); // 주간 메일을 받은 케이스
+        Subscribe subscribe2 = subscribes.get(1); // 일간 메일을 받은 케이스
+        Subscribe subscribe3 = subscribes.get(2); // 메일을 받지 못한 케이스
         assertAll(
                 () -> assertThat(subscribe1.getNextQuestionSequence()).isEqualTo(5L),
                 () -> assertThat(subscribe2.getNextQuestionSequence()).isEqualTo(1L),
@@ -91,20 +87,11 @@ class SubscribeRepositoryTest extends IntegrationTestSupport {
         );
     }
 
-    private void createSubscribe(
-            String email,
-            QuestionCategory category,
-            LocalDateTime createdAt
-    ) {
-        String sql = "insert into subscribe(email, category, next_question_sequence, created_at, token, frequency) values(?, ?, ?, ?, ?, ?);";
-        Query nativeQuery = entityManager.createNativeQuery(sql);
-        nativeQuery.setParameter(1, email);
-        nativeQuery.setParameter(2, category.toLowerCase());
-        nativeQuery.setParameter(3, 0);
-        nativeQuery.setParameter(4, createdAt);
-        nativeQuery.setParameter(5, UUID.randomUUID().toString());
-        nativeQuery.setParameter(6, "daily");
-        nativeQuery.executeUpdate();
+    private void createSubscribe(String email, LocalDateTime createdAt, SubscribeFrequency frequency) {
+        setJpaAuditingTime(createdAt);
+        Subscribe subscribe = new Subscribe(email, QuestionCategory.FRONTEND, frequency);
+
+        subscribeRepository.save(subscribe);
     }
 
     private Question createQuestion(QuestionCategory category) {
