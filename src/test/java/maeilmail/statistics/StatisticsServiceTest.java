@@ -1,6 +1,7 @@
 package maeilmail.statistics;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -14,6 +15,7 @@ import maeilmail.subscribe.command.domain.SubscribeQuestion;
 import maeilmail.subscribe.command.domain.SubscribeQuestionRepository;
 import maeilmail.subscribe.command.domain.SubscribeRepository;
 import maeilmail.support.IntegrationTestSupport;
+import maeilmail.support.data.SendReportCountingCase;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +33,9 @@ class StatisticsServiceTest extends IntegrationTestSupport {
 
     @Autowired
     private QuestionRepository questionRepository;
+
+    @Autowired
+    private SendReportCountingCase sendReportCountingCase;
 
     @Test
     @DisplayName("고유한 이메일을 가진 누적 구독자 수를 반환한다.")
@@ -83,6 +88,29 @@ class StatisticsServiceTest extends IntegrationTestSupport {
 
         assertThat(eventReport.success()).isEqualTo(2);
         assertThat(eventReport.fail()).isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("주어진 일자의 전송 통계를 생성한다.")
+    void generateDailySendReport() {
+        sendReportCountingCase.createData();
+
+        LocalDate monday = LocalDate.of(2024, 12, 30);
+        LocalDate tuesday = LocalDate.of(2024, 12, 31);
+
+        DailySendReport actualMonday = statisticsService.generateDailySendReport(monday);
+        DailySendReport actualTuesday = statisticsService.generateDailySendReport(tuesday);
+
+        assertAll(
+                () -> assertThat(actualMonday.expectedSendingCount()).isEqualTo(12L),
+                () -> assertThat(actualMonday.actualSendingCount()).isEqualTo(7L),
+                () -> assertThat(actualMonday.success()).isEqualTo(5L),
+                () -> assertThat(actualMonday.fail()).isEqualTo(2L),
+                () -> assertThat(actualTuesday.expectedSendingCount()).isEqualTo(8L),
+                () -> assertThat(actualTuesday.actualSendingCount()).isEqualTo(8L),
+                () -> assertThat(actualTuesday.success()).isEqualTo(8L),
+                () -> assertThat(actualTuesday.fail()).isEqualTo(0L)
+        );
     }
 
     private SubscribeQuestion createSubscribeQuestion(boolean isSuccess) {

@@ -27,4 +27,10 @@ public class DateUtils {
 
         return firstDayOfMonth.with(TemporalAdjusters.firstInMonth(DayOfWeek.MONDAY));
     }
+
+    public static boolean isMonday(LocalDate date) {
+        DayOfWeek dayOfWeek = date.getDayOfWeek();
+
+        return dayOfWeek.equals(DayOfWeek.MONDAY);
+    }
 }
