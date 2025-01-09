@@ -1,0 +1,47 @@
+name: 매일메일 CI(v1)
+
+permissions:
+  contents: write
+  pull-requests: write
+  checks: write
+
+on:
+  pull_request:
+    branches:
+      - 'main'
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Github Checkout
+        uses: actions/checkout@v3
+
+      - name: JDK 17 구성
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'corretto'
+          cache: 'gradle'
+
+      - name: Gradlew Wrapper 실행 권한 부여
+        run: chmod +x gradlew
+
+      - name: Gradle 캐싱
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Gradle 빌드
+        run: ./gradlew clean build
+
+      - name: 테스트 결과 출력
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        with:
+          files: |
+            ./build/test-results/**/*.xml
