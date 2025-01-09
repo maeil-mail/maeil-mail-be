@@ -1,5 +1,6 @@
 package maeilmail.subscribe.command.application;
 
+import java.security.SecureRandom;
 import java.util.Random;
 import org.springframework.stereotype.Component;
 
@@ -8,6 +9,7 @@ class VerifyCodeGenerator {
 
     private static final int CODE_LENGTH = 4;
     private static final int RAND_BOUND = 10;
+    private static final Random SECURE_RANDOM = new SecureRandom();
 
     public String generateCode() {
         StringBuilder code = new StringBuilder();
@@ -20,8 +22,7 @@ class VerifyCodeGenerator {
     }
 
     private String pickOne() {
-        Random random = new Random();
-        int eachValue = random.nextInt(RAND_BOUND);
+        int eachValue = SECURE_RANDOM.nextInt(RAND_BOUND);
 
         return Integer.toString(eachValue);
     }
