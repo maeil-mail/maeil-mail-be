@@ -1,4 +1,4 @@
-package maeilmail.support;
+package maeilsupport;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;

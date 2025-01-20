@@ -1,7 +1,7 @@
 package maeilmail.question;
 
 import lombok.RequiredArgsConstructor;
-import maeilmail.support.PaginationResponse;
+import maeilsupport.PaginationResponse;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;

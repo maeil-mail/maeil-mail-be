@@ -6,7 +6,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.Getter;
-import maeilmail.support.BaseEntity;
+import maeilsupport.BaseEntity;
 
 @Getter
 @Entity
