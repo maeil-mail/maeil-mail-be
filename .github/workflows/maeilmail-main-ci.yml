@@ -44,4 +44,6 @@ jobs:
         uses: EnricoMi/publish-unit-test-result-action@v2
         with:
           files: |
-            ./build/test-results/**/*.xml
+            ./maeil-mail/build/test-results/**/*.xml
+            ./maeil-wiki/build/test-results/**/*.xml
+            ./maeil-support/build/test-results/**/*.xml
