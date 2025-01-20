@@ -24,6 +24,7 @@ import maeilwiki.member.Member;
 public class Wiki extends BaseEntity {
 
     private static final int MAX_QUESTION_LENGTH = 255;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
