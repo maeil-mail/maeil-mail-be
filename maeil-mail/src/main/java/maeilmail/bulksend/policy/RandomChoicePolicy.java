@@ -1,5 +1,6 @@
 package maeilmail.bulksend.policy;
 
+import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Random;
@@ -18,7 +19,7 @@ class RandomChoicePolicy implements ChoiceQuestionPolicy {
 
     @Override
     public QuestionSummary choice(Subscribe subscribe, LocalDate today) {
-        Random rand = new Random();
+        Random rand = new SecureRandom();
         List<QuestionSummary> questions = questionQueryService.queryAllByCategory(subscribe.getCategory().name());
         int index = rand.nextInt(questions.size());
 
