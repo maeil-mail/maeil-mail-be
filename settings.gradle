@@ -1,2 +1,4 @@
 rootProject.name = 'maeilmail-server'
 include 'maeil-mail'
+include 'maeil-wiki'
+include 'maeil-support'
