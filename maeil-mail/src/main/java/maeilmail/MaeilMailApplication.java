@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 @EnableScheduling
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = {"maeilmail", "maeilwiki", "maeilsupport"})
 public class MaeilMailApplication {
 
     public static void main(String[] args) {
