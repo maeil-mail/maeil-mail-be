@@ -1,4 +1,4 @@
-package maeilmail.support;
+package maeilsupport.config;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
