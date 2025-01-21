@@ -1,26 +1,32 @@
-package maeilwiki.wiki;
+package maeilwiki.comment;
 
+import java.util.NoSuchElementException;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import maeilwiki.member.Member;
 import maeilwiki.member.MemberRepository;
+import maeilwiki.wiki.Wiki;
+import maeilwiki.wiki.WikiRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-class WikiService {
+class CommentService {
 
     private final WikiRepository wikiRepository;
+    private final CommentRepository commentRepository;
     private final MemberRepository memberRepository;
 
     @Transactional
-    public void create(WikiRequest request) {
+    public void comment(CommentRequest request, Long wikiId) {
         String uuid = UUID.randomUUID().toString();
         Member temporalMember = new Member(uuid, uuid, "GITHUB");
         memberRepository.save(temporalMember);
-        Wiki wiki = request.toWiki(temporalMember); // TODO : 로그인 구현
+        Wiki wiki = wikiRepository.findById(wikiId)
+                .orElseThrow(NoSuchElementException::new);
+        Comment comment = request.toComment(temporalMember, wiki);
 
-        wikiRepository.save(wiki);
+        commentRepository.save(comment);
     }
 }
