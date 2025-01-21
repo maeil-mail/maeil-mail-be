@@ -1,7 +1,6 @@
 package maeilwiki.comment;
 
 import java.time.LocalDateTime;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -54,5 +53,13 @@ public class Comment extends BaseEntity {
         if (answer == null || answer.isBlank()) {
             throw new IllegalArgumentException("답변은 필수 입력값입니다.");
         }
+    }
+
+    public void remove() {
+        if (deletedAt != null) {
+            throw new IllegalStateException("이미 삭제된 답변입니다.");
+        }
+
+        deletedAt = LocalDateTime.now();
     }
 }
