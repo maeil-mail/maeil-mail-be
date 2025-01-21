@@ -39,3 +39,4 @@ out/
 ### Database ###
 **/db
 test-db/
+.run/
