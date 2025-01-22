@@ -29,7 +29,6 @@ class CommentService {
         String uuid = UUID.randomUUID().toString();
         Member temporalMember = new Member(uuid, uuid, "GITHUB");
         memberRepository.save(temporalMember);
-
         Wiki wiki = wikiRepository.findByIdAndDeletedAtIsNull(wikiId)
                 .orElseThrow(NoSuchElementException::new);
         Comment comment = request.toComment(temporalMember, wiki);
