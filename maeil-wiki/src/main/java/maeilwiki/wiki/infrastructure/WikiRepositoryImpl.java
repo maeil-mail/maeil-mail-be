@@ -23,7 +23,7 @@ class WikiRepositoryImpl implements WikiRepositoryCustom {
         WikiSummary wikiSummary = queryFactory.select(projectionWikiSummary())
                 .from(wiki)
                 .innerJoin(wiki.member, member)
-                .where(wiki.id.eq(wikiId))
+                .where(wiki.id.eq(wikiId).and(wiki.deletedAt.isNull()))
                 .fetchOne();
         return Optional.ofNullable(wikiSummary);
     }
