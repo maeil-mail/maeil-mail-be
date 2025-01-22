@@ -1,6 +1,7 @@
 package maeilwiki.wiki;
 
 import java.util.Arrays;
+import java.util.NoSuchElementException;
 
 public enum WikiCategory {
 
@@ -10,6 +11,6 @@ public enum WikiCategory {
         return Arrays.stream(WikiCategory.values())
                 .filter(it -> it.name().equalsIgnoreCase(category))
                 .findFirst()
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(NoSuchElementException::new);
     }
 }
