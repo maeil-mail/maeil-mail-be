@@ -30,8 +30,7 @@ class CommentService {
         Member temporalMember = new Member(uuid, uuid, "GITHUB");
         memberRepository.save(temporalMember);
 
-        // TODO: 지워진 위키인지 확인해야한다.
-        Wiki wiki = wikiRepository.findById(wikiId)
+        Wiki wiki = wikiRepository.findByIdAndDeletedAtIsNull(wikiId)
                 .orElseThrow(NoSuchElementException::new);
         Comment comment = request.toComment(temporalMember, wiki);
 
