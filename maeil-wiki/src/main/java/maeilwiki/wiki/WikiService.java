@@ -29,6 +29,7 @@ class WikiService {
 
     @Transactional
     public void remove(Long wikiId) {
+        // TODO : member 소유인지 확인해야한다.
         validateHasComment(wikiId);
         Wiki wiki = wikiRepository.findById(wikiId)
                 .orElseThrow(NoSuchElementException::new);
