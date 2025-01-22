@@ -14,7 +14,7 @@ class CommentTest {
     @Test
     @DisplayName("답변을 삭제할 수 있다.")
     void remove() {
-        Comment comment = createAnswer();
+        Comment comment = createComment();
 
         comment.remove();
 
@@ -24,7 +24,7 @@ class CommentTest {
     @Test
     @DisplayName("이미 삭제된 답변은 다시 삭제될 수 없다.")
     void alreadyRemoved() {
-        Comment comment = createAnswer();
+        Comment comment = createComment();
         comment.remove();
 
         assertThatThrownBy(comment::remove)
@@ -32,7 +32,7 @@ class CommentTest {
                 .hasMessage("이미 삭제된 답변입니다.");
     }
 
-    private Comment createAnswer() {
+    private Comment createComment() {
         Member member = Mockito.mock(Member.class);
         Wiki wiki = Mockito.mock(Wiki.class);
 
