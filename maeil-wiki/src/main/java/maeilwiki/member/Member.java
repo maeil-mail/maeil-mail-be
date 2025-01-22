@@ -1,7 +1,6 @@
 package maeilwiki.member;
 
 import java.time.LocalDateTime;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -34,6 +33,8 @@ public class Member extends BaseEntity {
     @Column(nullable = false, columnDefinition = "VARCHAR(10)")
     @Enumerated(value = EnumType.STRING)
     private Provider provider;
+
+    private String githubUrl;
 
     private String profileImageUrl;
 
