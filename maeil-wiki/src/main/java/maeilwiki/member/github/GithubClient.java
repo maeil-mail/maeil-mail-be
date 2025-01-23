@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 
 @Component
-class GithubClient {
+public class GithubClient {
 
     private static final int CONNECT_TIMEOUT = 3;
     private static final int READ_TIMEOUT = 10;
