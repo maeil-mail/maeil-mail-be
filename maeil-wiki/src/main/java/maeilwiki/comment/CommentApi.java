@@ -19,4 +19,11 @@ class CommentApi {
 
         return ResponseEntity.noContent().build();
     }
+
+    @PostMapping("/wiki/{wikiId}/comment/{id}/like")
+    public ResponseEntity<Void> createCommentLike(@PathVariable Long wikiId, @PathVariable Long id) {
+        commentService.toggleLike(id);
+
+        return ResponseEntity.noContent().build();
+    }
 }
