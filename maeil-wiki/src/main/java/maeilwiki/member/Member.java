@@ -1,7 +1,6 @@
 package maeilwiki.member;
 
 import java.time.LocalDateTime;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -12,6 +11,7 @@ import jakarta.persistence.Id;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import maeilsupport.BaseEntity;
 
 @Entity
@@ -35,15 +35,30 @@ public class Member extends BaseEntity {
     @Enumerated(value = EnumType.STRING)
     private Provider provider;
 
+    @Column(nullable = true)
     private String profileImageUrl;
 
+    @Setter
+    @Column(nullable = false)
+    private String refreshToken;
+
+    @Column(nullable = true)
     private LocalDateTime deletedAt;
 
     public Member(String name, String providerId, String provider) {
+        this(name, providerId, Provider.from(provider), null);
+    }
+
+    public Member(String name, String providerId, String provider, String providerImageUrl) {
+        this(name, providerId, Provider.from(provider), providerImageUrl);
+    }
+
+    public Member(String name, String providerId, Provider provider, String profileImageUrl) {
         validateName(name);
         this.name = name;
         this.providerId = providerId;
-        this.provider = Provider.from(provider);
+        this.provider = provider;
+        this.profileImageUrl = profileImageUrl;
     }
 
     private void validateName(String name) {
