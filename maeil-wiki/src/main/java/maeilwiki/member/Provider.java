@@ -2,10 +2,18 @@ package maeilwiki.member;
 
 import java.util.Arrays;
 import java.util.NoSuchElementException;
+import lombok.Getter;
 
+@Getter
 public enum Provider {
 
-    GITHUB;
+    GITHUB("GH-%s");
+
+    private final String providerIdPrefix;
+
+    Provider(String providerIdPrefix) {
+        this.providerIdPrefix = providerIdPrefix;
+    }
 
     public static Provider from(String provider) {
         return Arrays.stream(Provider.values())
