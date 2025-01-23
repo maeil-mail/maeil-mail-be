@@ -12,8 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 class MemberService {
 
     private final MemberTokenGenerator memberTokenGenerator;
-    private final GithubMemberFactory memberFactory;
     private final MemberRepository memberRepository;
+    private final GithubMemberFactory memberFactory;
 
     @Value("${client.secret}")
     private String clientSecret;
