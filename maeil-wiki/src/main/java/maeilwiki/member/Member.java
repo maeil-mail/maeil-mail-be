@@ -35,12 +35,12 @@ public class Member extends BaseEntity {
     @Enumerated(value = EnumType.STRING)
     private Provider provider;
 
-    @Column(nullable = true)
-    private String profileImageUrl;
-
     @Setter
     @Column(nullable = false)
     private String refreshToken;
+
+    @Column(nullable = true)
+    private String profileImageUrl;
 
     @Column(nullable = true)
     private LocalDateTime deletedAt;
