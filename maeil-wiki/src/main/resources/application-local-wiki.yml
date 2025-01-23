@@ -2,3 +2,6 @@ token:
   secret-key: YXBwbGljYXRpb24tbG9jYWwtc2VjcmV0
   access-exp-time: 7d
   refresh-exp-time: 365d
+
+client:
+  secret: clientSecret

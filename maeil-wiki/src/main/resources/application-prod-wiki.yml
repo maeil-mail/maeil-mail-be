@@ -2,3 +2,6 @@ token:
   secret-key: ${token.secret-key}
   access-exp-time: ${token.access-exp-time}
   refresh-exp-time: ${token.refresh-exp-time}
+
+client:
+  secret: ${client.secret}
