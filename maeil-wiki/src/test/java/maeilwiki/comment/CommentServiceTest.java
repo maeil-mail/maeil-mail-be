@@ -42,8 +42,17 @@ class CommentServiceTest extends IntegrationTestSupport {
     }
 
     @Test
-    @DisplayName("존재하지 않는 답변에 좋아요를 생성할 수 없다.")
+    @DisplayName("존재하지 않는 답변을 삭제할 수 없다.")
     void notFoundComment() {
+        Long unknownCommentId = -1L;
+
+        assertThatThrownBy(() -> commentService.remove(unknownCommentId))
+                .isInstanceOf(NoSuchElementException.class);
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 답변에 좋아요를 생성할 수 없다.")
+    void notFoundCommentForLike() {
         Long unknownCommentId = -1L;
 
         assertThatThrownBy(() -> commentService.toggleLike(unknownCommentId))

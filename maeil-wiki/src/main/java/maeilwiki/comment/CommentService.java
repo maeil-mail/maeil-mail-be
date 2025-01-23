@@ -29,11 +29,22 @@ class CommentService {
         String uuid = UUID.randomUUID().toString();
         Member temporalMember = new Member(uuid, uuid, "GITHUB");
         memberRepository.save(temporalMember);
+
+        // TODO: 지워진 위키인지 확인해야한다.
         Wiki wiki = wikiRepository.findById(wikiId)
                 .orElseThrow(NoSuchElementException::new);
         Comment comment = request.toComment(temporalMember, wiki);
 
         commentRepository.save(comment);
+    }
+
+    @Transactional
+    public void remove(Long commentId) {
+        // TODO: member 소유인지 확인해야한다.
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(NoSuchElementException::new);
+
+        comment.remove();
     }
 
     @Transactional
