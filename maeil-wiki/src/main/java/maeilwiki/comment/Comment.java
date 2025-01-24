@@ -1,7 +1,6 @@
 package maeilwiki.comment;
 
 import java.time.LocalDateTime;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -15,7 +14,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import maeilsupport.BaseEntity;
 import maeilwiki.member.Member;
-import maeilwiki.wiki.Wiki;
 
 @Entity
 @Getter
@@ -38,21 +36,28 @@ public class Comment extends BaseEntity {
     @JoinColumn(nullable = false)
     private Member member;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(nullable = false)
-    private Wiki wiki;
+    @Column(nullable = false)
+    private Long wikiId;
 
-    public Comment(String answer, boolean isAnonymous, Member member, Wiki wiki) {
+    public Comment(String answer, boolean isAnonymous, Member member, Long wikiId) {
         validateAnswer(answer);
         this.answer = answer;
         this.isAnonymous = isAnonymous;
         this.member = member;
-        this.wiki = wiki;
+        this.wikiId = wikiId;
     }
 
     private void validateAnswer(String answer) {
         if (answer == null || answer.isBlank()) {
             throw new IllegalArgumentException("답변은 필수 입력값입니다.");
         }
+    }
+
+    public void remove() {
+        if (deletedAt != null) {
+            throw new IllegalStateException("이미 삭제된 답변입니다.");
+        }
+
+        deletedAt = LocalDateTime.now();
     }
 }

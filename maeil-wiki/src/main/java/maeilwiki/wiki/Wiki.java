@@ -1,7 +1,6 @@
 package maeilwiki.wiki;
 
 import java.time.LocalDateTime;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -69,5 +68,13 @@ public class Wiki extends BaseEntity {
         if (question.length() > MAX_QUESTION_LENGTH) {
             throw new IllegalArgumentException("질문은 %d자 이하여야 합니다.".formatted(MAX_QUESTION_LENGTH));
         }
+    }
+
+    public void remove() {
+        if (deletedAt != null) {
+            throw new IllegalStateException("이미 삭제된 위키입니다.");
+        }
+
+        deletedAt = LocalDateTime.now();
     }
 }

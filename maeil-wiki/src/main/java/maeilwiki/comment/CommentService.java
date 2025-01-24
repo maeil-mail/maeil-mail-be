@@ -7,19 +7,16 @@ import java.util.concurrent.ConcurrentHashMap;
 import lombok.RequiredArgsConstructor;
 import maeilwiki.member.Member;
 import maeilwiki.member.MemberRepository;
-import maeilwiki.wiki.Wiki;
-import maeilwiki.wiki.WikiRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 @Service
 @RequiredArgsConstructor
-class CommentService {
+public class CommentService {
 
-    private final WikiRepository wikiRepository;
-    private final CommentRepository commentRepository;
     private final MemberRepository memberRepository;
+    private final CommentRepository commentRepository;
     private final CommentLikeRepository commentLikeRepository;
 
     private final Map<String, Member> transactionTmpMemberMap = new ConcurrentHashMap<>();
@@ -29,11 +26,18 @@ class CommentService {
         String uuid = UUID.randomUUID().toString();
         Member temporalMember = new Member(uuid, uuid, "GITHUB");
         memberRepository.save(temporalMember);
-        Wiki wiki = wikiRepository.findById(wikiId)
-                .orElseThrow(NoSuchElementException::new);
-        Comment comment = request.toComment(temporalMember, wiki);
+        Comment comment = request.toComment(temporalMember, wikiId);
 
         commentRepository.save(comment);
+    }
+
+    @Transactional
+    public void remove(Long commentId) {
+        // TODO: member 소유인지 확인해야한다.
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(NoSuchElementException::new);
+
+        comment.remove();
     }
 
     @Transactional

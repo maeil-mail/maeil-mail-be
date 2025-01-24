@@ -32,18 +32,17 @@ class CommentServiceTest extends IntegrationTestSupport {
     private WikiRepository wikiRepository;
 
     @Test
-    @DisplayName("존재하지 않는 위키에 답변을 작성할 수 없다.")
-    void notfound() {
-        CommentRequest request = new CommentRequest("답변을 작성합니다.", false);
-        Long unknownWikiId = -1L;
+    @DisplayName("존재하지 않는 답변을 삭제할 수 없다.")
+    void notFoundComment() {
+        Long unknownCommentId = -1L;
 
-        assertThatThrownBy(() -> commentService.comment(request, unknownWikiId))
+        assertThatThrownBy(() -> commentService.remove(unknownCommentId))
                 .isInstanceOf(NoSuchElementException.class);
     }
 
     @Test
     @DisplayName("존재하지 않는 답변에 좋아요를 생성할 수 없다.")
-    void notFoundComment() {
+    void notFoundCommentForLike() {
         Long unknownCommentId = -1L;
 
         assertThatThrownBy(() -> commentService.toggleLike(unknownCommentId))
@@ -80,7 +79,7 @@ class CommentServiceTest extends IntegrationTestSupport {
         Wiki wiki = new Wiki("question", "backend", false, member);
         wikiRepository.save(wiki);
 
-        Comment comment = new Comment("answer", false, member, wiki);
+        Comment comment = new Comment("answer", false, member, wiki.getId());
         return commentRepository.save(comment);
     }
 }
