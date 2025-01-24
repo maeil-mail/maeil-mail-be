@@ -2,11 +2,11 @@ package maeilwiki.wiki;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.mock;
 
 import maeilwiki.member.Member;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
 class WikiTest {
 
@@ -32,7 +32,7 @@ class WikiTest {
     }
 
     private Wiki createWiki() {
-        Member member = Mockito.mock(Member.class);
+        Member member = mock(Member.class);
 
         return new Wiki("question", "detail", "backend", false, member);
     }
