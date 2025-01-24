@@ -40,18 +40,18 @@ class WikiService {
         wiki.remove();
     }
 
+    private void validateHasComment(Long wikiId) {
+        boolean hasComment = commentRepository.existsByWikiIdAndDeletedAtIsNull(wikiId);
+        if (hasComment) {
+            throw new IllegalStateException("답변이 존재하는 위키는 삭제할 수 없습니다.");
+        }
+    }
+
     @Transactional
     public void comment(CommentRequest request, Long wikiId) {
         Wiki wiki = wikiRepository.findByIdAndDeletedAtIsNull(wikiId)
                 .orElseThrow(NoSuchElementException::new);
 
         commentService.comment(request, wiki.getId());
-    }
-
-    private void validateHasComment(Long wikiId) {
-        boolean hasComment = commentRepository.existsByWikiIdAndDeletedAtIsNull(wikiId);
-        if (hasComment) {
-            throw new IllegalStateException("답변이 존재하는 위키는 삭제할 수 없습니다.");
-        }
     }
 }

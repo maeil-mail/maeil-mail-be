@@ -15,8 +15,8 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 @RequiredArgsConstructor
 public class CommentService {
 
-    private final CommentRepository commentRepository;
     private final MemberRepository memberRepository;
+    private final CommentRepository commentRepository;
     private final CommentLikeRepository commentLikeRepository;
 
     private final Map<String, Member> transactionTmpMemberMap = new ConcurrentHashMap<>();
