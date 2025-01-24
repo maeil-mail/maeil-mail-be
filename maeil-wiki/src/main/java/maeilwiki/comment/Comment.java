@@ -14,7 +14,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import maeilsupport.BaseEntity;
 import maeilwiki.member.Member;
-import maeilwiki.wiki.Wiki;
 
 @Entity
 @Getter
@@ -37,16 +36,15 @@ public class Comment extends BaseEntity {
     @JoinColumn(nullable = false)
     private Member member;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(nullable = false)
-    private Wiki wiki;
+    @Column(nullable = false)
+    private Long wikiId;
 
-    public Comment(String answer, boolean isAnonymous, Member member, Wiki wiki) {
+    public Comment(String answer, boolean isAnonymous, Member member, Long wikiId) {
         validateAnswer(answer);
         this.answer = answer;
         this.isAnonymous = isAnonymous;
         this.member = member;
-        this.wiki = wiki;
+        this.wikiId = wikiId;
     }
 
     private void validateAnswer(String answer) {

@@ -53,7 +53,7 @@ class CommentRepositoryTest extends IntegrationTestSupport {
     }
 
     private Comment createComment(Member member, Wiki wiki) {
-        Comment comment = new Comment("answer", false, member, wiki);
+        Comment comment = new Comment("answer", false, member, wiki.getId());
 
         return commentRepository.save(comment);
     }

@@ -4,6 +4,8 @@ import java.util.NoSuchElementException;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import maeilwiki.comment.CommentRepository;
+import maeilwiki.comment.CommentRequest;
+import maeilwiki.comment.CommentService;
 import maeilwiki.member.Member;
 import maeilwiki.member.MemberRepository;
 import org.springframework.stereotype.Service;
@@ -16,6 +18,7 @@ class WikiService {
     private final WikiRepository wikiRepository;
     private final MemberRepository memberRepository;
     private final CommentRepository commentRepository;
+    private final CommentService commentService;
 
     @Transactional
     public void create(WikiRequest request) {
@@ -35,6 +38,14 @@ class WikiService {
                 .orElseThrow(NoSuchElementException::new);
 
         wiki.remove();
+    }
+
+    @Transactional
+    public void comment(CommentRequest request, Long wikiId) {
+        Wiki wiki = wikiRepository.findByIdAndDeletedAtIsNull(wikiId)
+                .orElseThrow(NoSuchElementException::new);
+
+        commentService.comment(request, wiki.getId());
     }
 
     private void validateHasComment(Long wikiId) {

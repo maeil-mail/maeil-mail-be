@@ -2,12 +2,11 @@ package maeilwiki.comment;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.mock;
 
 import maeilwiki.member.Member;
-import maeilwiki.wiki.Wiki;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
 class CommentTest {
 
@@ -33,9 +32,8 @@ class CommentTest {
     }
 
     private Comment createComment() {
-        Member member = Mockito.mock(Member.class);
-        Wiki wiki = Mockito.mock(Wiki.class);
+        Member member = mock(Member.class);
 
-        return new Comment("answer", false, member, wiki);
+        return new Comment("answer", false, member, 1L);
     }
 }

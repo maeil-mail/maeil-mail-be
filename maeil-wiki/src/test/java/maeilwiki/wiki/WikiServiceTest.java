@@ -6,6 +6,7 @@ import java.util.NoSuchElementException;
 import java.util.UUID;
 import maeilwiki.comment.Comment;
 import maeilwiki.comment.CommentRepository;
+import maeilwiki.comment.CommentRequest;
 import maeilwiki.member.Member;
 import maeilwiki.member.MemberRepository;
 import maeilwiki.support.IntegrationTestSupport;
@@ -26,6 +27,16 @@ class WikiServiceTest extends IntegrationTestSupport {
 
     @Autowired
     private WikiService wikiService;
+
+    @Test
+    @DisplayName("존재하지 않는 위키에 답변을 작성할 수 없다.")
+    void notfound() {
+        CommentRequest request = new CommentRequest("답변을 작성합니다.", false);
+        Long unknownWikiId = -1L;
+
+        assertThatThrownBy(() -> wikiService.comment(request, unknownWikiId))
+                .isInstanceOf(NoSuchElementException.class);
+    }
 
     @Test
     @DisplayName("답변이 존재하는 위키는 삭제할 수 없다.")
@@ -61,7 +72,7 @@ class WikiServiceTest extends IntegrationTestSupport {
     }
 
     private Comment createComment(Member member, Wiki wiki) {
-        Comment comment = new Comment("answer", false, member, wiki);
+        Comment comment = new Comment("answer", false, member, wiki.getId());
 
         return commentRepository.save(comment);
     }
