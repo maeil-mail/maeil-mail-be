@@ -24,6 +24,7 @@ class WikiService {
     public void create(WikiRequest request) {
         String uuid = UUID.randomUUID().toString();
         Member temporalMember = new Member(uuid, uuid, "GITHUB");
+        temporalMember.setRefreshToken("temp");
         memberRepository.save(temporalMember);
         Wiki wiki = request.toWiki(temporalMember); // TODO : 로그인 구현
 

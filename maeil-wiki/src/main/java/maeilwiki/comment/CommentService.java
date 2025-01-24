@@ -25,6 +25,7 @@ public class CommentService {
     public void comment(CommentRequest request, Long wikiId) {
         String uuid = UUID.randomUUID().toString();
         Member temporalMember = new Member(uuid, uuid, "GITHUB");
+        temporalMember.setRefreshToken("temp");
         memberRepository.save(temporalMember);
         Comment comment = request.toComment(temporalMember, wikiId);
 
@@ -57,6 +58,7 @@ public class CommentService {
         if (member == null) {
             String uuid = UUID.randomUUID().toString();
             Member newMember = new Member(uuid, uuid, "GITHUB");
+            newMember.setRefreshToken("refresh");
             memberRepository.save(newMember);
             transactionTmpMemberMap.put(key, newMember);
             return newMember;

@@ -2,6 +2,9 @@ server:
   shutdown: graceful
 
 spring:
+  config:
+    import:
+      - application-prod-wiki.yml
   lifecycle:
     timeout-per-shutdown-phase: 30s
   datasource:
