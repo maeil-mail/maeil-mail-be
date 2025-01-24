@@ -74,6 +74,8 @@ class CommentServiceTest extends IntegrationTestSupport {
 
     private Comment createComment() {
         Member member = new Member("name", "providerId", "GITHUB");
+        member.setRefreshToken("refresh");
+
         memberRepository.save(member);
 
         Wiki wiki = new Wiki("question", "backend", false, member);

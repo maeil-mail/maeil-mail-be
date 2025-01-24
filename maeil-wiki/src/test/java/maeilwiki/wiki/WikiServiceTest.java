@@ -61,6 +61,7 @@ class WikiServiceTest extends IntegrationTestSupport {
 
     private Member createMember() {
         Member member = new Member(UUID.randomUUID().toString(), UUID.randomUUID().toString(), "GITHUB");
+        member.setRefreshToken("refresh");
 
         return memberRepository.save(member);
     }

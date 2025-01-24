@@ -58,6 +58,7 @@ public class CommentService {
         if (member == null) {
             String uuid = UUID.randomUUID().toString();
             Member newMember = new Member(uuid, uuid, "GITHUB");
+            newMember.setRefreshToken("refresh");
             memberRepository.save(newMember);
             transactionTmpMemberMap.put(key, newMember);
             return newMember;
