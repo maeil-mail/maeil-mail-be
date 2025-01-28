@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import maeilwiki.support.IntegrationTestSupport;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,6 +18,15 @@ class MemberServiceTest extends IntegrationTestSupport {
 
     @Autowired
     private MemberRepository memberRepository;
+
+    @Test
+    @DisplayName("존재하지 않는 식별자로 사용자를 조회할 수 없다.")
+    void findById() {
+        long unknownId = -1;
+
+        assertThatThrownBy(() -> memberService.findById(unknownId))
+                .isInstanceOf(NoSuchElementException.class);
+    }
 
     @Test
     @DisplayName("클라이언트 시크릿이 다르다면 회원 등록 처리를 할 수 없다.")
