@@ -21,4 +21,11 @@ class MemberApi {
 
         return ResponseEntity.ok(response);
     }
+
+    @PostMapping("/member/refresh")
+    public ResponseEntity<MemberTokenResponse> refresh(@RequestBody MemberRefreshRequest request) {
+        MemberTokenResponse response = memberService.refresh(request);
+
+        return ResponseEntity.ok(response);
+    }
 }

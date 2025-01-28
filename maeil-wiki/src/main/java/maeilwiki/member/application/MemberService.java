@@ -15,9 +15,10 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class MemberService {
 
-    private final MemberTokenGenerator memberTokenGenerator;
     private final MemberRepository memberRepository;
     private final GithubMemberFactory memberFactory;
+    private final MemberTokenGenerator memberTokenGenerator;
+    private final MemberRefreshTokenValidator memberRefreshTokenValidator;
 
     @Value("${client.secret}")
     private String clientSecret;
@@ -64,9 +65,26 @@ public class MemberService {
         };
     }
 
-    private MemberTokenResponse generateTokenResponse(Member actualMember) {
-        String accessToken = memberTokenGenerator.generateAccessToken(actualMember);
-        String refreshToken = actualMember.getRefreshToken();
+    @Transactional
+    public MemberTokenResponse refresh(MemberRefreshRequest request) {
+        String refreshToken = request.refreshToken();
+        memberRefreshTokenValidator.validateRefreshToken(refreshToken);
+
+        Member member = memberRepository.findByRefreshToken(refreshToken)
+                .orElseThrow(NoSuchElementException::new);
+        refreshTokenRotation(member);
+
+        return generateTokenResponse(member);
+    }
+
+    private void refreshTokenRotation(Member member) {
+        String refreshToken = memberTokenGenerator.generateRefreshToken();
+        member.setRefreshToken(refreshToken);
+    }
+
+    private MemberTokenResponse generateTokenResponse(Member member) {
+        String accessToken = memberTokenGenerator.generateAccessToken(member);
+        String refreshToken = member.getRefreshToken();
 
         return new MemberTokenResponse(accessToken, refreshToken);
     }

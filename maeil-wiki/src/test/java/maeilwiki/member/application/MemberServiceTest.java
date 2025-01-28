@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.UUID;
 import maeilwiki.member.domain.Member;
 import maeilwiki.member.domain.MemberRepository;
 import maeilwiki.support.IntegrationTestSupport;
@@ -20,6 +21,9 @@ class MemberServiceTest extends IntegrationTestSupport {
 
     @Autowired
     private MemberRepository memberRepository;
+
+    @Autowired
+    private MemberTokenGenerator memberTokenGenerator;
 
     @Test
     @DisplayName("존재하지 않는 식별자로 사용자를 조회할 수 없다.")
@@ -66,5 +70,27 @@ class MemberServiceTest extends IntegrationTestSupport {
 
         List<Member> members = memberRepository.findAll();
         assertThat(members).hasSize(1);
+    }
+
+    @Test
+    @DisplayName("사용자의 리프레시 토큰으로 엑세스 토큰을 갱신할 수 있다.")
+    void refresh() throws InterruptedException {
+        Member member = createMember();
+        String previousRefreshToken = member.getRefreshToken();
+        MemberRefreshRequest request = new MemberRefreshRequest(member.getRefreshToken());
+
+        Thread.sleep(1000);
+        MemberTokenResponse response = memberService.refresh(request);
+
+        Member foundMember = memberRepository.findById(member.getId())
+                .orElseThrow();
+        assertThat(foundMember.getRefreshToken()).isNotEqualTo(previousRefreshToken);
+    }
+
+    private Member createMember() {
+        Member member = new Member(UUID.randomUUID().toString(), UUID.randomUUID().toString(), "GITHUB");
+        member.setRefreshToken(memberTokenGenerator.generateRefreshToken());
+
+        return memberRepository.save(member);
     }
 }
