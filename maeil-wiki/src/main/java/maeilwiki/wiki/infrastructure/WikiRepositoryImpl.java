@@ -33,7 +33,7 @@ class WikiRepositoryImpl implements WikiRepositoryCustom {
                 .from(wiki)
                 .join(member).on(wiki.member.eq(member))
                 .where(wiki.id.eq(wikiId)
-                        .and(wiki.deletedAt.isNull()))
+                        .and(isNotDeletedWiki()))
                 .fetchOne();
         return Optional.ofNullable(wikiSummary);
     }
@@ -42,7 +42,7 @@ class WikiRepositoryImpl implements WikiRepositoryCustom {
     public Page<WikiSummaryWithCommentCount> pageByCategory(String category, Pageable pageable) {
         JPAQuery<Long> countQuery = queryFactory.select(wiki.count())
                 .from(wiki)
-                .where(wiki.deletedAt.isNull()
+                .where(isNotDeletedWiki()
                         .and(eqCategory(category)));
 
         JPAQuery<WikiSummaryWithCommentCount> resultQuery = queryFactory.select(
@@ -51,7 +51,7 @@ class WikiRepositoryImpl implements WikiRepositoryCustom {
                 .from(wiki)
                 .join(member).on(wiki.member.eq(member))
                 .leftJoin(comment).on(wiki.id.eq(comment.wiki.id))
-                .where(wiki.deletedAt.isNull()
+                .where(isNotDeletedWiki()
                         .and(eqCategory(category))
                         .and(comment.deletedAt.isNull()))
                 .groupBy(wiki.id)
@@ -60,6 +60,10 @@ class WikiRepositoryImpl implements WikiRepositoryCustom {
                 .limit(pageable.getPageSize());
 
         return PageableExecutionUtils.getPage(resultQuery.fetch(), pageable, countQuery::fetchOne);
+    }
+
+    private BooleanExpression isNotDeletedWiki() {
+        return wiki.deletedAt.isNull();
     }
 
     private BooleanExpression eqCategory(String category) {
