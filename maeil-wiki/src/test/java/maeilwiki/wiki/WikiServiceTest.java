@@ -75,7 +75,6 @@ class WikiServiceTest extends IntegrationTestSupport {
         assertThatThrownBy(() -> wikiService.remove(otherMemberIdentity, wiki.getId()))
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessage("자신의 위키만 삭제할 수 있습니다.");
-
     }
 
     private Member createMember() {

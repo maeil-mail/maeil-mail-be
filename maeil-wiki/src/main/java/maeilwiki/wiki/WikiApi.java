@@ -54,7 +54,7 @@ class WikiApi {
             @PathVariable Long wikiId,
             @PathVariable Long id
     ) {
-        commentService.remove(id);
+        commentService.remove(identity, id);
 
         return ResponseEntity.noContent().build();
     }

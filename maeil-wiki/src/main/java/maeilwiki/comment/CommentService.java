@@ -33,12 +33,20 @@ public class CommentService {
     }
 
     @Transactional
-    public void remove(Long commentId) {
-        // TODO: member 소유인지 확인해야한다.
+    public void remove(Identity identity, Long commentId) {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(NoSuchElementException::new);
+        validateOwner(identity, comment);
 
         comment.remove();
+    }
+
+    private void validateOwner(Identity identity, Comment comment) {
+        Member owner = comment.getMember();
+
+        if (!identity.canAccessToResource(owner.getId())) {
+            throw new IllegalStateException("자신의 답변만 삭제할 수 있습니다.");
+        }
     }
 
     @Transactional

@@ -5,6 +5,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.UUID;
+import maeilwiki.member.Identity;
 import maeilwiki.member.Member;
 import maeilwiki.member.MemberRepository;
 import maeilwiki.support.IntegrationTestSupport;
@@ -35,9 +37,24 @@ class CommentServiceTest extends IntegrationTestSupport {
     @DisplayName("존재하지 않는 답변을 삭제할 수 없다.")
     void notFoundComment() {
         Long unknownCommentId = -1L;
+        Identity identity = new Identity(1L);
 
-        assertThatThrownBy(() -> commentService.remove(unknownCommentId))
+        assertThatThrownBy(() -> commentService.remove(identity, unknownCommentId))
                 .isInstanceOf(NoSuchElementException.class);
+    }
+
+    @Test
+    @DisplayName("자신의 답변만 삭제할 수 있다.")
+    void cantRemoveOtherComment() {
+        Member member = createMember();
+        Wiki wiki = createWiki(member);
+        Comment comment = createComment(member, wiki);
+        Member otherMember = createMember();
+        Identity otherMemberIdentity = new Identity(otherMember.getId());
+
+        assertThatThrownBy(() -> commentService.remove(otherMemberIdentity, comment.getId()))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("자신의 답변만 삭제할 수 있습니다.");
     }
 
     @Test
@@ -73,15 +90,28 @@ class CommentServiceTest extends IntegrationTestSupport {
     }
 
     private Comment createComment() {
-        Member member = new Member("name", "providerId", "GITHUB");
+        Member member = createMember();
+        Wiki wiki = createWiki(member);
+
+        return createComment(member, wiki);
+    }
+
+    private Member createMember() {
+        Member member = new Member(UUID.randomUUID().toString(), UUID.randomUUID().toString(), "GITHUB");
         member.setRefreshToken("refresh");
 
-        memberRepository.save(member);
+        return memberRepository.save(member);
+    }
 
+    private Wiki createWiki(Member member) {
         Wiki wiki = new Wiki("question", "backend", false, member);
-        wikiRepository.save(wiki);
 
+        return wikiRepository.save(wiki);
+    }
+
+    private Comment createComment(Member member, Wiki wiki) {
         Comment comment = new Comment("answer", false, member, wiki.getId());
+
         return commentRepository.save(comment);
     }
 }
