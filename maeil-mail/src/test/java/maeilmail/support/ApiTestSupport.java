@@ -4,6 +4,7 @@ import maeilmail.question.QuestionApi;
 import maeilmail.question.QuestionQueryService;
 import maeilmail.subscribe.api.SubscribeQuestionApi;
 import maeilmail.subscribe.query.SubscribeQuestionQueryService;
+import maeilwiki.member.MemberTokenAuthorizer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -20,4 +21,7 @@ public abstract class ApiTestSupport {
 
     @MockBean
     protected SubscribeQuestionQueryService subscribeQuestionQueryService;
+
+    @MockBean
+    protected MemberTokenAuthorizer memberTokenAuthorizer;
 }

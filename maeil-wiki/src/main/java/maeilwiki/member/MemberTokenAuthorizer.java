@@ -8,7 +8,7 @@ import io.jsonwebtoken.Jwts;
 import org.springframework.stereotype.Component;
 
 @Component
-class MemberTokenAuthorizer {
+public class MemberTokenAuthorizer {
 
     private final JwtParser jwtParser;
 
