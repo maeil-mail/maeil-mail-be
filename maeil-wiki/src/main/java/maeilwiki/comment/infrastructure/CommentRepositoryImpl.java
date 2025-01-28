@@ -30,7 +30,13 @@ class CommentRepositoryImpl implements CommentRepositoryCustom {
     }
 
     private QCommentSummary projectionCommentSummary() {
-        return new QCommentSummary(comment.id, comment.answer, projectionMemberThumbnail(), comment.createdAt);
+        return new QCommentSummary(
+                comment.id,
+                comment.answer,
+                comment.isAnonymous,
+                comment.createdAt,
+                projectionMemberThumbnail()
+        );
     }
 
     private QMemberThumbnail projectionMemberThumbnail() {

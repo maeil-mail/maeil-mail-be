@@ -7,11 +7,16 @@ import maeilwiki.member.dto.MemberThumbnail;
 public record CommentSummary(
         Long id,
         String answer,
-        MemberThumbnail owner,
-        LocalDateTime createdAt
+        boolean isAnonymous,
+        LocalDateTime createdAt,
+        MemberThumbnail owner
 ) {
 
     @QueryProjection
     public CommentSummary {
+    }
+
+    public CommentSummary toAnonymousOwner() {
+        return new CommentSummary(id, answer, isAnonymous, createdAt, null);
     }
 }
