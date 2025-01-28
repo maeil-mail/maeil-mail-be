@@ -65,7 +65,7 @@ class WikiApi {
             @PathVariable Long wikiId,
             @PathVariable Long id
     ) {
-        commentService.toggleLike(id);
+        commentService.toggleLike(identity, id);
 
         return ResponseEntity.noContent().build();
     }

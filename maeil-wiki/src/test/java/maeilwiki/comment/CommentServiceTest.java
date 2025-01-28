@@ -61,17 +61,21 @@ class CommentServiceTest extends IntegrationTestSupport {
     @DisplayName("존재하지 않는 답변에 좋아요를 생성할 수 없다.")
     void notFoundCommentForLike() {
         Long unknownCommentId = -1L;
+        Identity identity = new Identity(1L);
 
-        assertThatThrownBy(() -> commentService.toggleLike(unknownCommentId))
+        assertThatThrownBy(() -> commentService.toggleLike(identity, unknownCommentId))
                 .isInstanceOf(NoSuchElementException.class);
     }
 
     @Test
     @DisplayName("답변에 좋아요를 생성할 수 있다.")
     void like() {
-        Comment comment = createComment();
+        Member member = createMember();
+        Wiki wiki = createWiki(member);
+        Comment comment = createComment(member, wiki);
+        Identity identity = new Identity(member.getId());
 
-        commentService.toggleLike(comment.getId());
+        commentService.toggleLike(identity, comment.getId());
 
         List<CommentLike> likes = commentLikeRepository.findAll();
         assertThat(likes).hasSize(1);
@@ -80,20 +84,16 @@ class CommentServiceTest extends IntegrationTestSupport {
     @Test
     @DisplayName("이미 해당 사용자가 좋아요를 생성한 상황에서 재요청하는 경우, 좋아요를 취소한다.")
     void unlike() {
-        Comment comment = createComment();
-        commentService.toggleLike(comment.getId());
+        Member member = createMember();
+        Wiki wiki = createWiki(member);
+        Comment comment = createComment(member, wiki);
+        Identity identity = new Identity(member.getId());
+        commentService.toggleLike(identity, comment.getId());
 
-        commentService.toggleLike(comment.getId());
+        commentService.toggleLike(identity, comment.getId());
 
         List<CommentLike> likes = commentLikeRepository.findAll();
         assertThat(likes).hasSize(0);
-    }
-
-    private Comment createComment() {
-        Member member = createMember();
-        Wiki wiki = createWiki(member);
-
-        return createComment(member, wiki);
     }
 
     private Member createMember() {
