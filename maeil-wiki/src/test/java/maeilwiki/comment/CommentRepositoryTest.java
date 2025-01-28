@@ -2,8 +2,10 @@ package maeilwiki.comment;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.List;
+import java.util.UUID;
 import maeilwiki.comment.dto.CommentSummary;
 import maeilwiki.member.Member;
 import maeilwiki.member.MemberRepository;
@@ -17,27 +19,43 @@ import org.springframework.beans.factory.annotation.Autowired;
 class CommentRepositoryTest extends IntegrationTestSupport {
 
     @Autowired
-    private CommentRepository commentRepository;
+    private WikiRepository wikiRepository;
 
     @Autowired
     private MemberRepository memberRepository;
 
     @Autowired
-    private WikiRepository wikiRepository;
+    private CommentRepository commentRepository;
+
+    @Test
+    @DisplayName("주어진 위키에 속하는 답변이 존재하는지 조회한다.")
+    void existsComment() {
+        Member member = createMember();
+        Wiki wiki = createWiki(member);
+        Wiki noCommentWiki = createWiki(member);
+        createComment(member, wiki);
+        Comment comment = createComment(member, noCommentWiki);
+        comment.remove();
+
+        assertAll(
+                () -> assertThat(commentRepository.existsByWikiIdAndDeletedAtIsNull(wiki.getId())).isTrue(),
+                () -> assertThat(commentRepository.existsByWikiIdAndDeletedAtIsNull(noCommentWiki.getId())).isFalse()
+        );
+    }
 
     @Test
     @DisplayName("위키의 댓글을 조회한다.")
     void queryAllByWikiId() {
         // given
-        Member prin = memberRepository.save(new Member("prin", "UUID1", "GITHUB"));
-        Member atom = memberRepository.save(new Member("atom", "UUID2", "GITHUB"));
+        Member prin = createMember();
+        Member atom = createMember();
 
-        Wiki wiki1 = wikiRepository.save(new Wiki("질문1", "FRONTEND", false, prin));
-        Wiki wiki2 = wikiRepository.save(new Wiki("질문2", "BACKEND", true, prin));
+        Wiki wiki1 = createWiki(prin);
+        Wiki wiki2 = createWiki(prin);
 
-        Comment comment1 = commentRepository.save(new Comment("답변1", true, atom, wiki1));
-        Comment comment2 = commentRepository.save(new Comment("답변2", true, atom, wiki1));
-        commentRepository.save(new Comment("답변3", true, atom, wiki2));
+        Comment comment1 = createComment(atom, wiki1);
+        Comment comment2 = createComment(atom, wiki1);
+        createComment(atom, wiki2);
 
         // when
         List<CommentSummary> commentSummary = commentRepository.queryAllByWikiId(wiki1.getId());
@@ -68,13 +86,32 @@ class CommentRepositoryTest extends IntegrationTestSupport {
     @DisplayName("위키에 댓글이 없는 경우 빈 리스트를 반환한다.")
     void emptyResult() {
         // given
-        Member atom = memberRepository.save(new Member("atom", "UUID", "GITHUB"));
-        Wiki wiki = wikiRepository.save(new Wiki("질문1", "FRONTEND", false, atom));
+        Member atom = createMember();
+        Wiki wiki = createWiki(atom);
 
         // when
         List<CommentSummary> commentSummary = commentRepository.queryAllByWikiId(wiki.getId());
 
         // then
         assertThat(commentSummary).isEmpty();
+    }
+
+    private Member createMember() {
+        Member member = new Member(UUID.randomUUID().toString(), UUID.randomUUID().toString(), "GITHUB");
+        member.setRefreshToken("refresh");
+
+        return memberRepository.save(member);
+    }
+
+    private Wiki createWiki(Member member) {
+        Wiki wiki = new Wiki("question", "backend", false, member);
+
+        return wikiRepository.save(wiki);
+    }
+
+    private Comment createComment(Member member, Wiki wiki) {
+        Comment comment = new Comment("answer", false, member, wiki.getId());
+
+        return commentRepository.save(comment);
     }
 }

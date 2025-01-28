@@ -50,7 +50,7 @@ class WikiRepositoryImpl implements WikiRepositoryCustom {
                 )
                 .from(wiki)
                 .join(member).on(wiki.member.eq(member))
-                .leftJoin(comment).on(wiki.id.eq(comment.wiki.id))
+                .leftJoin(comment).on(wiki.id.eq(comment.wikiId))
                 .where(isNotDeletedWiki()
                         .and(eqCategory(category))
                         .and(comment.deletedAt.isNull()))

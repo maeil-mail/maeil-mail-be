@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 import java.util.Optional;
+import java.util.UUID;
 import maeilwiki.comment.Comment;
 import maeilwiki.comment.CommentRepository;
 import maeilwiki.member.Member;
@@ -33,8 +34,8 @@ class WikiRepositoryTest extends IntegrationTestSupport {
     @DisplayName("Wiki 아이디로 WikiSummary를 조회한다.")
     void queryOneById() {
         // given
-        Member prin = memberRepository.save(new Member("prin", "UUID", "GITHUB"));
-        Wiki wiki = wikiRepository.save(new Wiki("질문1", "FRONTEND", false, prin));
+        Member prin = createMember();
+        Wiki wiki = createWiki(prin);
 
         // when
         WikiSummary wikiSummary = wikiRepository.queryOneById(wiki.getId()).orElseThrow();
@@ -70,20 +71,20 @@ class WikiRepositoryTest extends IntegrationTestSupport {
     @DisplayName("카테고리에 해당하는 Wiki 페이지를 id 기준 내림차순으로 조회한다.")
     void pageByCategory() {
         // given
-        Member prin = memberRepository.save(new Member("prin", "UUID", "GITHUB"));
-        Member atom = memberRepository.save(new Member("atom", "UUID2", "GITHUB"));
-        Wiki wiki1 = wikiRepository.save(new Wiki("질문1", "FRONTEND", false, prin));
-        Wiki wiki2 = wikiRepository.save(new Wiki("질문2", "FRONTEND", false, prin));
-        wikiRepository.save(new Wiki("질문3", "BACKEND", false, prin));
-        wikiRepository.save(new Wiki("질문4", "FRONTEND", false, prin));
-        wikiRepository.save(new Wiki("질문5", "FRONTEND", false, prin));
-        commentRepository.save(new Comment("답변1", true, atom, wiki1));
-        commentRepository.save(new Comment("답변2", true, atom, wiki1));
-        commentRepository.save(new Comment("답변3", true, atom, wiki1));
-        commentRepository.save(new Comment("답변4", true, atom, wiki1));
-        commentRepository.save(new Comment("답변5", true, atom, wiki2));
-        commentRepository.save(new Comment("답변6", true, atom, wiki2));
-        commentRepository.save(new Comment("답변7", true, atom, wiki2));
+        Member prin = createMember();
+        Member atom = createMember();
+        Wiki wiki1 = createWiki(prin, "FRONTEND");
+        createComment(atom, wiki1);
+        createComment(atom, wiki1);
+        createComment(atom, wiki1);
+        createComment(atom, wiki1);
+        Wiki wiki2 = createWiki(prin, "FRONTEND");
+        createComment(atom, wiki2);
+        createComment(atom, wiki2);
+        createComment(atom, wiki2);
+        createWiki(prin, "BACKEND");
+        createWiki(prin, "FRONTEND");
+        createWiki(prin, "FRONTEND");
         Pageable pageable = PageRequest.of(1, 2);
 
         // when
@@ -105,25 +106,25 @@ class WikiRepositoryTest extends IntegrationTestSupport {
     @DisplayName("카테고리가 all이면 모든 카테고리의 Wiki 페이지를 조회한다.")
     void pageByDefaultCategory() {
         // given
-        Member prin = memberRepository.save(new Member("prin", "UUID", "GITHUB"));
-        Member atom = memberRepository.save(new Member("atom", "UUID2", "GITHUB"));
-        Wiki wiki1 = wikiRepository.save(new Wiki("질문1", "FRONTEND", false, prin));
-        Wiki wiki2 = wikiRepository.save(new Wiki("질문2", "FRONTEND", false, prin));
-        Wiki wiki3 = wikiRepository.save(new Wiki("질문3", "BACKEND", false, prin));
-        Wiki wiki4 = wikiRepository.save(new Wiki("질문4", "FRONTEND", false, prin));
-        Wiki wiki5 = wikiRepository.save(new Wiki("질문5", "FRONTEND", false, prin));
-        commentRepository.save(new Comment("답변1", true, atom, wiki1));
-        commentRepository.save(new Comment("답변2", true, atom, wiki1));
-        commentRepository.save(new Comment("답변3", true, atom, wiki2));
-        commentRepository.save(new Comment("답변4", true, atom, wiki3));
-        commentRepository.save(new Comment("답변5", true, atom, wiki3));
-        commentRepository.save(new Comment("답변6", true, atom, wiki3));
-        commentRepository.save(new Comment("답변7", true, atom, wiki4));
-        commentRepository.save(new Comment("답변8", true, atom, wiki4));
-        commentRepository.save(new Comment("답변9", true, atom, wiki5));
-        commentRepository.save(new Comment("답변10", true, atom, wiki5));
-        commentRepository.save(new Comment("답변11", true, atom, wiki5));
-        commentRepository.save(new Comment("답변12", true, atom, wiki5));
+        Member prin = createMember();
+        Member atom = createMember();
+        Wiki wiki1 = createWiki(prin, "FRONTEND");
+        createComment(atom, wiki1);
+        createComment(atom, wiki1);
+        Wiki wiki2 = createWiki(prin, "FRONTEND");
+        createComment(atom, wiki2);
+        Wiki wiki3 = createWiki(prin, "BACKEND");
+        createComment(atom, wiki3);
+        createComment(atom, wiki3);
+        createComment(atom, wiki3);
+        Wiki wiki4 = createWiki(prin, "FRONTEND");
+        createComment(atom, wiki4);
+        createComment(atom, wiki4);
+        Wiki wiki5 = createWiki(prin, "FRONTEND");
+        createComment(atom, wiki5);
+        createComment(atom, wiki5);
+        createComment(atom, wiki5);
+        createComment(atom, wiki5);
         Pageable pageable = PageRequest.of(0, 3);
 
         // when
@@ -141,5 +142,28 @@ class WikiRepositoryTest extends IntegrationTestSupport {
             softAssertions.assertThat(wikiSummaryPage.getContent().get(2).wikiSummary().id()).isEqualTo(wiki3.getId());
             softAssertions.assertThat(wikiSummaryPage.getContent().get(2).commentCount()).isEqualTo(3);
         });
+    }
+
+    private Member createMember() {
+        Member member = new Member(UUID.randomUUID().toString(), UUID.randomUUID().toString(), "GITHUB");
+        member.setRefreshToken("refresh");
+
+        return memberRepository.save(member);
+    }
+
+    private Wiki createWiki(Member member) {
+        return createWiki(member, "backend");
+    }
+
+    private Wiki createWiki(Member member, String category) {
+        Wiki wiki = new Wiki("question", category, false, member);
+
+        return wikiRepository.save(wiki);
+    }
+
+    private Comment createComment(Member member, Wiki wiki) {
+        Comment comment = new Comment("answer", false, member, wiki.getId());
+
+        return commentRepository.save(comment);
     }
 }

@@ -1,13 +1,26 @@
 spring:
+  main:
+    allow-bean-definition-overriding: true
   jpa:
+    hibernate:
+      ddl-auto: create
     properties:
       hibernate:
+        auto_quote_keyword: true
         format_sql: true
         show_sql: true
         highlight_sql: true
   sql:
     init:
       mode: never
+
+token:
+  secret-key: YXBwbGljYXRpb24tbG9jYWwtc2VjcmV0
+  access-exp-time: 7d
+  refresh-exp-time: 365d
+
+client:
+  secret: clientSecret
 
 logging:
   level:

@@ -23,7 +23,7 @@ class CommentRepositoryImpl implements CommentRepositoryCustom {
         return queryFactory.select(projectionCommentSummary())
                 .from(comment)
                 .join(member).on(comment.member.eq(member))
-                .where(comment.wiki.id.eq(wikiId)
+                .where(comment.wikiId.eq(wikiId)
                         .and(comment.deletedAt.isNull()))
                 .orderBy(comment.id.asc())
                 .fetch();

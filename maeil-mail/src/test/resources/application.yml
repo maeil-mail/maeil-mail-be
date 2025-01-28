@@ -1,4 +1,7 @@
 spring:
+  config:
+    import:
+      - application-local-wiki.yml
   main:
     allow-bean-definition-overriding: true
   jpa:
