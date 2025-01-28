@@ -1,8 +1,8 @@
 package maeilwiki.wiki.infrastructure;
 
-import static maeilwiki.comment.QComment.comment;
-import static maeilwiki.member.QMember.member;
-import static maeilwiki.wiki.QWiki.wiki;
+import static maeilwiki.comment.domain.QComment.comment;
+import static maeilwiki.member.domain.QMember.member;
+import static maeilwiki.wiki.domain.QWiki.wiki;
 
 import java.util.Optional;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -10,7 +10,7 @@ import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import maeilwiki.member.dto.QMemberThumbnail;
-import maeilwiki.wiki.WikiCategory;
+import maeilwiki.wiki.domain.WikiCategory;
 import maeilwiki.wiki.domain.WikiRepositoryCustom;
 import maeilwiki.wiki.dto.QWikiSummary;
 import maeilwiki.wiki.dto.QWikiSummaryWithCommentCount;

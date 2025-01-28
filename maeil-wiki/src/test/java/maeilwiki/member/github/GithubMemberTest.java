@@ -2,7 +2,7 @@ package maeilwiki.member.github;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import maeilwiki.member.Member;
+import maeilwiki.member.domain.Member;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

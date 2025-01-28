@@ -1,7 +1,7 @@
 package maeilwiki.comment.infrastructure;
 
-import static maeilwiki.comment.QComment.comment;
-import static maeilwiki.member.QMember.member;
+import static maeilwiki.comment.domain.QComment.comment;
+import static maeilwiki.member.domain.QMember.member;
 
 import java.util.List;
 import com.querydsl.jpa.impl.JPAQueryFactory;

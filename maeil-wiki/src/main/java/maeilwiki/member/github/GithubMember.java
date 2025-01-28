@@ -1,7 +1,7 @@
 package maeilwiki.member.github;
 
-import maeilwiki.member.Member;
-import maeilwiki.member.Provider;
+import maeilwiki.member.domain.Member;
+import maeilwiki.member.domain.Provider;
 
 public record GithubMember(
         Long id,
