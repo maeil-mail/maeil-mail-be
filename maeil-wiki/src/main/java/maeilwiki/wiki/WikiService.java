@@ -5,6 +5,7 @@ import java.util.NoSuchElementException;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import maeilwiki.comment.CommentRepository;
+import maeilwiki.comment.application.CommentResponse;
 import maeilwiki.comment.dto.CommentSummary;
 import maeilwiki.member.Member;
 import maeilwiki.member.MemberRepository;
@@ -35,12 +36,13 @@ class WikiService {
     public WikiResponse getWikiById(Long wikiId) {
         WikiSummary wikiSummary = resolveAnonymousWiki(wikiRepository.queryOneById(wikiId)
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 위키입니다.")));
-        List<CommentSummary> commentSummaries = commentRepository.queryAllByWikiId(wikiId)
+        List<CommentResponse> commentResponses = commentRepository.queryAllByWikiId(wikiId)
                 .stream()
                 .map(this::resolveAnonymousComment)
+                .map(CommentResponse::from)
                 .toList();
 
-        return WikiResponse.withComments(wikiSummary, commentSummaries);
+        return WikiResponse.withComments(wikiSummary, commentResponses);
     }
 
     private WikiSummary resolveAnonymousWiki(WikiSummary wikiSummary) {
