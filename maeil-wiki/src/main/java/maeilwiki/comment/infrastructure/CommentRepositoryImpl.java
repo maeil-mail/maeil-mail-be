@@ -22,8 +22,9 @@ class CommentRepositoryImpl implements CommentRepositoryCustom {
     public List<CommentSummary> queryAllByWikiId(Long wikiId) {
         return queryFactory.select(projectionCommentSummary())
                 .from(comment)
-                .innerJoin(comment.member, member)
-                .where(comment.wiki.id.eq(wikiId).and(comment.deletedAt.isNull()))
+                .join(member).on(comment.member.eq(member))
+                .where(comment.wiki.id.eq(wikiId)
+                        .and(comment.deletedAt.isNull()))
                 .orderBy(comment.id.asc())
                 .fetch();
     }

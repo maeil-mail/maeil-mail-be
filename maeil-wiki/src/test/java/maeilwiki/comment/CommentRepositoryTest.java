@@ -66,7 +66,7 @@ class CommentRepositoryTest extends RepositoryTestSupport {
     @DisplayName("위키에 댓글이 없는 경우 빈 리스트를 반환한다.")
     void emptyResult() {
         // given
-        Member atom = memberRepository.save(new Member("atom", "UUID2", "GITHUB"));
+        Member atom = memberRepository.save(new Member("atom", "UUID", "GITHUB"));
         Wiki wiki = wikiRepository.save(new Wiki("질문1", "FRONTEND", false, atom));
 
         // when
