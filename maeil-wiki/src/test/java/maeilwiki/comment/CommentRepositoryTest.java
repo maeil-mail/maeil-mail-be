@@ -51,7 +51,7 @@ class CommentRepositoryTest extends RepositoryTestSupport {
             softAssertions.assertThat(commentSummary.get(0).isAnonymous()).isEqualTo(comment1.isAnonymous());
             softAssertions.assertThat(commentSummary.get(0).createdAt()).isEqualTo(comment1.getCreatedAt());
             softAssertions.assertThat(commentSummary.get(0).owner().name()).isEqualTo(comment1.getMember().getName());
-            softAssertions.assertThat(commentSummary.get(0).owner().profileImageUrl()).isEqualTo(comment1.getMember().getProfileImageUrl());
+            softAssertions.assertThat(commentSummary.get(0).owner().profileImage()).isEqualTo(comment1.getMember().getProfileImageUrl());
             softAssertions.assertThat(commentSummary.get(0).owner().github()).isEqualTo(comment1.getMember().getGithubUrl());
 
             softAssertions.assertThat(commentSummary.get(1).id()).isEqualTo(comment2.getId());
@@ -59,7 +59,7 @@ class CommentRepositoryTest extends RepositoryTestSupport {
             softAssertions.assertThat(commentSummary.get(1).isAnonymous()).isEqualTo(comment2.isAnonymous());
             softAssertions.assertThat(commentSummary.get(1).createdAt()).isEqualTo(comment2.getCreatedAt());
             softAssertions.assertThat(commentSummary.get(1).owner().name()).isEqualTo(comment2.getMember().getName());
-            softAssertions.assertThat(commentSummary.get(1).owner().profileImageUrl()).isEqualTo(comment2.getMember().getProfileImageUrl());
+            softAssertions.assertThat(commentSummary.get(1).owner().profileImage()).isEqualTo(comment2.getMember().getProfileImageUrl());
             softAssertions.assertThat(commentSummary.get(1).owner().github()).isEqualTo(comment2.getMember().getGithubUrl());
         });
     }

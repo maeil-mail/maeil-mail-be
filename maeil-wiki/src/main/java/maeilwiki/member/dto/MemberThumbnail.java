@@ -4,7 +4,7 @@ import com.querydsl.core.annotations.QueryProjection;
 
 public record MemberThumbnail(
         String name,
-        String profileImageUrl,
+        String profileImage,
         String github
 ) {
 

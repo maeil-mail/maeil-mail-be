@@ -48,7 +48,7 @@ class WikiRepositoryTest extends RepositoryTestSupport {
             softAssertions.assertThat(wikiSummary.isAnonymous()).isEqualTo(wiki.isAnonymous());
             softAssertions.assertThat(wikiSummary.createdAt()).isEqualTo(wiki.getCreatedAt());
             softAssertions.assertThat(wikiSummary.owner().name()).isEqualTo(wiki.getMember().getName());
-            softAssertions.assertThat(wikiSummary.owner().profileImageUrl()).isEqualTo(wiki.getMember().getProfileImageUrl());
+            softAssertions.assertThat(wikiSummary.owner().profileImage()).isEqualTo(wiki.getMember().getProfileImageUrl());
             softAssertions.assertThat(wikiSummary.owner().github()).isEqualTo(wiki.getMember().getGithubUrl());
         });
     }
