@@ -46,14 +46,8 @@ public class MemberService {
     private Member trySignInOrSignUp(Member candidateMember) {
         return memberRepository
                 .findByProviderId(candidateMember.getProviderId())
-                .map(this::changeRefreshToken)
+                .map(this::rotateRefreshToken)
                 .orElseGet(signUp(candidateMember));
-    }
-
-    private Member changeRefreshToken(Member existingMember) {
-        existingMember.setRefreshToken(memberTokenGenerator.generateRefreshToken());
-
-        return existingMember;
     }
 
     private Supplier<Member> signUp(Member candidateMember) {
@@ -72,14 +66,16 @@ public class MemberService {
 
         Member member = memberRepository.findByRefreshToken(refreshToken)
                 .orElseThrow(NoSuchElementException::new);
-        refreshTokenRotation(member);
+        rotateRefreshToken(member);
 
         return generateTokenResponse(member);
     }
 
-    private void refreshTokenRotation(Member member) {
+    private Member rotateRefreshToken(Member member) {
         String refreshToken = memberTokenGenerator.generateRefreshToken();
         member.setRefreshToken(refreshToken);
+
+        return member;
     }
 
     private MemberTokenResponse generateTokenResponse(Member member) {
