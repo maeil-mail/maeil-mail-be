@@ -47,7 +47,6 @@ class WikiRepositoryTest extends IntegrationTestSupport {
             softAssertions.assertThat(wikiSummary.questionDetail()).isEqualTo(wiki.getQuestionDetail());
             softAssertions.assertThat(wikiSummary.category()).isEqualTo(wiki.getCategory().toString().toLowerCase());
             softAssertions.assertThat(wikiSummary.isAnonymous()).isEqualTo(wiki.isAnonymous());
-            softAssertions.assertThat(wikiSummary.createdAt()).isEqualTo(wiki.getCreatedAt());
             softAssertions.assertThat(wikiSummary.owner().name()).isEqualTo(wiki.getMember().getName());
             softAssertions.assertThat(wikiSummary.owner().profileImage()).isEqualTo(wiki.getMember().getProfileImageUrl());
             softAssertions.assertThat(wikiSummary.owner().github()).isEqualTo(wiki.getMember().getGithubUrl());

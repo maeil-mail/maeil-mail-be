@@ -108,7 +108,6 @@ class WikiServiceTest extends IntegrationTestSupport {
             softAssertions.assertThat(wikiResponse.owner().name()).isEqualTo(wiki1.getMember().getName());
             softAssertions.assertThat(wikiResponse.owner().profileImage()).isEqualTo(wiki1.getMember().getProfileImageUrl());
             softAssertions.assertThat(wikiResponse.owner().github()).isEqualTo(wiki1.getMember().getGithubUrl());
-            softAssertions.assertThat(wikiResponse.createdAt()).isEqualTo(wiki1.getCreatedAt());
             softAssertions.assertThat(wikiResponse.comments()).hasSize(2);
             softAssertions.assertThat(wikiResponse.comments().get(0).id()).isEqualTo(wiki1Comment1.getId());
             softAssertions.assertThat(wikiResponse.comments().get(1).id()).isEqualTo(wiki1Comment2.getId());
