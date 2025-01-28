@@ -1,4 +1,4 @@
-package maeilwiki.comment.infrastructure;
+package maeilwiki.comment.domain;
 
 import static maeilwiki.comment.domain.QComment.comment;
 import static maeilwiki.member.domain.QMember.member;
@@ -6,7 +6,6 @@ import static maeilwiki.member.domain.QMember.member;
 import java.util.List;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
-import maeilwiki.comment.domain.CommentRepositoryCustom;
 import maeilwiki.comment.dto.CommentSummary;
 import maeilwiki.comment.dto.QCommentSummary;
 import maeilwiki.member.dto.QMemberThumbnail;
