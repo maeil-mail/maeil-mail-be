@@ -81,8 +81,8 @@ class WikiRepositoryImpl implements WikiRepositoryCustom {
                 wiki.questionDetail,
                 wiki.category.stringValue().lower(),
                 wiki.isAnonymous,
-                projectionMemberThumbnail(),
-                wiki.createdAt
+                wiki.createdAt,
+                projectionMemberThumbnail()
         );
     }
 

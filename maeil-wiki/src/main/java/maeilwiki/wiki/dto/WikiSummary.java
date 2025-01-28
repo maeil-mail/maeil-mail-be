@@ -10,11 +10,15 @@ public record WikiSummary(
         String questionDetail,
         String category,
         boolean isAnonymous,
-        MemberThumbnail owner,
-        LocalDateTime createdAt
+        LocalDateTime createdAt,
+        MemberThumbnail owner
 ) {
 
     @QueryProjection
     public WikiSummary {
+    }
+
+    public WikiSummary toAnonymousOwner() {
+        return new WikiSummary(id, question, questionDetail, category, isAnonymous, createdAt, null);
     }
 }
