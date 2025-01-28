@@ -7,8 +7,8 @@ import maeilwiki.comment.domain.CommentLike;
 import maeilwiki.comment.domain.CommentLikeRepository;
 import maeilwiki.comment.domain.CommentRepository;
 import maeilwiki.member.Identity;
-import maeilwiki.member.domain.Member;
 import maeilwiki.member.application.MemberService;
+import maeilwiki.member.domain.Member;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
