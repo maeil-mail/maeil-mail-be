@@ -1,4 +1,4 @@
 package maeilwiki.member;
 
-record MemberRequest(String accessToken) {
+record MemberRequest(String oauthAccessToken) {
 }

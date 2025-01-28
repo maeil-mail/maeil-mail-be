@@ -26,7 +26,7 @@ public class MemberService {
 
     @Transactional
     public MemberTokenResponse apply(MemberRequest request) {
-        Member candidateMember = memberFactory.create(request.accessToken());
+        Member candidateMember = memberFactory.create(request.oauthAccessToken());
         Member actualMember = trySignInOrSignUp(candidateMember);
 
         return generateTokenResponse(actualMember);
