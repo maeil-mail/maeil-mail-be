@@ -34,8 +34,6 @@ class CommentRepositoryTest extends IntegrationTestSupport {
         Wiki wiki = createWiki(member);
         Wiki noCommentWiki = createWiki(member);
         createComment(member, wiki);
-        Comment comment = createComment(member, noCommentWiki);
-        comment.remove();
 
         assertAll(
                 () -> assertThat(commentRepository.existsByWikiIdAndDeletedAtIsNull(wiki.getId())).isTrue(),
