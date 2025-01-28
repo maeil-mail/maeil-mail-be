@@ -9,6 +9,7 @@ public record WikiSummary(
         String question,
         String questionDetail,
         String category,
+        boolean isAnonymous,
         MemberThumbnail owner,
         LocalDateTime createdAt
 ) {
