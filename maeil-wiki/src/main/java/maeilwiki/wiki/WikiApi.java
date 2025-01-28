@@ -20,7 +20,7 @@ class WikiApi {
 
     @PostMapping("/wiki")
     public ResponseEntity<Void> createWiki(Identity identity, @RequestBody WikiRequest request) {
-        wikiService.create(request);
+        wikiService.create(identity, request);
 
         return ResponseEntity.noContent().build();
     }

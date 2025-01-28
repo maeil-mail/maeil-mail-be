@@ -6,8 +6,10 @@ import lombok.RequiredArgsConstructor;
 import maeilwiki.comment.CommentRepository;
 import maeilwiki.comment.CommentRequest;
 import maeilwiki.comment.CommentService;
+import maeilwiki.member.Identity;
 import maeilwiki.member.Member;
 import maeilwiki.member.MemberRepository;
+import maeilwiki.member.MemberService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,14 +21,12 @@ class WikiService {
     private final MemberRepository memberRepository;
     private final CommentRepository commentRepository;
     private final CommentService commentService;
+    private final MemberService memberService;
 
     @Transactional
-    public void create(WikiRequest request) {
-        String uuid = UUID.randomUUID().toString();
-        Member temporalMember = new Member(uuid, uuid, "GITHUB");
-        temporalMember.setRefreshToken("temp");
-        memberRepository.save(temporalMember);
-        Wiki wiki = request.toWiki(temporalMember); // TODO : 로그인 구현
+    public void create(Identity identity, WikiRequest request) {
+        Member member = memberService.findById(identity.getId());
+        Wiki wiki = request.toWiki(member);
 
         wikiRepository.save(wiki);
     }

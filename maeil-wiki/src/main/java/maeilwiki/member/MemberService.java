@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-class MemberService {
+public class MemberService {
 
     private final MemberTokenGenerator memberTokenGenerator;
     private final MemberRepository memberRepository;
