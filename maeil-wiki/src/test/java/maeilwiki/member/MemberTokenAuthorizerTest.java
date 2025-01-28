@@ -31,7 +31,7 @@ class MemberTokenAuthorizerTest extends IntegrationTestSupport {
 
         Identity identity = authorizer.authorize(accessToken);
 
-        assertThat(identity.getId()).isEqualTo(member.getId());
+        assertThat(identity.id()).isEqualTo(member.getId());
     }
 
     @Test

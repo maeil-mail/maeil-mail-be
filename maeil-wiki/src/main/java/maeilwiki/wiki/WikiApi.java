@@ -27,7 +27,7 @@ class WikiApi {
 
     @DeleteMapping("/wiki/{id}")
     public ResponseEntity<Void> deleteWiki(Identity identity, @PathVariable Long id) {
-        wikiService.remove(id);
+        wikiService.remove(identity, id);
 
         return ResponseEntity.noContent().build();
     }
