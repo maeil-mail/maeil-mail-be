@@ -23,6 +23,7 @@ class MemberTokenGenerator {
                 .expiration(expiration)
                 .claim("picture", member.getProfileImageUrl())
                 .claim("name", member.getName())
+                .claim("type", "access")
                 .signWith(properties.secretKey())
                 .compact();
     }
@@ -35,6 +36,7 @@ class MemberTokenGenerator {
         return Jwts.builder()
                 .issuedAt(date)
                 .expiration(expiration)
+                .claim("type", "refresh")
                 .signWith(properties.secretKey())
                 .compact();
     }

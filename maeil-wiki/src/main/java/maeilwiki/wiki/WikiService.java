@@ -1,13 +1,13 @@
 package maeilwiki.wiki;
 
 import java.util.NoSuchElementException;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import maeilwiki.comment.CommentRepository;
 import maeilwiki.comment.CommentRequest;
 import maeilwiki.comment.CommentService;
+import maeilwiki.member.Identity;
 import maeilwiki.member.Member;
-import maeilwiki.member.MemberRepository;
+import maeilwiki.member.MemberService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,29 +16,34 @@ import org.springframework.transaction.annotation.Transactional;
 class WikiService {
 
     private final WikiRepository wikiRepository;
-    private final MemberRepository memberRepository;
     private final CommentRepository commentRepository;
     private final CommentService commentService;
+    private final MemberService memberService;
 
     @Transactional
-    public void create(WikiRequest request) {
-        String uuid = UUID.randomUUID().toString();
-        Member temporalMember = new Member(uuid, uuid, "GITHUB");
-        temporalMember.setRefreshToken("temp");
-        memberRepository.save(temporalMember);
-        Wiki wiki = request.toWiki(temporalMember); // TODO : 로그인 구현
+    public void create(Identity identity, WikiRequest request) {
+        Member member = memberService.findById(identity.id());
+        Wiki wiki = request.toWiki(member);
 
         wikiRepository.save(wiki);
     }
 
     @Transactional
-    public void remove(Long wikiId) {
-        // TODO : member 소유인지 확인해야한다.
-        validateHasComment(wikiId);
+    public void remove(Identity identity, Long wikiId) {
         Wiki wiki = wikiRepository.findById(wikiId)
                 .orElseThrow(NoSuchElementException::new);
+        validateOwner(identity, wiki);
+        validateHasComment(wikiId);
 
         wiki.remove();
+    }
+
+    private void validateOwner(Identity identity, Wiki wiki) {
+        Member owner = wiki.getMember();
+
+        if (!identity.canAccessToResource(owner.getId())) {
+            throw new IllegalStateException("자신의 위키만 삭제할 수 있습니다.");
+        }
     }
 
     private void validateHasComment(Long wikiId) {
@@ -49,10 +54,10 @@ class WikiService {
     }
 
     @Transactional
-    public void comment(CommentRequest request, Long wikiId) {
+    public void comment(Identity identity, CommentRequest request, Long wikiId) {
         Wiki wiki = wikiRepository.findByIdAndDeletedAtIsNull(wikiId)
                 .orElseThrow(NoSuchElementException::new);
 
-        commentService.comment(request, wiki.getId());
+        commentService.comment(identity, request, wiki.getId());
     }
 }

@@ -1,5 +1,6 @@
 package maeilwiki.member;
 
+import java.util.NoSuchElementException;
 import java.util.function.Supplier;
 import lombok.RequiredArgsConstructor;
 import maeilwiki.member.github.GithubMemberFactory;
@@ -9,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-class MemberService {
+public class MemberService {
 
     private final MemberTokenGenerator memberTokenGenerator;
     private final MemberRepository memberRepository;
@@ -17,6 +18,11 @@ class MemberService {
 
     @Value("${client.secret}")
     private String clientSecret;
+
+    public Member findById(Long id) {
+        return memberRepository.findById(id)
+                .orElseThrow(NoSuchElementException::new);
+    }
 
     @Transactional
     public MemberTokenResponse apply(MemberRequest request) {

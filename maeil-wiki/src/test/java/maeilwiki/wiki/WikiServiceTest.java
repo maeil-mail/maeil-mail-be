@@ -7,6 +7,7 @@ import java.util.UUID;
 import maeilwiki.comment.Comment;
 import maeilwiki.comment.CommentRepository;
 import maeilwiki.comment.CommentRequest;
+import maeilwiki.member.Identity;
 import maeilwiki.member.Member;
 import maeilwiki.member.MemberRepository;
 import maeilwiki.support.IntegrationTestSupport;
@@ -33,8 +34,9 @@ class WikiServiceTest extends IntegrationTestSupport {
     void notfound() {
         CommentRequest request = new CommentRequest("답변을 작성합니다.", false);
         Long unknownWikiId = -1L;
+        Identity identity = new Identity(1L);
 
-        assertThatThrownBy(() -> wikiService.comment(request, unknownWikiId))
+        assertThatThrownBy(() -> wikiService.comment(identity, request, unknownWikiId))
                 .isInstanceOf(NoSuchElementException.class);
     }
 
@@ -44,8 +46,9 @@ class WikiServiceTest extends IntegrationTestSupport {
         Member member = createMember();
         Wiki wiki = createWiki(member);
         Comment comment = createComment(member, wiki);
+        Identity identity = new Identity(member.getId());
 
-        assertThatThrownBy(() -> wikiService.remove(wiki.getId()))
+        assertThatThrownBy(() -> wikiService.remove(identity, wiki.getId()))
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessage("답변이 존재하는 위키는 삭제할 수 없습니다.");
     }
@@ -53,10 +56,25 @@ class WikiServiceTest extends IntegrationTestSupport {
     @Test
     @DisplayName("존재하지 않는 위키는 삭제할 수 없다.")
     void cantRemoveUnknownWiki() {
+        Member member = createMember();
+        Identity identity = new Identity(member.getId());
         Long unknownWikiId = -1L;
 
-        assertThatThrownBy(() -> wikiService.remove(unknownWikiId))
+        assertThatThrownBy(() -> wikiService.remove(identity, unknownWikiId))
                 .isInstanceOf(NoSuchElementException.class);
+    }
+
+    @Test
+    @DisplayName("자신의 위키만 삭제할 수 있다.")
+    void cantRemoveOtherWiki() {
+        Member member = createMember();
+        Wiki wiki = createWiki(member);
+        Member otherMember = createMember();
+        Identity otherMemberIdentity = new Identity(otherMember.getId());
+
+        assertThatThrownBy(() -> wikiService.remove(otherMemberIdentity, wiki.getId()))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("자신의 위키만 삭제할 수 있습니다.");
     }
 
     private Member createMember() {
