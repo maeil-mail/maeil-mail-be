@@ -7,7 +7,6 @@ import maeilwiki.member.MemberTokenGenerator;
 import maeilwiki.member.domain.Member;
 import maeilwiki.member.domain.MemberRepository;
 import maeilwiki.member.github.GithubMemberFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,9 +19,6 @@ public class MemberService {
     private final MemberTokenGenerator memberTokenGenerator;
     private final MemberRefreshTokenValidator memberRefreshTokenValidator;
 
-    @Value("${client.secret}")
-    private String clientSecret;
-
     public Member findById(Long id) {
         return memberRepository.findById(id)
                 .orElseThrow(NoSuchElementException::new);
@@ -30,17 +26,10 @@ public class MemberService {
 
     @Transactional
     public MemberTokenResponse apply(MemberRequest request) {
-        validateClientSecret(request.clientSecret());
         Member candidateMember = memberFactory.create(request.accessToken());
         Member actualMember = trySignInOrSignUp(candidateMember);
 
         return generateTokenResponse(actualMember);
-    }
-
-    private void validateClientSecret(String clientSecret) {
-        if (!this.clientSecret.equals(clientSecret)) {
-            throw new IllegalArgumentException("올바른 클라이언트 암호를 입력해주세요.");
-        }
     }
 
     private Member trySignInOrSignUp(Member candidateMember) {
