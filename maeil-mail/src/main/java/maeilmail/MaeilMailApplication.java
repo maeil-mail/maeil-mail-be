@@ -6,7 +6,7 @@ import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 @EnableScheduling
-@ConfigurationPropertiesScan
+@ConfigurationPropertiesScan(basePackages = "maeilwiki")
 @SpringBootApplication(scanBasePackages = {"maeilmail", "maeilwiki", "maeilsupport"})
 public class MaeilMailApplication {
 
