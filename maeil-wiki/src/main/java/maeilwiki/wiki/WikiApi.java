@@ -3,6 +3,7 @@ package maeilwiki.wiki;
 import lombok.RequiredArgsConstructor;
 import maeilwiki.comment.CommentRequest;
 import maeilwiki.comment.CommentService;
+import maeilwiki.member.Identity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,21 +19,25 @@ class WikiApi {
     private final CommentService commentService;
 
     @PostMapping("/wiki")
-    public ResponseEntity<Void> createWiki(@RequestBody WikiRequest request) {
+    public ResponseEntity<Void> createWiki(Identity identity, @RequestBody WikiRequest request) {
         wikiService.create(request);
 
         return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/wiki/{id}")
-    public ResponseEntity<Void> deleteWiki(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteWiki(Identity identity, @PathVariable Long id) {
         wikiService.remove(id);
 
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/wiki/{wikiId}/comment")
-    public ResponseEntity<Void> createComment(@RequestBody CommentRequest request, @PathVariable Long wikiId) {
+    public ResponseEntity<Void> createComment(
+            Identity identity,
+            @RequestBody CommentRequest request,
+            @PathVariable Long wikiId
+    ) {
         wikiService.comment(request, wikiId);
 
         return ResponseEntity.noContent().build();
@@ -44,14 +49,22 @@ class WikiApi {
      * - comment가 wiki에 속하는 개념이라는 것을 uri로 표현할 수 있습니다.
      */
     @DeleteMapping("/wiki/{wikiId}/comment/{id}")
-    public ResponseEntity<Void> deleteComment(@PathVariable Long wikiId, @PathVariable Long id) {
+    public ResponseEntity<Void> deleteComment(
+            Identity identity,
+            @PathVariable Long wikiId,
+            @PathVariable Long id
+    ) {
         commentService.remove(id);
 
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/wiki/{wikiId}/comment/{id}/like")
-    public ResponseEntity<Void> toggleLike(@PathVariable Long wikiId, @PathVariable Long id) {
+    public ResponseEntity<Void> toggleLike(
+            Identity identity,
+            @PathVariable Long wikiId,
+            @PathVariable Long id
+    ) {
         commentService.toggleLike(id);
 
         return ResponseEntity.noContent().build();
