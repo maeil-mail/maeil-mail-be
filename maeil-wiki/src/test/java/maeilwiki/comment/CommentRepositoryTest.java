@@ -7,14 +7,14 @@ import java.util.List;
 import maeilwiki.comment.dto.CommentSummary;
 import maeilwiki.member.Member;
 import maeilwiki.member.MemberRepository;
-import maeilwiki.support.RepositoryTestSupport;
+import maeilwiki.support.IntegrationTestSupport;
 import maeilwiki.wiki.Wiki;
 import maeilwiki.wiki.WikiRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-class CommentRepositoryTest extends RepositoryTestSupport {
+class CommentRepositoryTest extends IntegrationTestSupport {
 
     @Autowired
     private CommentRepository commentRepository;

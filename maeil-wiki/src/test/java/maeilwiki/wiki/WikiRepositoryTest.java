@@ -8,7 +8,7 @@ import maeilwiki.comment.Comment;
 import maeilwiki.comment.CommentRepository;
 import maeilwiki.member.Member;
 import maeilwiki.member.MemberRepository;
-import maeilwiki.support.RepositoryTestSupport;
+import maeilwiki.support.IntegrationTestSupport;
 import maeilwiki.wiki.dto.WikiSummary;
 import maeilwiki.wiki.dto.WikiSummaryWithCommentCount;
 import org.junit.jupiter.api.DisplayName;
@@ -18,7 +18,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
-class WikiRepositoryTest extends RepositoryTestSupport {
+class WikiRepositoryTest extends IntegrationTestSupport {
 
     @Autowired
     private WikiRepository wikiRepository;
