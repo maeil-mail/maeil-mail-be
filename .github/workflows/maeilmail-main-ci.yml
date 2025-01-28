@@ -15,10 +15,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Github Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: JDK 17 구성
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'corretto'
@@ -47,3 +47,10 @@ jobs:
             ./maeil-mail/build/test-results/**/*.xml
             ./maeil-wiki/build/test-results/**/*.xml
             ./maeil-support/build/test-results/**/*.xml
+
+      - name: 테스트 레포트 생성
+        uses: mikepenz/action-junit-report@v5
+        if: success() || failure()
+        with:
+          report_paths: '**/build/test-results/test/TEST-*.xml'
+          fail_on_failure: true
