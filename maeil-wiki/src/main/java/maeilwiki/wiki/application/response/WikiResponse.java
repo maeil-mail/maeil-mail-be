@@ -32,4 +32,17 @@ public record WikiResponse(
                 null
         );
     }
+
+    public static WikiResponse withCommentCount(WikiSummary wikiSummary, Long commentCount) {
+        return new WikiResponse(
+                wikiSummary.id(),
+                wikiSummary.question(),
+                wikiSummary.questionDetail(),
+                wikiSummary.category(),
+                wikiSummary.owner(),
+                wikiSummary.createdAt(),
+                null,
+                commentCount
+        );
+    }
 }
