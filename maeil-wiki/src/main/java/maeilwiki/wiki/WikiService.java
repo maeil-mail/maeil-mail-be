@@ -54,10 +54,10 @@ class WikiService {
     }
 
     @Transactional
-    public void comment(CommentRequest request, Long wikiId) {
+    public void comment(Identity identity, CommentRequest request, Long wikiId) {
         Wiki wiki = wikiRepository.findByIdAndDeletedAtIsNull(wikiId)
                 .orElseThrow(NoSuchElementException::new);
 
-        commentService.comment(request, wiki.getId());
+        commentService.comment(identity, request, wiki.getId());
     }
 }

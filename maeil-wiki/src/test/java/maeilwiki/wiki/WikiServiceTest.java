@@ -34,8 +34,9 @@ class WikiServiceTest extends IntegrationTestSupport {
     void notfound() {
         CommentRequest request = new CommentRequest("답변을 작성합니다.", false);
         Long unknownWikiId = -1L;
+        Identity identity = new Identity(1L);
 
-        assertThatThrownBy(() -> wikiService.comment(request, unknownWikiId))
+        assertThatThrownBy(() -> wikiService.comment(identity, request, unknownWikiId))
                 .isInstanceOf(NoSuchElementException.class);
     }
 

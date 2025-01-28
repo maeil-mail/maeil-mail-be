@@ -38,7 +38,7 @@ class WikiApi {
             @RequestBody CommentRequest request,
             @PathVariable Long wikiId
     ) {
-        wikiService.comment(request, wikiId);
+        wikiService.comment(identity, request, wikiId);
 
         return ResponseEntity.noContent().build();
     }

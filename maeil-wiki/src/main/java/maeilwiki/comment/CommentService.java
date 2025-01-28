@@ -5,8 +5,10 @@ import java.util.NoSuchElementException;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import lombok.RequiredArgsConstructor;
+import maeilwiki.member.Identity;
 import maeilwiki.member.Member;
 import maeilwiki.member.MemberRepository;
+import maeilwiki.member.MemberService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
@@ -16,18 +18,16 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 public class CommentService {
 
     private final MemberRepository memberRepository;
+    private final MemberService memberService;
     private final CommentRepository commentRepository;
     private final CommentLikeRepository commentLikeRepository;
 
     private final Map<String, Member> transactionTmpMemberMap = new ConcurrentHashMap<>();
 
     @Transactional
-    public void comment(CommentRequest request, Long wikiId) {
-        String uuid = UUID.randomUUID().toString();
-        Member temporalMember = new Member(uuid, uuid, "GITHUB");
-        temporalMember.setRefreshToken("temp");
-        memberRepository.save(temporalMember);
-        Comment comment = request.toComment(temporalMember, wikiId);
+    public void comment(Identity identity, CommentRequest request, Long wikiId) {
+        Member member = memberService.findById(identity.id());
+        Comment comment = request.toComment(member, wikiId);
 
         commentRepository.save(comment);
     }
