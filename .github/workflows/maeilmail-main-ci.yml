@@ -42,15 +42,13 @@ jobs:
 
       - name: 테스트 결과 출력
         uses: EnricoMi/publish-unit-test-result-action@v2
+        if: always()
         with:
-          files: |
-            ./maeil-mail/build/test-results/**/*.xml
-            ./maeil-wiki/build/test-results/**/*.xml
-            ./maeil-support/build/test-results/**/*.xml
+          files: '**/build/test-results/**/*.xml'
 
-      - name: 테스트 레포트 생성
+      - name: 테스트 실패 시 코멘트 생성
         uses: mikepenz/action-junit-report@v5
-        if: success() || failure()
+        if: failure()
         with:
           report_paths: '**/build/test-results/test/TEST-*.xml'
           fail_on_failure: true
