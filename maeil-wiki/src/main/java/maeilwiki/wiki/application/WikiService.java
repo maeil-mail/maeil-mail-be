@@ -89,7 +89,7 @@ public class WikiService {
         Page<WikiSummaryWithCommentCount> pageResults = wikiRepository.pageByCategory(category, pageable);
         List<WikiResponse> wikiResponses = pageResults.getContent()
                 .stream()
-                .map(w -> WikiResponse.withCommentCount(resolveAnonymousWiki(w.wikiSummary()), w.commentCount()))
+                .map(it -> WikiResponse.withCommentCount(resolveAnonymousWiki(it.wikiSummary()), it.commentCount()))
                 .toList();
 
         return new PaginationResponse<>(pageResults.isLast(), (long) pageResults.getTotalPages(), wikiResponses);
