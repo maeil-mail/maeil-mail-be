@@ -12,7 +12,7 @@ import maeilwiki.wiki.dto.WikiSummary;
 public record WikiResponse(
         Long id,
         String question,
-        String questionDetail,
+        @JsonInclude(Include.NON_NULL) String questionDetail,
         String category,
         MemberThumbnail owner,
         LocalDateTime createdAt,
