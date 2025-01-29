@@ -4,11 +4,12 @@ import java.time.Duration;
 import java.util.Date;
 import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
+import maeilwiki.member.domain.Member;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-class MemberTokenGenerator {
+public class MemberTokenGenerator {
 
     private final MemberTokenProperties properties;
 

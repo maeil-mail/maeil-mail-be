@@ -6,9 +6,9 @@ spring:
       ddl-auto: create
     properties:
       hibernate:
-        auto_quote_keyword: true
         format_sql: true
-    show-sql: true
+        show_sql: true
+        highlight_sql: true
   sql:
     init:
       mode: never
@@ -20,3 +20,14 @@ token:
 
 client:
   secret: clientSecret
+
+logging:
+  level:
+    org:
+      hibernate:
+        orm:
+          jdbc:
+            bind: TRACE
+      springframework:
+        transaction:
+          interceptor: TRACE

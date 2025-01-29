@@ -1,7 +1,7 @@
 package maeilwiki.member.github;
 
 import lombok.RequiredArgsConstructor;
-import maeilwiki.member.Member;
+import maeilwiki.member.domain.Member;
 import org.springframework.stereotype.Component;
 
 @Component
