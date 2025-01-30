@@ -1,4 +1,4 @@
-package maeilwiki.member.github;
+package maeilwiki.member.infra.github;
 
 import maeilwiki.member.domain.Member;
 import maeilwiki.member.domain.Provider;

@@ -2,7 +2,7 @@ package maeilmail.support;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import maeilwiki.member.IdentityArgumentResolver;
+import maeilwiki.member.api.MemberIdentityArgumentResolver;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
@@ -13,7 +13,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @RequiredArgsConstructor
 class WebMvcConfig implements WebMvcConfigurer {
 
-    private final IdentityArgumentResolver identityArgumentResolver;
+    private final MemberIdentityArgumentResolver identityArgumentResolver;
 
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {

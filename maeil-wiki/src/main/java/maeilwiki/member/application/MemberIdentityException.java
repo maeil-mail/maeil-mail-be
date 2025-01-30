@@ -1,14 +1,14 @@
-package maeilwiki.member;
+package maeilwiki.member.application;
 
-public class IdentityException extends RuntimeException {
+public class MemberIdentityException extends RuntimeException {
 
     private static final String IDENTITY_EXCEPTION_MESSAGE = "유효한 토큰이 존재하지 않습니다.";
 
-    public IdentityException() {
+    public MemberIdentityException() {
         super(IDENTITY_EXCEPTION_MESSAGE);
     }
 
-    public IdentityException(Throwable cause) {
+    public MemberIdentityException(Throwable cause) {
         super(IDENTITY_EXCEPTION_MESSAGE, cause);
     }
 }

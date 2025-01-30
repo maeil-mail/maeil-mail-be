@@ -1,4 +1,4 @@
-package maeilwiki.member.github;
+package maeilwiki.member.infra.github;
 
 import java.time.Duration;
 import org.springframework.boot.web.client.ClientHttpRequestFactories;

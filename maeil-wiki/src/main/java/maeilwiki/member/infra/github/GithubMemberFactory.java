@@ -1,4 +1,4 @@
-package maeilwiki.member.github;
+package maeilwiki.member.infra.github;
 
 import lombok.RequiredArgsConstructor;
 import maeilwiki.member.domain.Member;

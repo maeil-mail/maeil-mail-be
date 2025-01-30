@@ -40,3 +40,6 @@ out/
 **/db
 test-db/
 .run/
+
+### Local Spring Properties ###
+**/application-local.yml

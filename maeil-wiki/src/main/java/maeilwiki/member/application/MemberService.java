@@ -3,11 +3,11 @@ package maeilwiki.member.application;
 import java.util.NoSuchElementException;
 import java.util.function.Supplier;
 import lombok.RequiredArgsConstructor;
-import maeilwiki.member.MemberTokenGenerator;
 import maeilwiki.member.domain.Member;
 import maeilwiki.member.domain.MemberRepository;
-import maeilwiki.member.github.GithubMemberFactory;
-import org.springframework.beans.factory.annotation.Value;
+import maeilwiki.member.infra.MemberRefreshTokenValidator;
+import maeilwiki.member.infra.MemberTokenGenerator;
+import maeilwiki.member.infra.github.GithubMemberFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,12 +15,10 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class MemberService {
 
-    private final MemberTokenGenerator memberTokenGenerator;
     private final MemberRepository memberRepository;
     private final GithubMemberFactory memberFactory;
-
-    @Value("${client.secret}")
-    private String clientSecret;
+    private final MemberTokenGenerator memberTokenGenerator;
+    private final MemberRefreshTokenValidator memberRefreshTokenValidator;
 
     public Member findById(Long id) {
         return memberRepository.findById(id)
@@ -29,30 +27,17 @@ public class MemberService {
 
     @Transactional
     public MemberTokenResponse apply(MemberRequest request) {
-        validateClientSecret(request.clientSecret());
-        Member candidateMember = memberFactory.create(request.accessToken());
+        Member candidateMember = memberFactory.create(request.oauthAccessToken());
         Member actualMember = trySignInOrSignUp(candidateMember);
 
         return generateTokenResponse(actualMember);
     }
 
-    private void validateClientSecret(String clientSecret) {
-        if (!this.clientSecret.equals(clientSecret)) {
-            throw new IllegalArgumentException("올바른 클라이언트 암호를 입력해주세요.");
-        }
-    }
-
     private Member trySignInOrSignUp(Member candidateMember) {
         return memberRepository
                 .findByProviderId(candidateMember.getProviderId())
-                .map(this::changeRefreshToken)
+                .map(this::rotateRefreshToken)
                 .orElseGet(signUp(candidateMember));
-    }
-
-    private Member changeRefreshToken(Member existingMember) {
-        existingMember.setRefreshToken(memberTokenGenerator.generateRefreshToken());
-
-        return existingMember;
     }
 
     private Supplier<Member> signUp(Member candidateMember) {
@@ -64,9 +49,28 @@ public class MemberService {
         };
     }
 
-    private MemberTokenResponse generateTokenResponse(Member actualMember) {
-        String accessToken = memberTokenGenerator.generateAccessToken(actualMember);
-        String refreshToken = actualMember.getRefreshToken();
+    @Transactional
+    public MemberTokenResponse refresh(MemberRefreshRequest request) {
+        String refreshToken = request.refreshToken();
+        memberRefreshTokenValidator.validateRefreshToken(refreshToken);
+
+        Member member = memberRepository.findByRefreshToken(refreshToken)
+                .orElseThrow(NoSuchElementException::new);
+        rotateRefreshToken(member);
+
+        return generateTokenResponse(member);
+    }
+
+    private Member rotateRefreshToken(Member member) {
+        String refreshToken = memberTokenGenerator.generateRefreshToken();
+        member.setRefreshToken(refreshToken);
+
+        return member;
+    }
+
+    private MemberTokenResponse generateTokenResponse(Member member) {
+        String accessToken = memberTokenGenerator.generateAccessToken(member);
+        String refreshToken = member.getRefreshToken();
 
         return new MemberTokenResponse(accessToken, refreshToken);
     }

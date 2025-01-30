@@ -1,6 +1,7 @@
 package maeilwiki.member.api;
 
 import lombok.RequiredArgsConstructor;
+import maeilwiki.member.application.MemberRefreshRequest;
 import maeilwiki.member.application.MemberRequest;
 import maeilwiki.member.application.MemberService;
 import maeilwiki.member.application.MemberTokenResponse;
@@ -18,6 +19,13 @@ class MemberApi {
     @PostMapping("/member")
     public ResponseEntity<MemberTokenResponse> createMember(@RequestBody MemberRequest request) {
         MemberTokenResponse response = memberService.apply(request);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/member/refresh")
+    public ResponseEntity<MemberTokenResponse> refresh(@RequestBody MemberRefreshRequest request) {
+        MemberTokenResponse response = memberService.refresh(request);
 
         return ResponseEntity.ok(response);
     }

@@ -1,4 +1,4 @@
-package maeilwiki.member.github;
+package maeilwiki.member.infra.github;
 
 import maeilwiki.support.IntegrationTestSupport;
 import org.junit.jupiter.api.Disabled;

@@ -1,8 +1,8 @@
-package maeilwiki.member;
+package maeilwiki.member.application;
 
 import java.util.Objects;
 
-public record Identity(Long id) {
+public record MemberIdentity(Long id) {
 
     public boolean canAccessToResource(Long resourceOwnerId) {
         return Objects.equals(id, resourceOwnerId);

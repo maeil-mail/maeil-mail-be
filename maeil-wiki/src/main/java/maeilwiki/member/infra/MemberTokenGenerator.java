@@ -1,4 +1,4 @@
-package maeilwiki.member;
+package maeilwiki.member.infra;
 
 import java.time.Duration;
 import java.util.Date;

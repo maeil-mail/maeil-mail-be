@@ -10,7 +10,7 @@ import maeilwiki.comment.domain.Comment;
 import maeilwiki.comment.domain.CommentLike;
 import maeilwiki.comment.domain.CommentLikeRepository;
 import maeilwiki.comment.domain.CommentRepository;
-import maeilwiki.member.Identity;
+import maeilwiki.member.application.MemberIdentity;
 import maeilwiki.member.domain.Member;
 import maeilwiki.member.domain.MemberRepository;
 import maeilwiki.support.IntegrationTestSupport;
@@ -41,7 +41,7 @@ class CommentServiceTest extends IntegrationTestSupport {
     @DisplayName("존재하지 않는 답변을 삭제할 수 없다.")
     void notFoundComment() {
         Long unknownCommentId = -1L;
-        Identity identity = new Identity(1L);
+        MemberIdentity identity = new MemberIdentity(1L);
 
         assertThatThrownBy(() -> commentService.remove(identity, unknownCommentId))
                 .isInstanceOf(NoSuchElementException.class);
@@ -54,7 +54,7 @@ class CommentServiceTest extends IntegrationTestSupport {
         Wiki wiki = createWiki(member);
         Comment comment = createComment(member, wiki);
         Member otherMember = createMember();
-        Identity otherMemberIdentity = new Identity(otherMember.getId());
+        MemberIdentity otherMemberIdentity = new MemberIdentity(otherMember.getId());
 
         assertThatThrownBy(() -> commentService.remove(otherMemberIdentity, comment.getId()))
                 .isInstanceOf(IllegalStateException.class)
@@ -65,7 +65,7 @@ class CommentServiceTest extends IntegrationTestSupport {
     @DisplayName("존재하지 않는 답변에 좋아요를 생성할 수 없다.")
     void notFoundCommentForLike() {
         Long unknownCommentId = -1L;
-        Identity identity = new Identity(1L);
+        MemberIdentity identity = new MemberIdentity(1L);
 
         assertThatThrownBy(() -> commentService.toggleLike(identity, unknownCommentId))
                 .isInstanceOf(NoSuchElementException.class);
@@ -77,7 +77,7 @@ class CommentServiceTest extends IntegrationTestSupport {
         Member member = createMember();
         Wiki wiki = createWiki(member);
         Comment comment = createComment(member, wiki);
-        Identity identity = new Identity(member.getId());
+        MemberIdentity identity = new MemberIdentity(member.getId());
 
         commentService.toggleLike(identity, comment.getId());
 
@@ -91,7 +91,7 @@ class CommentServiceTest extends IntegrationTestSupport {
         Member member = createMember();
         Wiki wiki = createWiki(member);
         Comment comment = createComment(member, wiki);
-        Identity identity = new Identity(member.getId());
+        MemberIdentity identity = new MemberIdentity(member.getId());
         commentService.toggleLike(identity, comment.getId());
 
         commentService.toggleLike(identity, comment.getId());
@@ -102,7 +102,7 @@ class CommentServiceTest extends IntegrationTestSupport {
 
     private Member createMember() {
         Member member = new Member(UUID.randomUUID().toString(), UUID.randomUUID().toString(), "GITHUB");
-        member.setRefreshToken("refresh");
+        member.setRefreshToken(UUID.randomUUID().toString());
 
         return memberRepository.save(member);
     }
