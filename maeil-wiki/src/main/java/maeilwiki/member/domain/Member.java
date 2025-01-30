@@ -39,7 +39,7 @@ public class Member extends BaseEntity {
     private String githubUrl;
 
     @Setter
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String refreshToken;
 
     @Column(nullable = true)
