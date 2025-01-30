@@ -1,10 +1,12 @@
-package maeilwiki.member;
+package maeilwiki.member.infra;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import maeilwiki.member.application.MemberIdentity;
+import maeilwiki.member.application.MemberIdentityException;
 import maeilwiki.member.domain.Member;
 import maeilwiki.member.domain.MemberRepository;
 import maeilwiki.member.domain.Provider;
@@ -32,7 +34,7 @@ class MemberTokenAuthorizerTest extends IntegrationTestSupport {
         Member member = createMember();
         String accessToken = memberTokenGenerator.generateAccessToken(member);
 
-        Identity identity = authorizer.authorize(accessToken);
+        MemberIdentity identity = authorizer.authorize(accessToken);
 
         assertThat(identity.id()).isEqualTo(member.getId());
     }
@@ -43,7 +45,7 @@ class MemberTokenAuthorizerTest extends IntegrationTestSupport {
         String refreshToken = memberTokenGenerator.generateRefreshToken();
 
         assertThatThrownBy(() -> authorizer.authorize(refreshToken))
-                .isInstanceOf(IdentityException.class)
+                .isInstanceOf(MemberIdentityException.class)
                 .hasMessage("유효한 토큰이 존재하지 않습니다.");
     }
 
@@ -53,7 +55,7 @@ class MemberTokenAuthorizerTest extends IntegrationTestSupport {
         String expiredToken = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzM3OTU4NjEwLCJleHAiOjE3Mzc5NTg2MTAsInBpY3R1cmUiOiJ3d3cubmF2ZXIuY29tIiwibmFtZSI6Im5hbWUiLCJ0eXBlIjoiYWNjZXNzIn0.jetrlK4CRvJzNVGC9yZNAIyJbaPVm5lasjW1FWNQNUY";
 
         assertThatThrownBy(() -> authorizer.authorize(expiredToken))
-                .isInstanceOf(IdentityException.class)
+                .isInstanceOf(MemberIdentityException.class)
                 .hasMessage("유효한 토큰이 존재하지 않습니다.");
     }
 
@@ -65,7 +67,7 @@ class MemberTokenAuthorizerTest extends IntegrationTestSupport {
         String modifiedToken = modifyToken(actualToken);
 
         assertThatThrownBy(() -> authorizer.authorize(modifiedToken))
-                .isInstanceOf(IdentityException.class)
+                .isInstanceOf(MemberIdentityException.class)
                 .hasMessage("유효한 토큰이 존재하지 않습니다.");
     }
 
@@ -77,7 +79,7 @@ class MemberTokenAuthorizerTest extends IntegrationTestSupport {
         String modifiedToken = modifyTokenAlgToNone(actualToken);
 
         assertThatThrownBy(() -> authorizer.authorize(modifiedToken))
-                .isInstanceOf(IdentityException.class)
+                .isInstanceOf(MemberIdentityException.class)
                 .hasMessage("유효한 토큰이 존재하지 않습니다.");
     }
 
@@ -86,7 +88,7 @@ class MemberTokenAuthorizerTest extends IntegrationTestSupport {
     @DisplayName("주어진 토큰이 널, 빈문자열인 경우, 인가를 수행할 수 없다.")
     void empty(String source) {
         assertThatThrownBy(() -> authorizer.authorize(source))
-                .isInstanceOf(IdentityException.class)
+                .isInstanceOf(MemberIdentityException.class)
                 .hasMessage("유효한 토큰이 존재하지 않습니다.");
     }
 

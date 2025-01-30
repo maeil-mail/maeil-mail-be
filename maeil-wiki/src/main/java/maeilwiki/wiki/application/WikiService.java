@@ -9,7 +9,7 @@ import maeilwiki.comment.application.CommentResponse;
 import maeilwiki.comment.application.CommentService;
 import maeilwiki.comment.domain.CommentRepository;
 import maeilwiki.comment.dto.CommentSummary;
-import maeilwiki.member.Identity;
+import maeilwiki.member.application.MemberIdentity;
 import maeilwiki.member.application.MemberService;
 import maeilwiki.member.domain.Member;
 import maeilwiki.wiki.domain.Wiki;
@@ -31,7 +31,7 @@ public class WikiService {
     private final MemberService memberService;
 
     @Transactional
-    public void create(Identity identity, WikiRequest request) {
+    public void create(MemberIdentity identity, WikiRequest request) {
         Member member = memberService.findById(identity.id());
         Wiki wiki = request.toWiki(member);
 
@@ -39,7 +39,7 @@ public class WikiService {
     }
 
     @Transactional
-    public void remove(Identity identity, Long wikiId) {
+    public void remove(MemberIdentity identity, Long wikiId) {
         Wiki wiki = wikiRepository.findById(wikiId)
                 .orElseThrow(NoSuchElementException::new);
         validateOwner(identity, wiki);
@@ -48,7 +48,7 @@ public class WikiService {
         wiki.remove();
     }
 
-    private void validateOwner(Identity identity, Wiki wiki) {
+    private void validateOwner(MemberIdentity identity, Wiki wiki) {
         Member owner = wiki.getMember();
 
         if (!identity.canAccessToResource(owner.getId())) {
@@ -64,7 +64,7 @@ public class WikiService {
     }
 
     @Transactional
-    public void comment(Identity identity, CommentRequest request, Long wikiId) {
+    public void comment(MemberIdentity identity, CommentRequest request, Long wikiId) {
         Wiki wiki = wikiRepository.findByIdAndDeletedAtIsNull(wikiId)
                 .orElseThrow(NoSuchElementException::new);
 

@@ -1,7 +1,10 @@
-package maeilwiki.member;
+package maeilwiki.member.api;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import maeilwiki.member.application.MemberIdentity;
+import maeilwiki.member.application.MemberIdentityException;
+import maeilwiki.member.infra.MemberTokenAuthorizer;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
@@ -12,13 +15,13 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 
 @Component
 @RequiredArgsConstructor
-public class IdentityArgumentResolver implements HandlerMethodArgumentResolver {
+public class MemberIdentityArgumentResolver implements HandlerMethodArgumentResolver {
 
     private final MemberTokenAuthorizer authorizer;
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        return Identity.class.isAssignableFrom(parameter.getParameterType());
+        return MemberIdentity.class.isAssignableFrom(parameter.getParameterType());
     }
 
     @Override
@@ -30,7 +33,7 @@ public class IdentityArgumentResolver implements HandlerMethodArgumentResolver {
     ) {
         HttpServletRequest request = webRequest.getNativeRequest(HttpServletRequest.class);
         if (request == null) {
-            throw new IdentityException();
+            throw new MemberIdentityException();
         }
 
         String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
@@ -44,7 +47,7 @@ public class IdentityArgumentResolver implements HandlerMethodArgumentResolver {
 
     private void validateBearerAuth(String authType) {
         if (!"Bearer".equals(authType)) {
-            throw new IdentityException();
+            throw new MemberIdentityException();
         }
     }
 }

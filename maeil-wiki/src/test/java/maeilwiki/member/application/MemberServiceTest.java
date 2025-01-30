@@ -9,6 +9,7 @@ import java.util.NoSuchElementException;
 import java.util.UUID;
 import maeilwiki.member.domain.Member;
 import maeilwiki.member.domain.MemberRepository;
+import maeilwiki.member.infra.MemberTokenGenerator;
 import maeilwiki.support.IntegrationTestSupport;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

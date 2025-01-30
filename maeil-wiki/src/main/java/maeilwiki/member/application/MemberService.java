@@ -3,10 +3,11 @@ package maeilwiki.member.application;
 import java.util.NoSuchElementException;
 import java.util.function.Supplier;
 import lombok.RequiredArgsConstructor;
-import maeilwiki.member.MemberTokenGenerator;
 import maeilwiki.member.domain.Member;
 import maeilwiki.member.domain.MemberRepository;
-import maeilwiki.member.github.GithubMemberFactory;
+import maeilwiki.member.infra.MemberRefreshTokenValidator;
+import maeilwiki.member.infra.MemberTokenGenerator;
+import maeilwiki.member.infra.github.GithubMemberFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

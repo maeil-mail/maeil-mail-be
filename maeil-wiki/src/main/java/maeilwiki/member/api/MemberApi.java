@@ -1,6 +1,7 @@
 package maeilwiki.member.api;
 
 import lombok.RequiredArgsConstructor;
+import maeilwiki.member.application.MemberRefreshRequest;
 import maeilwiki.member.application.MemberRequest;
 import maeilwiki.member.application.MemberService;
 import maeilwiki.member.application.MemberTokenResponse;

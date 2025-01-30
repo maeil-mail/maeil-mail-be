@@ -1,12 +1,13 @@
-package maeilwiki.member;
+package maeilwiki.member.infra;
 
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
+import maeilwiki.member.application.MemberIdentityException;
 import org.springframework.stereotype.Component;
 
 @Component
-class MemberRefreshTokenValidator {
+public class MemberRefreshTokenValidator {
 
     private final JwtParser jwtParser;
 
@@ -21,7 +22,7 @@ class MemberRefreshTokenValidator {
         try {
             jwtParser.parseSignedClaims(token);
         } catch (JwtException | IllegalArgumentException exception) {
-            throw new IdentityException(exception);
+            throw new MemberIdentityException(exception);
         }
     }
 }

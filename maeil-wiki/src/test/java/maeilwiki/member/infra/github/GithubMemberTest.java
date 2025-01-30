@@ -1,4 +1,4 @@
-package maeilwiki.member.github;
+package maeilwiki.member.infra.github;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

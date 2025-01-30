@@ -6,7 +6,7 @@ import maeilwiki.comment.domain.Comment;
 import maeilwiki.comment.domain.CommentLike;
 import maeilwiki.comment.domain.CommentLikeRepository;
 import maeilwiki.comment.domain.CommentRepository;
-import maeilwiki.member.Identity;
+import maeilwiki.member.application.MemberIdentity;
 import maeilwiki.member.application.MemberService;
 import maeilwiki.member.domain.Member;
 import org.springframework.stereotype.Service;
@@ -21,7 +21,7 @@ public class CommentService {
     private final MemberService memberService;
 
     @Transactional
-    public void comment(Identity identity, CommentRequest request, Long wikiId) {
+    public void comment(MemberIdentity identity, CommentRequest request, Long wikiId) {
         Member member = memberService.findById(identity.id());
         Comment comment = request.toComment(member, wikiId);
 
@@ -29,7 +29,7 @@ public class CommentService {
     }
 
     @Transactional
-    public void remove(Identity identity, Long commentId) {
+    public void remove(MemberIdentity identity, Long commentId) {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(NoSuchElementException::new);
         validateOwner(identity, comment);
@@ -37,7 +37,7 @@ public class CommentService {
         comment.remove();
     }
 
-    private void validateOwner(Identity identity, Comment comment) {
+    private void validateOwner(MemberIdentity identity, Comment comment) {
         Member owner = comment.getMember();
 
         if (!identity.canAccessToResource(owner.getId())) {
@@ -46,7 +46,7 @@ public class CommentService {
     }
 
     @Transactional
-    public void toggleLike(Identity identity, Long id) {
+    public void toggleLike(MemberIdentity identity, Long id) {
         Member member = memberService.findById(identity.id());
         Comment comment = commentRepository.findById(id)
                 .orElseThrow(NoSuchElementException::new);

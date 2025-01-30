@@ -1,4 +1,4 @@
-package maeilwiki.member;
+package maeilwiki.member.infra;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;

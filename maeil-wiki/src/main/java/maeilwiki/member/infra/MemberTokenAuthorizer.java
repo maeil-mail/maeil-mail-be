@@ -1,10 +1,12 @@
-package maeilwiki.member;
+package maeilwiki.member.infra;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
+import maeilwiki.member.application.MemberIdentity;
+import maeilwiki.member.application.MemberIdentityException;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -19,19 +21,19 @@ public class MemberTokenAuthorizer {
                 .build();
     }
 
-    public Identity authorize(String token) {
+    public MemberIdentity authorize(String token) {
         try {
             return generateIdentity(token);
         } catch (JwtException | IllegalArgumentException exception) {
-            throw new IdentityException(exception);
+            throw new MemberIdentityException(exception);
         }
     }
 
-    private Identity generateIdentity(String token) throws JwtException, IllegalArgumentException {
+    private MemberIdentity generateIdentity(String token) throws JwtException, IllegalArgumentException {
         Jws<Claims> claimsJws = jwtParser.parseSignedClaims(token);
         Claims payload = claimsJws.getPayload();
         String subject = payload.getSubject();
 
-        return new Identity(Long.parseLong(subject));
+        return new MemberIdentity(Long.parseLong(subject));
     }
 }

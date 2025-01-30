@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import maeilsupport.PaginationResponse;
 import maeilwiki.comment.application.CommentRequest;
 import maeilwiki.comment.application.CommentService;
-import maeilwiki.member.Identity;
+import maeilwiki.member.application.MemberIdentity;
 import maeilwiki.wiki.application.WikiRequest;
 import maeilwiki.wiki.application.WikiResponse;
 import maeilwiki.wiki.application.WikiService;
@@ -27,14 +27,14 @@ class WikiApi {
     private final CommentService commentService;
 
     @PostMapping("/wiki")
-    public ResponseEntity<Void> createWiki(Identity identity, @RequestBody WikiRequest request) {
+    public ResponseEntity<Void> createWiki(MemberIdentity identity, @RequestBody WikiRequest request) {
         wikiService.create(identity, request);
 
         return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/wiki/{id}")
-    public ResponseEntity<Void> deleteWiki(Identity identity, @PathVariable Long id) {
+    public ResponseEntity<Void> deleteWiki(MemberIdentity identity, @PathVariable Long id) {
         wikiService.remove(identity, id);
 
         return ResponseEntity.noContent().build();
@@ -42,7 +42,7 @@ class WikiApi {
 
     @PostMapping("/wiki/{wikiId}/comment")
     public ResponseEntity<Void> createComment(
-            Identity identity,
+            MemberIdentity identity,
             @RequestBody CommentRequest request,
             @PathVariable Long wikiId
     ) {
@@ -58,7 +58,7 @@ class WikiApi {
      */
     @DeleteMapping("/wiki/{wikiId}/comment/{id}")
     public ResponseEntity<Void> deleteComment(
-            Identity identity,
+            MemberIdentity identity,
             @PathVariable Long wikiId,
             @PathVariable Long id
     ) {
@@ -69,7 +69,7 @@ class WikiApi {
 
     @PostMapping("/wiki/{wikiId}/comment/{id}/like")
     public ResponseEntity<Void> toggleLike(
-            Identity identity,
+            MemberIdentity identity,
             @PathVariable Long wikiId,
             @PathVariable Long id
     ) {
