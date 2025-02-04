@@ -22,9 +22,9 @@ class MemberIdentityCookieHelperTest extends IntegrationTestSupport {
     @Test
     @DisplayName("주어진 쿠키 목록에서 원하는 쿠키를 조회할 수 있다.")
     void getCookieById() {
-        String expectedValue = "1234";
+        String expectedValue = "accessToken";
         Cookie accessCookie = new Cookie(ACCESS_TOKEN.getName(), expectedValue);
-        Cookie refreshCookie = new Cookie(REFRESH_TOKEN.getName(), "1234");
+        Cookie refreshCookie = new Cookie(REFRESH_TOKEN.getName(), "refreshToken");
 
         Cookie[] cookies = {accessCookie, refreshCookie};
 
