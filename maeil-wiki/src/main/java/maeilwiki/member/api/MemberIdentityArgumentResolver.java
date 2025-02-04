@@ -1,12 +1,14 @@
 package maeilwiki.member.api;
 
+import static maeilwiki.member.api.MemberIdentityCookieType.ACCESS_TOKEN;
+
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import maeilwiki.member.application.MemberIdentity;
 import maeilwiki.member.application.MemberIdentityException;
 import maeilwiki.member.infra.MemberTokenAuthorizer;
 import org.springframework.core.MethodParameter;
-import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -18,6 +20,7 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 public class MemberIdentityArgumentResolver implements HandlerMethodArgumentResolver {
 
     private final MemberTokenAuthorizer authorizer;
+    private final MemberIdentityCookieHelper cookieHelper;
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
@@ -36,18 +39,12 @@ public class MemberIdentityArgumentResolver implements HandlerMethodArgumentReso
             throw new MemberIdentityException();
         }
 
-        String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
-        String[] tokens = authHeader.split(" ");
-        String authType = tokens[0];
-        String token = tokens[1];
-        validateBearerAuth(authType);
-
-        return authorizer.authorize(token);
-    }
-
-    private void validateBearerAuth(String authType) {
-        if (!"Bearer".equals(authType)) {
+        Cookie[] cookies = request.getCookies();
+        String accessToken = cookieHelper.getCookieByName(cookies, ACCESS_TOKEN);
+        if (accessToken == null) {
             throw new MemberIdentityException();
         }
+
+        return authorizer.authorize(accessToken);
     }
 }
