@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-class MemberIdentityCookieHelper {
+public class MemberIdentityCookieHelper {
 
     private final MemberTokenProperties properties;
 
