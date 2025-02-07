@@ -34,6 +34,6 @@ public class MemberTokenAuthorizer {
         Claims payload = claimsJws.getPayload();
         String subject = payload.getSubject();
 
-        return new MemberIdentity(Long.parseLong(subject));
+        return new MemberIdentity(Long.parseLong(subject), "name", "profileImage");
     }
 }

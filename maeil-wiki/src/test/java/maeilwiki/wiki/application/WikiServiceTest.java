@@ -40,7 +40,7 @@ class WikiServiceTest extends IntegrationTestSupport {
     void notfound() {
         CommentRequest request = new CommentRequest("답변을 작성합니다.", false);
         Long unknownWikiId = -1L;
-        MemberIdentity identity = new MemberIdentity(1L);
+        MemberIdentity identity = new MemberIdentity(1L, "name", "profileImage");
 
         assertThatThrownBy(() -> wikiService.comment(identity, request, unknownWikiId))
                 .isInstanceOf(NoSuchElementException.class);
@@ -52,7 +52,7 @@ class WikiServiceTest extends IntegrationTestSupport {
         Member member = createMember();
         Wiki wiki = createWiki(member);
         Comment comment = createComment(member, wiki);
-        MemberIdentity identity = new MemberIdentity(member.getId());
+        MemberIdentity identity = new MemberIdentity(member.getId(), "name", "profileImage");
 
         assertThatThrownBy(() -> wikiService.remove(identity, wiki.getId()))
                 .isInstanceOf(IllegalStateException.class)
@@ -63,7 +63,7 @@ class WikiServiceTest extends IntegrationTestSupport {
     @DisplayName("존재하지 않는 위키는 삭제할 수 없다.")
     void cantRemoveUnknownWiki() {
         Member member = createMember();
-        MemberIdentity identity = new MemberIdentity(member.getId());
+        MemberIdentity identity = new MemberIdentity(member.getId(), "name", "profileImage");
         Long unknownWikiId = -1L;
 
         assertThatThrownBy(() -> wikiService.remove(identity, unknownWikiId))
@@ -76,7 +76,7 @@ class WikiServiceTest extends IntegrationTestSupport {
         Member member = createMember();
         Wiki wiki = createWiki(member);
         Member otherMember = createMember();
-        MemberIdentity otherMemberIdentity = new MemberIdentity(otherMember.getId());
+        MemberIdentity otherMemberIdentity = new MemberIdentity(otherMember.getId(), "name", "profileImage");
 
         assertThatThrownBy(() -> wikiService.remove(otherMemberIdentity, wiki.getId()))
                 .isInstanceOf(IllegalStateException.class)
