@@ -2,6 +2,7 @@ package maeilwiki.member.infra;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
@@ -36,7 +37,11 @@ class MemberTokenAuthorizerTest extends IntegrationTestSupport {
 
         MemberIdentity identity = authorizer.authorize(accessToken);
 
-        assertThat(identity.id()).isEqualTo(member.getId());
+        assertAll(
+                () -> assertThat(identity.id()).isEqualTo(member.getId()),
+                () -> assertThat(identity.name()).isEqualTo(member.getName()),
+                () -> assertThat(identity.profileImage()).isEqualTo(member.getProfileImageUrl())
+        );
     }
 
     @Test
