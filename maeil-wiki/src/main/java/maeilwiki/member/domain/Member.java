@@ -49,7 +49,7 @@ public class Member extends BaseEntity {
     private LocalDateTime deletedAt;
 
     public Member(String name, String providerId, String provider) {
-        this(name, providerId, Provider.from(provider), null, "github.com");
+        this(name, providerId, Provider.from(provider), null, null);
     }
 
     public Member(String name, String providerId, Provider provider, String profileImageUrl, String githubUrl) {
