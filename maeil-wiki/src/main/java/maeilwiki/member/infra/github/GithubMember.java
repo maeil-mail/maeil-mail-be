@@ -1,8 +1,11 @@
 package maeilwiki.member.infra.github;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import maeilwiki.member.domain.Member;
 import maeilwiki.member.domain.Provider;
 
+@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 public record GithubMember(
         Long id,
         String name,
