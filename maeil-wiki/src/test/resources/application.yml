@@ -18,8 +18,7 @@ token:
   access-exp-time: 7d
   refresh-exp-time: 365d
 
-client:
-  secret: clientSecret
+domain: localhost
 
 logging:
   level:
