@@ -31,7 +31,7 @@ public class Wiki extends BaseEntity {
     @Column(nullable = false, length = MAX_QUESTION_LENGTH)
     private String question;
 
-    @Column(length = MAX_QUESTION_LENGTH)
+    @Column(columnDefinition = "TEXT")
     private String questionDetail;
 
     @Column(nullable = false, columnDefinition = "VARCHAR(10)")
