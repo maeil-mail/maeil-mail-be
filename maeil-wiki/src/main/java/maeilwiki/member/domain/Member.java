@@ -52,10 +52,6 @@ public class Member extends BaseEntity {
         this(name, providerId, Provider.from(provider), null);
     }
 
-    public Member(String name, String providerId, String provider, String providerImageUrl) {
-        this(name, providerId, Provider.from(provider), providerImageUrl);
-    }
-
     public Member(String name, String providerId, Provider provider, String profileImageUrl) {
         validateName(name);
         this.name = name;
