@@ -1,6 +1,7 @@
 package maeilwiki.member.api;
 
 import lombok.RequiredArgsConstructor;
+import maeilwiki.member.application.MemberIdentity;
 import maeilwiki.member.application.MemberRefreshRequest;
 import maeilwiki.member.application.MemberRequest;
 import maeilwiki.member.application.MemberService;
@@ -8,6 +9,7 @@ import maeilwiki.member.application.MemberTokenResponse;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,6 +20,11 @@ class MemberApi {
 
     private final MemberService memberService;
     private final MemberIdentityCookieHelper cookieHelper;
+
+    @GetMapping("/member/profile")
+    public ResponseEntity<MemberIdentity> getMemberProfile(MemberIdentity identity) {
+        return ResponseEntity.ok(identity);
+    }
 
     @PostMapping("/member")
     public ResponseEntity<Void> createMember(@RequestBody MemberRequest request) {
