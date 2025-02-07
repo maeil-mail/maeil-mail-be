@@ -33,7 +33,9 @@ public class MemberTokenAuthorizer {
         Jws<Claims> claimsJws = jwtParser.parseSignedClaims(token);
         Claims payload = claimsJws.getPayload();
         String subject = payload.getSubject();
+        String name = payload.get("name", String.class);
+        String picture = payload.get("picture", String.class);
 
-        return new MemberIdentity(Long.parseLong(subject));
+        return new MemberIdentity(Long.parseLong(subject), name, picture);
     }
 }

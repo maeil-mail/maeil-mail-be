@@ -27,4 +27,13 @@ class GithubMemberTest {
 
         assertThat(member.getProviderId()).isEqualTo("GH-1234");
     }
+
+    @Test
+    @DisplayName("깃헙 사용자의 프로필 주소를 자동으로 생성한다.")
+    void generateProfileUrl() {
+        GithubMember githubMember = new GithubMember(1234L, null, "atom", null);
+        Member member = githubMember.toMember();
+
+        assertThat(member.getGithubUrl()).isEqualTo("https://github.com/atom");
+    }
 }

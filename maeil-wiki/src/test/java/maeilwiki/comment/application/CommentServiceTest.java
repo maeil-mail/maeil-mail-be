@@ -41,7 +41,7 @@ class CommentServiceTest extends IntegrationTestSupport {
     @DisplayName("존재하지 않는 답변을 삭제할 수 없다.")
     void notFoundComment() {
         Long unknownCommentId = -1L;
-        MemberIdentity identity = new MemberIdentity(1L);
+        MemberIdentity identity = new MemberIdentity(1L, "name", "profileImage");
 
         assertThatThrownBy(() -> commentService.remove(identity, unknownCommentId))
                 .isInstanceOf(NoSuchElementException.class);
@@ -54,7 +54,7 @@ class CommentServiceTest extends IntegrationTestSupport {
         Wiki wiki = createWiki(member);
         Comment comment = createComment(member, wiki);
         Member otherMember = createMember();
-        MemberIdentity otherMemberIdentity = new MemberIdentity(otherMember.getId());
+        MemberIdentity otherMemberIdentity = new MemberIdentity(otherMember.getId(), "name", "profileImage");
 
         assertThatThrownBy(() -> commentService.remove(otherMemberIdentity, comment.getId()))
                 .isInstanceOf(IllegalStateException.class)
@@ -65,7 +65,7 @@ class CommentServiceTest extends IntegrationTestSupport {
     @DisplayName("존재하지 않는 답변에 좋아요를 생성할 수 없다.")
     void notFoundCommentForLike() {
         Long unknownCommentId = -1L;
-        MemberIdentity identity = new MemberIdentity(1L);
+        MemberIdentity identity = new MemberIdentity(1L, "name", "profileImage");
 
         assertThatThrownBy(() -> commentService.toggleLike(identity, unknownCommentId))
                 .isInstanceOf(NoSuchElementException.class);
@@ -77,7 +77,7 @@ class CommentServiceTest extends IntegrationTestSupport {
         Member member = createMember();
         Wiki wiki = createWiki(member);
         Comment comment = createComment(member, wiki);
-        MemberIdentity identity = new MemberIdentity(member.getId());
+        MemberIdentity identity = new MemberIdentity(member.getId(), "name", "profileImage");
 
         commentService.toggleLike(identity, comment.getId());
 
@@ -91,7 +91,7 @@ class CommentServiceTest extends IntegrationTestSupport {
         Member member = createMember();
         Wiki wiki = createWiki(member);
         Comment comment = createComment(member, wiki);
-        MemberIdentity identity = new MemberIdentity(member.getId());
+        MemberIdentity identity = new MemberIdentity(member.getId(), "name", "profileImage");
         commentService.toggleLike(identity, comment.getId());
 
         commentService.toggleLike(identity, comment.getId());
