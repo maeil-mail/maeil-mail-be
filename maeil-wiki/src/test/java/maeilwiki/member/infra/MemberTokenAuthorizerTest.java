@@ -93,7 +93,7 @@ class MemberTokenAuthorizerTest extends IntegrationTestSupport {
     }
 
     private Member createMember() {
-        Member member = new Member("name", "GH-1234", Provider.GITHUB, "www.naver.com");
+        Member member = new Member("name", "GH-1234", Provider.GITHUB, "www.naver.com", "github.com");
         String refreshToken = memberTokenGenerator.generateRefreshToken();
         member.setRefreshToken(refreshToken);
 

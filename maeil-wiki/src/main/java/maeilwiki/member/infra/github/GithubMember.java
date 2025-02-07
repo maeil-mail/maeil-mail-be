@@ -17,7 +17,7 @@ public record GithubMember(
         String actualName = generateName();
         String providerId = generateProviderId(id);
 
-        return new Member(actualName, providerId, Provider.GITHUB, avatarUrl);
+        return new Member(actualName, providerId, Provider.GITHUB, avatarUrl, "github.com");
     }
 
     private String generateName() {
