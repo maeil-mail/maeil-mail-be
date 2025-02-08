@@ -17,7 +17,7 @@ create table subscribe
     category               enum ('BACKEND','FRONTEND') not null,
     frequency              enum ('DAILY','WEEKLY')     not null default 'DAILY',
     next_question_sequence bigint                      not null default '0',
-    token                  varchar(255)                not null unique,
+    token                  varchar(255)                not null,
     created_at             timestamp(6),
     updated_at             timestamp(6),
     deleted_at             timestamp(6),
@@ -84,10 +84,10 @@ create table member
 (
     id                bigint auto_increment,
     name              varchar(255) not null,
-    provider_id       varchar(255) not null unique,
+    provider_id       varchar(255) not null,
     provider          varchar(10)  not null,
     github_url        varchar(255),
-    refresh_token     varchar(255) not null unique,
+    refresh_token     varchar(255) not null,
     profile_image_url varchar(255),
     created_at        timestamp(6) not null,
     updated_at        timestamp(6) not null,
@@ -100,7 +100,7 @@ create table member
 create table wiki
 (
     id              bigint auto_increment,
-    member_id       bigint not null,
+    member_id       bigint       not null,
     question        varchar(255) not null,
     question_detail text,
     category        varchar(10)  not null,
@@ -115,8 +115,8 @@ create table wiki
 create table comment
 (
     id           bigint auto_increment,
-    member_id    bigint not null,
-    wiki_id      bigint not null,
+    member_id    bigint       not null,
+    wiki_id      bigint       not null,
     answer       text         not null,
     is_anonymous boolean      not null,
     created_at   timestamp(6) not null,
@@ -130,8 +130,8 @@ create table comment
 create table comment_like
 (
     id         bigint auto_increment,
-    member_id  bigint not null,
-    comment_id bigint not null,
+    member_id  bigint       not null,
+    comment_id bigint       not null,
     created_at timestamp(6) not null,
     primary key (id),
     unique key `comment_like_member_id_comment_id_unique` (member_id, comment_id),
