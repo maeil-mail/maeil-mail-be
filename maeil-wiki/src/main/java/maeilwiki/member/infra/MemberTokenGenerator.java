@@ -2,6 +2,7 @@ package maeilwiki.member.infra;
 
 import java.time.Duration;
 import java.util.Date;
+import java.util.UUID;
 import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
 import maeilwiki.member.domain.Member;
@@ -35,6 +36,7 @@ public class MemberTokenGenerator {
         Date expiration = Date.from(date.toInstant().plus(refreshExpTime));
 
         return Jwts.builder()
+                .id(UUID.randomUUID().toString())
                 .issuedAt(date)
                 .expiration(expiration)
                 .claim("type", "refresh")
