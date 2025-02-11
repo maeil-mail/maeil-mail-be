@@ -34,7 +34,7 @@ class MemberApi {
     }
 
     @PostMapping("/member/refresh")
-    public ResponseEntity<Void> refresh(@CookieValue String refreshToken) {
+    public ResponseEntity<Void> refresh(@CookieValue(required = false) String refreshToken) {
         MemberRefreshRequest request = new MemberRefreshRequest(refreshToken);
         MemberTokenResponse response = memberService.refresh(request);
 
