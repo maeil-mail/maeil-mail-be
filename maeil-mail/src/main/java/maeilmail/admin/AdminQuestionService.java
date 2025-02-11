@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-class AdminQuestionService {
+public class AdminQuestionService {
 
     private final QuestionRepository questionRepository;
 

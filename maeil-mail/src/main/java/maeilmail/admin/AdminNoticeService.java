@@ -7,7 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-class AdminNoticeService {
+public class AdminNoticeService {
 
     private final AdminNoticeRepository adminNoticeRepository;
     private final AdminNoticeSender adminNoticeSender;
