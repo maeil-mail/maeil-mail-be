@@ -2,11 +2,13 @@ package maeilmail.support;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import maeilmail.admin.AdminAuthInterceptor;
 import maeilwiki.member.api.MemberIdentityArgumentResolver;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
@@ -14,10 +16,17 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 class WebMvcConfig implements WebMvcConfigurer {
 
     private final MemberIdentityArgumentResolver identityArgumentResolver;
+    private final AdminAuthInterceptor adminAuthInterceptor;
 
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
         resolvers.add(identityArgumentResolver);
+    }
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(adminAuthInterceptor)
+                .addPathPatterns("/admin/**");
     }
 
     @Override
