@@ -1,4 +1,4 @@
-package maeilmail.question;
+package maeilmail.admin;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -11,14 +11,19 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.Collections;
+import maeilmail.question.QuestionSummary;
 import maeilmail.support.ApiTestSupport;
 import maeilsupport.PaginationResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
 
-class QuestionApiTest extends ApiTestSupport {
+class AdminApiTest extends ApiTestSupport {
+
+    @Value("${admin.secret}")
+    private String secret;
 
     @Test
     @DisplayName("페이징 처리된 질문지를 조회할때 기본 값은 page = 0, pageSize = 10, category = 'all' 이다.")
@@ -29,10 +34,9 @@ class QuestionApiTest extends ApiTestSupport {
         when(questionQueryService.pageByCategory(any(), any()))
                 .thenReturn(response);
 
-        mockMvc.perform(get("/question"))
+        mockMvc.perform(get("/admin/question").header("Authorization", "Basic " + secret))
                 .andDo(print())
                 .andExpect(status().isOk());
-
 
         verify(questionQueryService, times(1))
                 .pageByCategory(categoryCaptor.capture(), pageableCaptor.capture());

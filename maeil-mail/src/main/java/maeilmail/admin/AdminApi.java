@@ -2,6 +2,11 @@ package maeilmail.admin;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import maeilmail.question.QuestionQueryService;
+import maeilmail.question.QuestionSummary;
+import maeilsupport.PaginationResponse;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -10,14 +15,26 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequiredArgsConstructor
-class AdminApi {
+public class AdminApi {
 
+    private final QuestionQueryService questionQueryService;
     private final AdminQuestionService adminQuestionService;
     private final AdminNoticeService adminNoticeService;
     private final AdminNoticeRepository adminNoticeRepository;
+
+    @GetMapping("/admin/question")
+    public ResponseEntity<PaginationResponse<QuestionSummary>> getQuestions(
+            @RequestParam(defaultValue = "all") String category,
+            @PageableDefault Pageable pageable
+    ) {
+        PaginationResponse<QuestionSummary> response = questionQueryService.pageByCategory(category, pageable);
+
+        return ResponseEntity.ok(response);
+    }
 
     @PutMapping("/admin/question")
     public ResponseEntity<Void> putQuestion(@RequestBody AdminQuestionRequest request) {
