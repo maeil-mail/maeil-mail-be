@@ -34,3 +34,6 @@ distribute:
   server:
     count: ${distribute.server.count}
     index: ${distribute.server.index}
+
+admin:
+  secret: ${admin.secret}
