@@ -17,6 +17,10 @@ public class AdminAuthInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        if (isPreflight(request)) {
+            return true;
+        }
+
         String header = request.getHeader(HttpHeaders.AUTHORIZATION);
         if (header == null) {
             throw new IllegalArgumentException(ADMIN_AUTH_FAIL_MESSAGE);
@@ -29,7 +33,11 @@ public class AdminAuthInterceptor implements HandlerInterceptor {
         validateAuthType(authType);
         validateIdentity(secret);
 
-        return HandlerInterceptor.super.preHandle(request, response, handler);
+        return true;
+    }
+
+    private boolean isPreflight(HttpServletRequest request) {
+        return "OPTIONS".equals(request.getMethod());
     }
 
     private void validateAuthType(String authType) {
