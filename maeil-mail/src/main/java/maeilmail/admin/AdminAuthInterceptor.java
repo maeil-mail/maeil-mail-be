@@ -10,12 +10,19 @@ import org.springframework.web.servlet.HandlerInterceptor;
 @Component
 public class AdminAuthInterceptor implements HandlerInterceptor {
 
+    private static final String ADMIN_AUTH_FAIL_MESSAGE = "어드민 경로 접근 권한이 없습니다.";
+
     @Value("${admin.secret}")
     private String adminSecret;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        String[] authTokens = request.getHeader(HttpHeaders.AUTHORIZATION).split(" ");
+        String header = request.getHeader(HttpHeaders.AUTHORIZATION);
+        if (header == null) {
+            throw new IllegalArgumentException(ADMIN_AUTH_FAIL_MESSAGE);
+        }
+
+        String[] authTokens = header.split(" ");
         String authType = authTokens[0];
         String secret = authTokens[1];
 
@@ -33,7 +40,7 @@ public class AdminAuthInterceptor implements HandlerInterceptor {
 
     private void validateIdentity(String secret) {
         if (!(adminSecret.equals(secret))) {
-            throw new IllegalArgumentException("어드민 경로 접근 권한이 없습니다.");
+            throw new IllegalArgumentException(ADMIN_AUTH_FAIL_MESSAGE);
         }
     }
 }
