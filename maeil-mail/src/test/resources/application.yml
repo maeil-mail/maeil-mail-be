@@ -32,3 +32,6 @@ distribute:
   server:
     count: 1
     index: 1
+
+admin:
+  secret: "secret"
