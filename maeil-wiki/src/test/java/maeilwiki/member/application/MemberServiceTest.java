@@ -37,12 +37,10 @@ class MemberServiceTest extends IntegrationTestSupport {
 
     @Test
     @DisplayName("기회원인 경우, 리프레시를 갱신하고 새로운 토큰을 발급한다. (로그인)")
-    void signIn() throws InterruptedException {
+    void signIn() {
         MemberRequest request = new MemberRequest("oauthAccessToken");
         MemberTokenResponse originResponse = memberService.apply(request);
 
-        // 로그인 케이스에서 token 재발급 간격이 테스트 상에서 매우 짧아서 같은 토큰이 반환되기 때문에 Thread.sleep()을 추가했습니다.
-        Thread.sleep(1000);
         MemberTokenResponse newResponse = memberService.apply(request);
 
         List<Member> members = memberRepository.findAll();
@@ -65,12 +63,11 @@ class MemberServiceTest extends IntegrationTestSupport {
 
     @Test
     @DisplayName("사용자의 리프레시 토큰으로 엑세스 토큰을 갱신할 수 있다.")
-    void refresh() throws InterruptedException {
+    void refresh() {
         Member member = createMember();
         String previousRefreshToken = member.getRefreshToken();
         MemberRefreshRequest request = new MemberRefreshRequest(member.getRefreshToken());
 
-        Thread.sleep(1000);
         MemberTokenResponse response = memberService.refresh(request);
 
         Member foundMember = memberRepository.findById(member.getId())
