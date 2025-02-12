@@ -8,6 +8,7 @@ public record CommentResponse(
         Long id,
         String answer,
         LocalDateTime createdAt,
+        Long likeCount,
         MemberThumbnail owner
 ) {
 
@@ -16,6 +17,7 @@ public record CommentResponse(
                 commentSummary.id(),
                 commentSummary.answer(),
                 commentSummary.createdAt(),
+                commentSummary.likeCount(),
                 commentSummary.owner()
         );
     }
