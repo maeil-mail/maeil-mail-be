@@ -36,8 +36,26 @@ public class MemberService {
     private Member trySignInOrSignUp(Member candidateMember) {
         return memberRepository
                 .findByProviderId(candidateMember.getProviderId())
-                .map(this::rotateRefreshToken)
+                .map(this::tryRenewRefreshToken)
                 .orElseGet(signUp(candidateMember));
+    }
+
+    private Member tryRenewRefreshToken(Member member) {
+        String refresh = member.getRefreshToken();
+        try {
+            memberRefreshTokenValidator.validateRefreshToken(refresh);
+        } catch (MemberIdentityException exception) {
+            if (exception.isExpired()) {
+                renewRefreshToken(member);
+            }
+        }
+
+        return member;
+    }
+
+    private void renewRefreshToken(Member member) {
+        String refreshToken = memberTokenGenerator.generateRefreshToken();
+        member.setRefreshToken(refreshToken);
     }
 
     private Supplier<Member> signUp(Member candidateMember) {
@@ -55,17 +73,9 @@ public class MemberService {
         memberRefreshTokenValidator.validateRefreshToken(refreshToken);
 
         Member member = memberRepository.findByRefreshToken(refreshToken)
-                .orElseThrow(NoSuchElementException::new);
-        rotateRefreshToken(member);
+                .orElseThrow(MemberIdentityException::new);
 
         return generateTokenResponse(member);
-    }
-
-    private Member rotateRefreshToken(Member member) {
-        String refreshToken = memberTokenGenerator.generateRefreshToken();
-        member.setRefreshToken(refreshToken);
-
-        return member;
     }
 
     private MemberTokenResponse generateTokenResponse(Member member) {
