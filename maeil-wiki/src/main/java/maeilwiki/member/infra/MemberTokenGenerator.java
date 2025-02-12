@@ -20,6 +20,7 @@ public class MemberTokenGenerator {
         Date expiration = Date.from(date.toInstant().plus(accessExpTime));
 
         return Jwts.builder()
+                .id(UUID.randomUUID().toString())
                 .subject(member.getId().toString())
                 .issuedAt(date)
                 .expiration(expiration)
