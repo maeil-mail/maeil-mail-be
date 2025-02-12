@@ -9,6 +9,7 @@ public record CommentSummary(
         String answer,
         boolean isAnonymous,
         LocalDateTime createdAt,
+        Long likeCount,
         MemberThumbnail owner
 ) {
 
@@ -17,6 +18,6 @@ public record CommentSummary(
     }
 
     public CommentSummary toAnonymousOwner() {
-        return new CommentSummary(id, answer, isAnonymous, createdAt, null);
+        return new CommentSummary(id, answer, isAnonymous, createdAt, likeCount, null);
     }
 }
