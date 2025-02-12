@@ -42,6 +42,7 @@ public class MemberService {
 
     private Supplier<Member> signUp(Member candidateMember) {
         return () -> {
+            // TODO: refresh가 만료된 경우 갱신한다. 그렇지 않으면 동기화 한다.
             candidateMember.setRefreshToken(memberTokenGenerator.generateRefreshToken());
             memberRepository.save(candidateMember);
 
@@ -55,12 +56,13 @@ public class MemberService {
         memberRefreshTokenValidator.validateRefreshToken(refreshToken);
 
         Member member = memberRepository.findByRefreshToken(refreshToken)
-                .orElseThrow(NoSuchElementException::new);
+                .orElseThrow(MemberIdentityException::new);
         rotateRefreshToken(member);
 
         return generateTokenResponse(member);
     }
 
+    // TODO: refresh 발급을 제거한다.
     private Member rotateRefreshToken(Member member) {
         String refreshToken = memberTokenGenerator.generateRefreshToken();
         member.setRefreshToken(refreshToken);
