@@ -2,6 +2,7 @@ package maeilwiki.member.infra;
 
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
+import maeilwiki.member.application.MemberIdentityException;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -18,7 +19,7 @@ public class MemberRefreshTokenValidator {
         this.exceptionHandler = exceptionHandler;
     }
 
-    public void validateRefreshToken(String token) {
+    public void validateRefreshToken(String token) throws MemberIdentityException {
         exceptionHandler.handle(jwtParser::parseSignedClaims, token);
     }
 }

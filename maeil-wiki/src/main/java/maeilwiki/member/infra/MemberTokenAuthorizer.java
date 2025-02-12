@@ -6,6 +6,7 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import maeilwiki.member.application.MemberIdentity;
+import maeilwiki.member.application.MemberIdentityException;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -22,7 +23,7 @@ public class MemberTokenAuthorizer {
         this.exceptionHandler = exceptionHandler;
     }
 
-    public MemberIdentity authorize(String token) {
+    public MemberIdentity authorize(String token) throws MemberIdentityException {
         return exceptionHandler.handle(this::generateIdentity, token);
     }
 

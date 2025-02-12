@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 @Component
 class MemberTokenExceptionHandler {
 
-    public <T, R> R handle(Function<T, R> fn, T argument) {
+    public <T, R> R handle(Function<T, R> fn, T argument) throws MemberIdentityException {
         try {
             return fn.apply(argument);
         } catch (ExpiredJwtException expiredJwtException) {
