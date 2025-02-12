@@ -6,27 +6,24 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import maeilwiki.member.application.MemberIdentity;
-import maeilwiki.member.application.MemberIdentityException;
 import org.springframework.stereotype.Component;
 
 @Component
 public class MemberTokenAuthorizer {
 
     private final JwtParser jwtParser;
+    private final MemberTokenExceptionHandler exceptionHandler;
 
-    public MemberTokenAuthorizer(MemberTokenProperties properties) {
+    public MemberTokenAuthorizer(MemberTokenProperties properties, MemberTokenExceptionHandler exceptionHandler) {
         this.jwtParser = Jwts.parser()
                 .require("type", "access")
                 .verifyWith(properties.secretKey())
                 .build();
+        this.exceptionHandler = exceptionHandler;
     }
 
     public MemberIdentity authorize(String token) {
-        try {
-            return generateIdentity(token);
-        } catch (JwtException | IllegalArgumentException exception) {
-            throw new MemberIdentityException(exception);
-        }
+        return exceptionHandler.handle(this::generateIdentity, token);
     }
 
     private MemberIdentity generateIdentity(String token) throws JwtException, IllegalArgumentException {
