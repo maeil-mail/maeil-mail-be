@@ -36,13 +36,30 @@ public class MemberService {
     private Member trySignInOrSignUp(Member candidateMember) {
         return memberRepository
                 .findByProviderId(candidateMember.getProviderId())
-                .map(this::rotateRefreshToken)
+                .map(this::tryRenewRefreshToken)
                 .orElseGet(signUp(candidateMember));
+    }
+
+    private Member tryRenewRefreshToken(Member member) {
+        String refresh = member.getRefreshToken();
+        try {
+            memberRefreshTokenValidator.validateRefreshToken(refresh);
+        } catch (MemberIdentityException exception) {
+            if (exception.isExpired()) {
+                renewRefreshToken(member);
+            }
+        }
+
+        return member;
+    }
+
+    private void renewRefreshToken(Member member) {
+        String refreshToken = memberTokenGenerator.generateRefreshToken();
+        member.setRefreshToken(refreshToken);
     }
 
     private Supplier<Member> signUp(Member candidateMember) {
         return () -> {
-            // TODO: refresh가 만료된 경우 갱신한다. 그렇지 않으면 동기화 한다.
             candidateMember.setRefreshToken(memberTokenGenerator.generateRefreshToken());
             memberRepository.save(candidateMember);
 
@@ -57,17 +74,8 @@ public class MemberService {
 
         Member member = memberRepository.findByRefreshToken(refreshToken)
                 .orElseThrow(MemberIdentityException::new);
-        rotateRefreshToken(member);
 
         return generateTokenResponse(member);
-    }
-
-    // TODO: refresh 발급을 제거한다.
-    private Member rotateRefreshToken(Member member) {
-        String refreshToken = memberTokenGenerator.generateRefreshToken();
-        member.setRefreshToken(refreshToken);
-
-        return member;
     }
 
     private MemberTokenResponse generateTokenResponse(Member member) {
