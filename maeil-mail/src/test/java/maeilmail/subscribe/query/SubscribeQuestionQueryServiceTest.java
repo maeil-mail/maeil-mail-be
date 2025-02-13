@@ -82,7 +82,7 @@ class SubscribeQuestionQueryServiceTest extends IntegrationTestSupport {
     @Test
     @DisplayName("주간 질문지를 조회한다.")
     void queryWeeklyQuestions() {
-        Subscribe subscribe = new Subscribe("test@gmail.com", QuestionCategory.BACKEND, SubscribeFrequency.WEEKLY);
+        Subscribe subscribe = new Subscribe("atom@gmail.com", QuestionCategory.BACKEND, SubscribeFrequency.WEEKLY);
         subscribeRepository.save(subscribe);
         List<Question> questions = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
@@ -100,12 +100,12 @@ class SubscribeQuestionQueryServiceTest extends IntegrationTestSupport {
 
         // 2월 2주차 질문(조회 대상)
         setJpaAuditingTime(LocalDateTime.of(2025, 2, 10, 7, 5, 0));
-        List<Long> expectedId = new ArrayList<>();
+        List<Long> expectedIds = new ArrayList<>();
         for (int i = 5; i < questions.size(); i++) {
             Question question = questions.get(i);
             SubscribeQuestion subscribeQuestion = new SubscribeQuestion(subscribe, question, true);
             subscribeQuestionRepository.save(subscribeQuestion);
-            expectedId.add(subscribeQuestion.getId());
+            expectedIds.add(question.getId());
         }
 
         WeeklySubscribeQuestionResponse response = subscribeQuestionQueryService
@@ -118,7 +118,7 @@ class SubscribeQuestionQueryServiceTest extends IntegrationTestSupport {
                         .containsExactlyElementsOf(List.of(1L, 2L, 3L, 4L, 5L)),
                 () -> assertThat(response.questions())
                         .map(WeeklySubscribeQuestionSummary::getId)
-                        .containsExactlyElementsOf(expectedId)
+                        .containsExactlyElementsOf(expectedIds)
         );
     }
 
