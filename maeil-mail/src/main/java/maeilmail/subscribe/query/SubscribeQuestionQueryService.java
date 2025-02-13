@@ -32,6 +32,7 @@ public class SubscribeQuestionQueryService {
         List<WeeklySubscribeQuestionSummary> result = queryFactory.select(projectionWeeklySubscribeQuestionSummary())
                 .from(subscribeQuestion)
                 .join(subscribe).on(subscribeQuestion.subscribe.eq(subscribe))
+                .join(question).on(subscribeQuestion.question.eq(question))
                 .where(eqEmail(email)
                         .and(subscribe.deletedAt.isNull())
                         .and(eqCategory(category))
