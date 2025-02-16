@@ -3,4 +3,4 @@ token:
   access-exp-time: ${token.access-exp-time}
   refresh-exp-time: ${token.refresh-exp-time}
 
-domain: maeil-mail.site
+domain: .maeil-mail.kr
