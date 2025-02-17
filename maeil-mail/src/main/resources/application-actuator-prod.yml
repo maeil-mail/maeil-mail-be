@@ -1,0 +1,27 @@
+management:
+  endpoints:
+    enabled-by-default: false
+    jmx:
+      exposure:
+        exclude: "*"
+    web:
+      exposure:
+        exclude: "*"
+
+  server:
+    port: 8081
+
+  endpoint:
+    metrics:
+      enabled: true
+
+  datadog:
+    metrics:
+      export:
+        api-key: ${datadog.key}
+        step: ${datadog.frequency}
+        uri: ${datadog.uri}
+
+  metrics:
+    tags:
+      application: ${datadog.tag}
