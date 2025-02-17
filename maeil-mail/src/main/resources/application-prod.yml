@@ -5,13 +5,17 @@ spring:
   config:
     import:
       - application-prod-wiki.yml
+      - application-actuator-prod.yml
+
   lifecycle:
     timeout-per-shutdown-phase: 30s
+
   datasource:
     url: jdbc:mysql://${db.endpoint}/${db.dbname}?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&serverTimezone=Asia/Seoul
     driverClassName: com.mysql.cj.jdbc.Driver
     username: ${db.username}
     password: ${db.password}
+
   jpa:
     database-platform: org.hibernate.dialect.MySQLDialect
     hibernate:
