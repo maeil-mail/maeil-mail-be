@@ -18,14 +18,14 @@ import org.springframework.stereotype.Component;
 
 /**
  * 12월 30일 월요일인 경우 :
- * - 기대 전송 메일 건수 : 9건
- * - 실제 전송 메일 건수 : 9건
- * - 성공 건수 : 7건
- * - 실패 건수 : 2건
+ * - 기대 전송 메일 전송 구독자 수 : 9명(위클리 1, 데일리 8)
+ * - 실제 전송 메일 전송 구독자 수 : 9명
+ * - 성공 건수 : 11건(위클리 5건, 데일리 6건)
+ * - 실패 건수 : 2건(데일리 2)
  * 12월 31일 화요일인 경우 :
- * - 기대 전송 질문 건수 : 9건
- * - 실제 전송 질문 건수 : 9건
- * - 성공 건수 : 9건
+ * - 기대 전송 메일 전송 구독자 수 : 8명(데일리 8)
+ * - 실제 전송 메일 전송 구독자 수 : 8명
+ * - 성공 건수 : 8건(데일리 8건)
  * - 실패 건수 : 0건
  */
 @Component
@@ -66,10 +66,10 @@ public class SendReportCountingCase extends IntegrationTestSupport {
         createSubscribe(SubscribeFrequency.DAILY);
 
         LocalDateTime monday = LocalDateTime.of(2024, 12, 30, 7, 10, 0);
-        createSubscribeQuestions(subscribe, question, monday, 7, 2);
+        createSubscribeQuestions(subscribe, question, monday, 11, 2);
 
         LocalDateTime tuesday = LocalDateTime.of(2024, 12, 31, 7, 10, 0);
-        createSubscribeQuestions(subscribe, question, tuesday, 9, 0);
+        createSubscribeQuestions(subscribe, question, tuesday, 8, 0);
 
         entityManager.flush();
     }
