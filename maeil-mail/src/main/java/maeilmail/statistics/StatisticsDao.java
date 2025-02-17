@@ -38,7 +38,8 @@ class StatisticsDao {
     public Map<SubscribeFrequency, Long> querySubscribeCountForFrequency(LocalDateTime dateTime) {
         List<Tuple> fetch = queryFactory.select(subscribe.frequency, subscribe.count())
                 .from(subscribe)
-                .where(subscribe.createdAt.before(dateTime).and(subscribe.deletedAt.isNull()))
+                .where(subscribe.createdAt.before(dateTime)
+                        .and(subscribe.deletedAt.isNull().or(subscribe.deletedAt.after(dateTime))))
                 .groupBy(subscribe.frequency)
                 .fetch();
 

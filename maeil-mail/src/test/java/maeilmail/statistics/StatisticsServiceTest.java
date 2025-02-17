@@ -102,9 +102,9 @@ class StatisticsServiceTest extends IntegrationTestSupport {
         DailySendReport actualTuesday = statisticsService.generateDailySendReport(tuesday);
 
         assertAll(
-                () -> assertThat(actualMonday.expectedSendingCount()).isEqualTo(12L),
-                () -> assertThat(actualMonday.actualSendingCount()).isEqualTo(7L),
-                () -> assertThat(actualMonday.success()).isEqualTo(5L),
+                () -> assertThat(actualMonday.expectedSendingCount()).isEqualTo(13L),
+                () -> assertThat(actualMonday.actualSendingCount()).isEqualTo(13L),
+                () -> assertThat(actualMonday.success()).isEqualTo(11L),
                 () -> assertThat(actualMonday.fail()).isEqualTo(2L),
                 () -> assertThat(actualTuesday.expectedSendingCount()).isEqualTo(8L),
                 () -> assertThat(actualTuesday.actualSendingCount()).isEqualTo(8L),

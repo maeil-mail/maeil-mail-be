@@ -32,7 +32,7 @@ class StatisticsDaoTest extends IntegrationTestSupport {
         Map<Boolean, Long> actualTuesday = statisticsDao.querySuccessFailCount(tuesday);
 
         assertAll(
-                () -> assertThat(actualMonday.get(Boolean.TRUE)).isEqualTo(5),
+                () -> assertThat(actualMonday.get(Boolean.TRUE)).isEqualTo(11),
                 () -> assertThat(actualMonday.get(Boolean.FALSE)).isEqualTo(2),
                 () -> assertThat(actualTuesday.get(Boolean.TRUE)).isEqualTo(8),
                 () -> assertThat(actualTuesday.get(Boolean.FALSE)).isEqualTo(null)
@@ -51,7 +51,7 @@ class StatisticsDaoTest extends IntegrationTestSupport {
         Map<SubscribeFrequency, Long> actualTuesday = statisticsDao.querySubscribeCountForFrequency(tuesday);
 
         assertAll(
-                () -> assertThat(actualMonday.get(SubscribeFrequency.DAILY)).isEqualTo(7),
+                () -> assertThat(actualMonday.get(SubscribeFrequency.DAILY)).isEqualTo(8),
                 () -> assertThat(actualMonday.get(SubscribeFrequency.WEEKLY)).isEqualTo(1),
                 () -> assertThat(actualTuesday.get(SubscribeFrequency.DAILY)).isEqualTo(8),
                 () -> assertThat(actualTuesday.get(SubscribeFrequency.WEEKLY)).isEqualTo(1)
