@@ -143,6 +143,46 @@ class WikiRepositoryTest extends IntegrationTestSupport {
         });
     }
 
+    @Test
+    @DisplayName("삭제된 커멘트만 존재하는 위키도 조회되어야 한다.")
+    void pageByCategoryWithOnlyDeletedCommend() {
+        // given
+        Member prin = createMember();
+        Wiki wiki1 = createWiki(prin, "FRONTEND");
+        createRemovedComment(prin, wiki1);
+        createRemovedComment(prin, wiki1);
+
+        Wiki wiki2 = createWiki(prin, "FRONTEND");
+        createComment(prin, wiki2);
+        createRemovedComment(prin, wiki2);
+
+        Wiki wiki3 = createWiki(prin, "FRONTEND");
+
+        Wiki wiki4 = createWiki(prin, "FRONTEND");
+        createComment(prin, wiki4);
+        createComment(prin, wiki4);
+
+        Pageable pageable = PageRequest.of(0, 5);
+
+        // when
+        Page<WikiSummaryWithCommentCount> wikiSummaryPage = wikiRepository.pageByCategory("all", pageable);
+
+        // then
+        assertSoftly(softAssertions -> {
+            softAssertions.assertThat(wikiSummaryPage.getTotalElements()).isEqualTo(4);
+            softAssertions.assertThat(wikiSummaryPage.getTotalPages()).isEqualTo(1);
+            softAssertions.assertThat(wikiSummaryPage.getSize()).isEqualTo(5);
+            softAssertions.assertThat(wikiSummaryPage.getContent().get(0).wikiSummary().id()).isEqualTo(wiki4.getId());
+            softAssertions.assertThat(wikiSummaryPage.getContent().get(0).commentCount()).isEqualTo(2);
+            softAssertions.assertThat(wikiSummaryPage.getContent().get(1).wikiSummary().id()).isEqualTo(wiki3.getId());
+            softAssertions.assertThat(wikiSummaryPage.getContent().get(1).commentCount()).isEqualTo(0);
+            softAssertions.assertThat(wikiSummaryPage.getContent().get(2).wikiSummary().id()).isEqualTo(wiki2.getId());
+            softAssertions.assertThat(wikiSummaryPage.getContent().get(2).commentCount()).isEqualTo(1);
+            softAssertions.assertThat(wikiSummaryPage.getContent().get(3).wikiSummary().id()).isEqualTo(wiki1.getId());
+            softAssertions.assertThat(wikiSummaryPage.getContent().get(3).commentCount()).isEqualTo(0);
+        });
+    }
+
     private Member createMember() {
         Member member = new Member(UUID.randomUUID().toString(), UUID.randomUUID().toString(), "GITHUB");
         member.setRefreshToken(UUID.randomUUID().toString());
@@ -163,6 +203,12 @@ class WikiRepositoryTest extends IntegrationTestSupport {
     private Comment createComment(Member member, Wiki wiki) {
         Comment comment = new Comment("answer", false, member, wiki.getId());
 
+        return commentRepository.save(comment);
+    }
+
+    private Comment createRemovedComment(Member member, Wiki wiki) {
+        Comment comment = new Comment("answer", false, member, wiki.getId());
+        comment.remove();
         return commentRepository.save(comment);
     }
 }

@@ -44,14 +44,12 @@ class WikiRepositoryImpl implements WikiRepositoryCustom {
                         .and(eqCategory(category)));
 
         JPAQuery<WikiSummaryWithCommentCount> resultQuery = queryFactory.select(
-                        new QWikiSummaryWithCommentCount(projectionWikiSummary(), comment.count())
+                        new QWikiSummaryWithCommentCount(projectionWikiSummary(), comment.count().subtract(comment.deletedAt.count()))
                 )
                 .from(wiki)
                 .join(member).on(wiki.member.eq(member))
                 .leftJoin(comment).on(wiki.id.eq(comment.wikiId))
-                .where(isNotDeletedWiki()
-                        .and(eqCategory(category))
-                        .and(comment.deletedAt.isNull()))
+                .where(isNotDeletedWiki().and(eqCategory(category)))
                 .groupBy(wiki.id)
                 .orderBy(wiki.id.desc())
                 .offset(pageable.getOffset())
