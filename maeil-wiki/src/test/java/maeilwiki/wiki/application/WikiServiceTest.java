@@ -1,6 +1,5 @@
 package maeilwiki.wiki.application;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
@@ -13,6 +12,7 @@ import maeilwiki.comment.domain.CommentRepository;
 import maeilwiki.member.application.MemberIdentity;
 import maeilwiki.member.domain.Member;
 import maeilwiki.member.domain.MemberRepository;
+import maeilwiki.member.dto.MemberThumbnail;
 import maeilwiki.support.IntegrationTestSupport;
 import maeilwiki.wiki.domain.Wiki;
 import maeilwiki.wiki.domain.WikiRepository;
@@ -115,7 +115,7 @@ class WikiServiceTest extends IntegrationTestSupport {
     }
 
     @Test
-    @DisplayName("Wiki가 익명이면 Wiki 작성자를 null 처리한다.")
+    @DisplayName("Wiki가 익명이면 Wiki 작성자의 MemberID만 노출한다.")
     void getAnonymousWikiById() {
         // given
         boolean isAnonymousWiki = true;
@@ -127,12 +127,40 @@ class WikiServiceTest extends IntegrationTestSupport {
         WikiResponse wikiResponse = wikiService.getWikiById(wiki.getId());
 
         // then
-        assertThat(wikiResponse.owner()).isNull();
+        assertSoftly(softAssertions -> {
+            MemberThumbnail owner = wikiResponse.owner();
+            softAssertions.assertThat(owner.id()).isEqualTo(prin.getId());
+            softAssertions.assertThat(owner.name()).isEqualTo(null);
+            softAssertions.assertThat(owner.github()).isEqualTo(null);
+            softAssertions.assertThat(owner.profileImage()).isEqualTo(null);
+        });
     }
 
     @Test
-    @DisplayName("Wiki의 Comment가 익명이면 Comment 작성자를 null 처리한다.")
-    void getWikiWithAnonymousCommentById() {
+    @DisplayName("Wiki가 익명이 아니라면 Wiki 작성자의 Member 정보를 노출한다.")
+    void getNonAnonymousWikiById() {
+        // given
+        boolean isAnonymousWiki = false;
+        Member prin = createMember();
+        Wiki wiki = createWiki(prin, isAnonymousWiki);
+        createComment(prin, wiki);
+
+        // when
+        WikiResponse wikiResponse = wikiService.getWikiById(wiki.getId());
+
+        // then
+        assertSoftly(softAssertions -> {
+            MemberThumbnail owner = wikiResponse.owner();
+            softAssertions.assertThat(owner.id()).isEqualTo(prin.getId());
+            softAssertions.assertThat(owner.name()).isEqualTo(prin.getName());
+            softAssertions.assertThat(owner.github()).isEqualTo(prin.getGithubUrl());
+            softAssertions.assertThat(owner.profileImage()).isEqualTo(prin.getProfileImageUrl());
+        });
+    }
+
+    @Test
+    @DisplayName("Wiki의 Comment가 익명이면 Comment 작성자의 MemberID만 노출한다.")
+    void getWikiWithNonAnonymousCommentById() {
         // given
         boolean isAnonymousComment = true;
         Member atom = createMember();
@@ -143,7 +171,35 @@ class WikiServiceTest extends IntegrationTestSupport {
         WikiResponse wikiResponse = wikiService.getWikiById(wiki.getId());
 
         // then
-        assertThat(wikiResponse.comments().get(0).owner()).isNull();
+        assertSoftly(softAssertions -> {
+            MemberThumbnail owner = wikiResponse.comments().get(0).owner();
+            softAssertions.assertThat(owner.id()).isEqualTo(atom.getId());
+            softAssertions.assertThat(owner.name()).isEqualTo(null);
+            softAssertions.assertThat(owner.github()).isEqualTo(null);
+            softAssertions.assertThat(owner.profileImage()).isEqualTo(null);
+        });
+    }
+
+    @Test
+    @DisplayName("Wiki의 Comment가 익명이 아니라면, Comment 작성자의 Member 정보를 노출한다.")
+    void getWikiWithAnonymousCommentById() {
+        // given
+        boolean isAnonymousComment = false;
+        Member atom = createMember();
+        Wiki wiki = createWiki(atom);
+        createComment(atom, wiki, isAnonymousComment);
+
+        // when
+        WikiResponse wikiResponse = wikiService.getWikiById(wiki.getId());
+
+        // then
+        assertSoftly(softAssertions -> {
+            MemberThumbnail owner = wikiResponse.comments().get(0).owner();
+            softAssertions.assertThat(owner.id()).isEqualTo(atom.getId());
+            softAssertions.assertThat(owner.name()).isEqualTo(atom.getName());
+            softAssertions.assertThat(owner.github()).isEqualTo(atom.getGithubUrl());
+            softAssertions.assertThat(owner.profileImage()).isEqualTo(atom.getProfileImageUrl());
+        });
     }
 
     @Test
@@ -176,7 +232,7 @@ class WikiServiceTest extends IntegrationTestSupport {
     }
 
     @Test
-    @DisplayName("각각의 Wiki마다 익명 여부에 따라 Wiki 작성자를 null 처리한다.")
+    @DisplayName("각각의 Wiki마다 익명 여부에 따라 Wiki 작성자의 MemberID만 노출한다.")
     void pageByCategoryWithAnonymousWiki() {
         // given
         Member prin = createMember();
@@ -189,9 +245,19 @@ class WikiServiceTest extends IntegrationTestSupport {
         // then
         assertSoftly(softAssertions -> {
             softAssertions.assertThat(wikiResponses.data().get(0).id()).isEqualTo(nonanonymousWiki.getId());
-            softAssertions.assertThat(wikiResponses.data().get(0).owner()).isNotNull();
+
+            MemberThumbnail nonAnonymousOwner = wikiResponses.data().get(0).owner();
+            softAssertions.assertThat(nonAnonymousOwner.id()).isEqualTo(prin.getId());
+            softAssertions.assertThat(nonAnonymousOwner.name()).isEqualTo(prin.getName());
+            softAssertions.assertThat(nonAnonymousOwner.github()).isEqualTo(prin.getGithubUrl());
+            softAssertions.assertThat(nonAnonymousOwner.profileImage()).isEqualTo(prin.getProfileImageUrl());
+
+            MemberThumbnail anonymousOwner = wikiResponses.data().get(1).owner();
             softAssertions.assertThat(wikiResponses.data().get(1).id()).isEqualTo(anonymousWiki.getId());
-            softAssertions.assertThat(wikiResponses.data().get(1).owner()).isNull();
+            softAssertions.assertThat(anonymousOwner.id()).isEqualTo(prin.getId());
+            softAssertions.assertThat(anonymousOwner.name()).isEqualTo(null);
+            softAssertions.assertThat(anonymousOwner.github()).isEqualTo(null);
+            softAssertions.assertThat(anonymousOwner.profileImage()).isEqualTo(null);
         });
     }
 
