@@ -83,6 +83,6 @@ class WikiRepositoryImpl implements WikiRepositoryCustom {
     }
 
     private QMemberThumbnail projectionMemberThumbnail() {
-        return new QMemberThumbnail(member.name, member.profileImageUrl, member.githubUrl);
+        return new QMemberThumbnail(member.id, member.name, member.profileImageUrl, member.githubUrl);
     }
 }
