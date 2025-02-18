@@ -19,6 +19,8 @@ public record WikiSummary(
     }
 
     public WikiSummary toAnonymousOwner() {
-        return new WikiSummary(id, question, questionDetail, category, isAnonymous, createdAt, null);
+        MemberThumbnail anonymousOwner = new MemberThumbnail(owner.id(), null, null, null);
+
+        return new WikiSummary(id, question, questionDetail, category, isAnonymous, createdAt, anonymousOwner);
     }
 }

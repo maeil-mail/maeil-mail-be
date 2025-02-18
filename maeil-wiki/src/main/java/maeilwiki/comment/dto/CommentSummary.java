@@ -18,6 +18,8 @@ public record CommentSummary(
     }
 
     public CommentSummary toAnonymousOwner() {
-        return new CommentSummary(id, answer, isAnonymous, createdAt, likeCount, null);
+        MemberThumbnail anonymousOwner = new MemberThumbnail(owner.id(), null, null, null);
+
+        return new CommentSummary(id, answer, isAnonymous, createdAt, likeCount, anonymousOwner);
     }
 }
