@@ -17,7 +17,7 @@ import maeilsupport.BaseEntity;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-class AdminNotice extends BaseEntity {
+public class AdminNotice extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
