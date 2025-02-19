@@ -1,8 +1,9 @@
-package maeilmail.admin;
+package maeilmail.bulksend.sender;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import maeilmail.admin.AdminNoticeRequest;
 import maeilmail.mail.MailMessage;
 import maeilmail.mail.MailSender;
 import maeilmail.subscribe.command.domain.SubscribeRepository;
