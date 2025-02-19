@@ -100,7 +100,7 @@ class SendAdminNoticeSchedulerTest extends IntegrationTestSupport {
     }
 
     @Test
-    @DisplayName("중복된 이메일은 한번만 메일을 발송한다.")
+    @DisplayName("중복된 이메일은 한 번만 메일을 발송한다.")
     void sendMailDistinctEmail() {
         // given
         String duplicatedEmail = "prin@email.com";
