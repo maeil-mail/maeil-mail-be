@@ -33,10 +33,7 @@ public class SendAdminNoticeScheduler {
             return;
         }
         AdminNotice adminNotice = optionalAdminNotice.get();
-
-        log.info("공지 전송을 시작합니다.");
         List<SubscribeEmail> subscribes = subscribeRepository.findAllWithUniqueEmail();
-
         log.info("{}명의 구독자에게 공지 메일을 발송합니다.", subscribes.size());
 
         subscribes.stream()
@@ -44,6 +41,6 @@ public class SendAdminNoticeScheduler {
                 .map(it -> new MailMessage(it.email(), adminNotice.getTitle(), adminNotice.getContent(), "notice"))
                 .forEach(mailSender::sendMail);
 
-        log.info("공지 전송을 종료합니다.");
+        log.info("공지 발송을 완료했습니다.");
     }
 }
