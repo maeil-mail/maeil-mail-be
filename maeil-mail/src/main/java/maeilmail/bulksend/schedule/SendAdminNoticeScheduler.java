@@ -40,7 +40,5 @@ public class SendAdminNoticeScheduler {
                 .filter(it -> distributedSupport.isMine(it.id()))
                 .map(it -> new MailMessage(it.email(), adminNotice.getTitle(), adminNotice.getContent(), "notice"))
                 .forEach(mailSender::sendMail);
-
-        log.info("공지 발송을 완료했습니다.");
     }
 }
