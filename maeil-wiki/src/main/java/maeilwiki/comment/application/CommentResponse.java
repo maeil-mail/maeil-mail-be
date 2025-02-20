@@ -8,15 +8,17 @@ public record CommentResponse(
         Long id,
         String answer,
         LocalDateTime createdAt,
-        Long likeCount,
+        boolean isLiked,
+        long likeCount,
         MemberThumbnail owner
 ) {
 
-    public static CommentResponse from(CommentSummary commentSummary) {
+    public static CommentResponse of(CommentSummary commentSummary, boolean isLiked) {
         return new CommentResponse(
                 commentSummary.id(),
                 commentSummary.answer(),
                 commentSummary.createdAt(),
+                isLiked,
                 commentSummary.likeCount(),
                 commentSummary.owner()
         );

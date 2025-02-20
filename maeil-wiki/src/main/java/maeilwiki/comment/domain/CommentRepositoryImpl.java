@@ -1,5 +1,7 @@
 package maeilwiki.comment.domain;
 
+import static com.querydsl.core.group.GroupBy.groupBy;
+import static com.querydsl.core.group.GroupBy.set;
 import static maeilwiki.comment.domain.QComment.comment;
 import static maeilwiki.comment.domain.QCommentLike.commentLike;
 import static maeilwiki.member.domain.QMember.member;
@@ -20,15 +22,14 @@ class CommentRepositoryImpl implements CommentRepositoryCustom {
 
     @Override
     public List<CommentSummary> queryAllByWikiId(Long wikiId) {
-        return queryFactory.select(projectionCommentSummary())
-                .from(comment)
+        return queryFactory.from(comment)
                 .join(member).on(comment.member.eq(member))
                 .leftJoin(commentLike).on(comment.eq(commentLike.comment))
                 .where(comment.wikiId.eq(wikiId)
                         .and(comment.deletedAt.isNull()))
-                .groupBy(comment.id)
                 .orderBy(comment.id.asc())
-                .fetch();
+                .transform(groupBy(comment.id)
+                        .list(projectionCommentSummary()));
     }
 
     private QCommentSummary projectionCommentSummary() {
@@ -37,12 +38,8 @@ class CommentRepositoryImpl implements CommentRepositoryCustom {
                 comment.answer,
                 comment.isAnonymous,
                 comment.createdAt,
-                commentLike.count(),
-                projectionMemberThumbnail()
+                set(commentLike.member.id),
+                new QMemberThumbnail(member.id, member.name, member.profileImageUrl, member.githubUrl)
         );
-    }
-
-    private QMemberThumbnail projectionMemberThumbnail() {
-        return new QMemberThumbnail(member.id, member.name, member.profileImageUrl, member.githubUrl);
     }
 }

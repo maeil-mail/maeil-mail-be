@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import maeilsupport.PaginationResponse;
 import maeilwiki.comment.application.CommentRequest;
 import maeilwiki.comment.application.CommentService;
+import maeilwiki.member.api.NotRequiredIdentity;
 import maeilwiki.member.application.MemberIdentity;
 import maeilwiki.wiki.application.WikiRequest;
 import maeilwiki.wiki.application.WikiResponse;
@@ -79,8 +80,8 @@ class WikiApi {
     }
 
     @GetMapping("/wiki/{id}")
-    public ResponseEntity<WikiResponse> getWiki(@PathVariable Long id) {
-        WikiResponse wiki = wikiService.getWikiById(id);
+    public ResponseEntity<WikiResponse> getWiki(@NotRequiredIdentity MemberIdentity identity, @PathVariable Long id) {
+        WikiResponse wiki = wikiService.getWikiById(identity, id);
 
         return ResponseEntity.ok(wiki);
     }
