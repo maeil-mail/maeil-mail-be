@@ -3,6 +3,7 @@ package maeilwiki.wiki.application;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
 import maeilsupport.PaginationResponse;
@@ -144,6 +145,31 @@ class WikiServiceTest extends IntegrationTestSupport {
             softAssertions.assertThat(commentResponse3.isLiked()).isFalse();
             softAssertions.assertThat(commentResponse3.likeCount()).isEqualTo(0);
             softAssertions.assertThat(commentResponse3.owner().id()).isEqualTo(leesang.getId());
+        });
+    }
+
+    @Test
+    @DisplayName("로그인하지 않은 사용자가 Wiki를 조회하면 답변 좋아요 여부는 모두 false이다.")
+    void getWikiByIdWithoutLogin() {
+        // given
+        Member prin = createMember();
+        Member atom = createMember();
+
+        Wiki wiki = createWiki(prin);
+        Comment comment1 = createComment(atom, wiki);
+        createCommentLike(prin, comment1);
+        Comment comment2 = createComment(atom, wiki);
+
+        MemberIdentity identity = null;
+
+        // when
+        WikiResponse wikiResponse = wikiService.getWikiById(identity, wiki.getId());
+
+        // then
+        assertSoftly(softAssertions -> {
+            List<CommentResponse> comments = wikiResponse.comments();
+            softAssertions.assertThat(comments.get(0).isLiked()).isFalse();
+            softAssertions.assertThat(comments.get(1).isLiked()).isFalse();
         });
     }
 
