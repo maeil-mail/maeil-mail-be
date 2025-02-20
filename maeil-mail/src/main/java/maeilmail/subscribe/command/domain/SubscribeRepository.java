@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import maeilmail.subscribe.query.SubscribeEmail;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -52,12 +51,4 @@ public interface SubscribeRepository extends JpaRepository<Subscribe, Long> {
             """, nativeQuery = true)
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     void increaseNextQuestionSequence(LocalDateTime baseDateTime);
-
-    @Query("""
-            select new maeilmail.subscribe.query.SubscribeEmail(MIN(s.id), s.email)
-            from Subscribe s
-            where s.deletedAt is null
-            group by s.email
-            """)
-    List<SubscribeEmail> findAllWithUniqueEmail();
 }

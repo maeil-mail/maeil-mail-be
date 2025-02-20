@@ -9,8 +9,8 @@ import maeilmail.admin.AdminNotice;
 import maeilmail.admin.AdminNoticeRepository;
 import maeilmail.mail.MailMessage;
 import maeilmail.mail.MailSender;
-import maeilmail.subscribe.command.domain.SubscribeRepository;
 import maeilmail.subscribe.query.SubscribeEmail;
+import maeilmail.subscribe.query.SubscribeQueryService;
 import maeilmail.support.DistributedSupport;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -21,7 +21,7 @@ import org.springframework.stereotype.Component;
 public class SendAdminNoticeScheduler {
 
     private final MailSender mailSender;
-    private final SubscribeRepository subscribeRepository;
+    private final SubscribeQueryService subscribeQueryService;
     private final AdminNoticeRepository adminNoticeRepository;
     private final DistributedSupport distributedSupport;
 
@@ -33,7 +33,7 @@ public class SendAdminNoticeScheduler {
             return;
         }
         AdminNotice adminNotice = optionalAdminNotice.get();
-        List<SubscribeEmail> subscribes = subscribeRepository.findAllWithUniqueEmail();
+        List<SubscribeEmail> subscribes = subscribeQueryService.findAllWithUniqueEmail();
         log.info("{}명의 구독자에게 공지 메일을 발송합니다.", subscribes.size());
 
         subscribes.stream()
