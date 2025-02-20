@@ -6,9 +6,11 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.List;
 import java.util.UUID;
+import maeilwiki.comment.dto.CommentLikeSummary;
 import maeilwiki.comment.dto.CommentSummary;
 import maeilwiki.member.domain.Member;
 import maeilwiki.member.domain.MemberRepository;
+import maeilwiki.member.dto.MemberThumbnail;
 import maeilwiki.support.IntegrationTestSupport;
 import maeilwiki.wiki.domain.Wiki;
 import maeilwiki.wiki.domain.WikiRepository;
@@ -52,15 +54,14 @@ class CommentRepositoryTest extends IntegrationTestSupport {
         Member atom = createMember();
 
         Wiki wiki1 = createWiki(prin);
-        Wiki wiki2 = createWiki(prin);
-
         Comment wiki1comment1 = createComment(atom, wiki1);
-        Comment wiki1comment2 = createComment(atom, wiki1);
-        Comment wiki2comment1 = createComment(atom, wiki2);
-
         createCommentLike(prin, wiki1comment1);
         createCommentLike(atom, wiki1comment1);
+        Comment wiki1comment2 = createComment(atom, wiki1);
         createCommentLike(atom, wiki1comment2);
+
+        Wiki wiki2 = createWiki(prin);
+        Comment wiki2comment1 = createComment(atom, wiki2);
         createCommentLike(prin, wiki2comment1);
 
         // when
@@ -70,21 +71,32 @@ class CommentRepositoryTest extends IntegrationTestSupport {
         assertSoftly(softAssertions -> {
             softAssertions.assertThat(commentSummary).hasSize(2);
 
-            softAssertions.assertThat(commentSummary.get(0).id()).isEqualTo(wiki1comment1.getId());
-            softAssertions.assertThat(commentSummary.get(0).answer()).isEqualTo(wiki1comment1.getAnswer());
-            softAssertions.assertThat(commentSummary.get(0).isAnonymous()).isEqualTo(wiki1comment1.isAnonymous());
-            softAssertions.assertThat(commentSummary.get(0).likeCount()).isEqualTo(2);
-            softAssertions.assertThat(commentSummary.get(0).owner().name()).isEqualTo(wiki1comment1.getMember().getName());
-            softAssertions.assertThat(commentSummary.get(0).owner().profileImage()).isEqualTo(wiki1comment1.getMember().getProfileImageUrl());
-            softAssertions.assertThat(commentSummary.get(0).owner().github()).isEqualTo(wiki1comment1.getMember().getGithubUrl());
+            CommentSummary comment1 = commentSummary.get(0);
+            softAssertions.assertThat(comment1.id()).isEqualTo(wiki1comment1.getId());
+            softAssertions.assertThat(comment1.answer()).isEqualTo(wiki1comment1.getAnswer());
+            softAssertions.assertThat(comment1.isAnonymous()).isEqualTo(wiki1comment1.isAnonymous());
+            softAssertions.assertThat(comment1.likeCount()).isEqualTo(2);
+            List<CommentLikeSummary> commentLikes = comment1.commentLikeSummaries();
+            softAssertions.assertThat(commentLikes.get(0).memberId()).isEqualTo(prin.getId());
+            softAssertions.assertThat(commentLikes.get(1).memberId()).isEqualTo(atom.getId());
+            MemberThumbnail comment1Owner = comment1.owner();
+            softAssertions.assertThat(comment1Owner.id()).isEqualTo(atom.getId());
+            softAssertions.assertThat(comment1Owner.name()).isEqualTo(atom.getName());
+            softAssertions.assertThat(comment1Owner.profileImage()).isEqualTo(atom.getProfileImageUrl());
+            softAssertions.assertThat(comment1Owner.github()).isEqualTo(atom.getGithubUrl());
 
-            softAssertions.assertThat(commentSummary.get(1).id()).isEqualTo(wiki1comment2.getId());
-            softAssertions.assertThat(commentSummary.get(1).answer()).isEqualTo(wiki1comment2.getAnswer());
-            softAssertions.assertThat(commentSummary.get(1).isAnonymous()).isEqualTo(wiki1comment2.isAnonymous());
-            softAssertions.assertThat(commentSummary.get(1).likeCount()).isEqualTo(1);
-            softAssertions.assertThat(commentSummary.get(1).owner().name()).isEqualTo(wiki1comment2.getMember().getName());
-            softAssertions.assertThat(commentSummary.get(1).owner().profileImage()).isEqualTo(wiki1comment2.getMember().getProfileImageUrl());
-            softAssertions.assertThat(commentSummary.get(1).owner().github()).isEqualTo(wiki1comment2.getMember().getGithubUrl());
+            CommentSummary comment2 = commentSummary.get(1);
+            softAssertions.assertThat(comment2.id()).isEqualTo(wiki1comment2.getId());
+            softAssertions.assertThat(comment2.answer()).isEqualTo(wiki1comment2.getAnswer());
+            softAssertions.assertThat(comment2.isAnonymous()).isEqualTo(wiki1comment2.isAnonymous());
+            softAssertions.assertThat(comment2.likeCount()).isEqualTo(1);
+            List<CommentLikeSummary> comment2Likes = comment2.commentLikeSummaries();
+            softAssertions.assertThat(comment2Likes.get(0).memberId()).isEqualTo(atom.getId());
+            MemberThumbnail comment2Owner = comment2.owner();
+            softAssertions.assertThat(comment2Owner.id()).isEqualTo(atom.getId());
+            softAssertions.assertThat(comment2Owner.name()).isEqualTo(atom.getName());
+            softAssertions.assertThat(comment2Owner.profileImage()).isEqualTo(atom.getProfileImageUrl());
+            softAssertions.assertThat(comment2Owner.github()).isEqualTo(atom.getGithubUrl());
         });
     }
 
