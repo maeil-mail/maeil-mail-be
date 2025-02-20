@@ -9,10 +9,6 @@ public record AdminNoticeRequest(
         LocalDate date
 ) {
 
-    public static AdminNoticeRequest from(AdminNotice notice) {
-        return new AdminNoticeRequest(notice.getId(), notice.getTitle(), notice.getContent(), notice.getReservedAt());
-    }
-
     public AdminNotice toAdminNotice() {
         return new AdminNotice(id, title, content, date);
     }

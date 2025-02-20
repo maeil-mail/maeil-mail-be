@@ -2,6 +2,8 @@ package maeilmail.admin;
 
 import java.util.NoSuchElementException;
 import lombok.RequiredArgsConstructor;
+import maeilmail.mail.MailMessage;
+import maeilmail.mail.MailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -10,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class AdminNoticeService {
 
     private final AdminNoticeRepository adminNoticeRepository;
-    private final AdminNoticeSender adminNoticeSender;
+    private final MailSender mailSender;
 
     @Transactional
     public void createNotice(AdminNotice notice) {
@@ -27,8 +29,8 @@ public class AdminNoticeService {
     }
 
     public void sendTest(Long id, AdminNoticeTestRequest request) {
-        AdminNoticeRequest adminNoticeRequest = AdminNoticeRequest.from(findNotice(id));
-        adminNoticeSender.sendOne(adminNoticeRequest, request.target());
+        AdminNotice adminNotice = findNotice(id);
+        mailSender.sendMail(new MailMessage(request.target(), adminNotice.getTitle(), adminNotice.getContent(), "notice test"));
     }
 
     @Transactional
