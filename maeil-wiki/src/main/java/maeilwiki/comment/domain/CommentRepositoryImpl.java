@@ -1,7 +1,7 @@
 package maeilwiki.comment.domain;
 
 import static com.querydsl.core.group.GroupBy.groupBy;
-import static com.querydsl.core.group.GroupBy.list;
+import static com.querydsl.core.group.GroupBy.set;
 import static maeilwiki.comment.domain.QComment.comment;
 import static maeilwiki.comment.domain.QCommentLike.commentLike;
 import static maeilwiki.member.domain.QMember.member;
@@ -10,7 +10,6 @@ import java.util.List;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import maeilwiki.comment.dto.CommentSummary;
-import maeilwiki.comment.dto.QCommentLikeSummary;
 import maeilwiki.comment.dto.QCommentSummary;
 import maeilwiki.member.dto.QMemberThumbnail;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,7 +38,7 @@ class CommentRepositoryImpl implements CommentRepositoryCustom {
                 comment.answer,
                 comment.isAnonymous,
                 comment.createdAt,
-                list(new QCommentLikeSummary(commentLike.member.id)),
+                set(commentLike.member.id),
                 new QMemberThumbnail(member.id, member.name, member.profileImageUrl, member.githubUrl)
         );
     }
