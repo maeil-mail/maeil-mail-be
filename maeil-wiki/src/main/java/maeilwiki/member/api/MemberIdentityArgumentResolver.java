@@ -42,6 +42,10 @@ public class MemberIdentityArgumentResolver implements HandlerMethodArgumentReso
         Cookie[] cookies = request.getCookies();
         String accessToken = cookieHelper.getCookieByName(cookies, ACCESS_TOKEN);
         if (accessToken == null) {
+            NotRequiredIdentity notRequiredIdentity = parameter.getParameterAnnotation(NotRequiredIdentity.class);
+            if (notRequiredIdentity != null) {
+                return null;
+            }
             throw new MemberIdentityException();
         }
 
