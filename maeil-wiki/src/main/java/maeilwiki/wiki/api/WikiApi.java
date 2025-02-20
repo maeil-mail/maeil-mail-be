@@ -79,8 +79,8 @@ class WikiApi {
     }
 
     @GetMapping("/wiki/{id}")
-    public ResponseEntity<WikiResponse> getWiki(@PathVariable Long id) {
-        WikiResponse wiki = wikiService.getWikiById(id);
+    public ResponseEntity<WikiResponse> getWiki(MemberIdentity identity, @PathVariable Long id) {
+        WikiResponse wiki = wikiService.getWikiById(identity, id);
 
         return ResponseEntity.ok(wiki);
     }

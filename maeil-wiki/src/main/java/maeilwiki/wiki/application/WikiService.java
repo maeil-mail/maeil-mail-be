@@ -72,16 +72,23 @@ public class WikiService {
     }
 
     @Transactional(readOnly = true)
-    public WikiResponse getWikiById(Long wikiId) {
+    public WikiResponse getWikiById(MemberIdentity identity, Long wikiId) {
         WikiSummary wikiSummary = resolveAnonymousWiki(wikiRepository.queryOneById(wikiId)
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 위키입니다.")));
         List<CommentResponse> commentResponses = commentRepository.queryAllByWikiId(wikiId)
                 .stream()
                 .map(this::resolveAnonymousComment)
-                .map(CommentResponse::from)
+                .map(it -> CommentResponse.of(it, isCommentLikedByMember(identity, it)))
                 .toList();
 
         return WikiResponse.withComments(wikiSummary, commentResponses);
+    }
+
+    public boolean isCommentLikedByMember(MemberIdentity identity, CommentSummary commentSummary) {
+        if (identity == null) {
+            return false;
+        }
+        return commentSummary.isLikedBy(identity.id());
     }
 
     @Transactional(readOnly = true)

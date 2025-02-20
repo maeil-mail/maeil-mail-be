@@ -7,7 +7,10 @@ import java.util.NoSuchElementException;
 import java.util.UUID;
 import maeilsupport.PaginationResponse;
 import maeilwiki.comment.application.CommentRequest;
+import maeilwiki.comment.application.CommentResponse;
 import maeilwiki.comment.domain.Comment;
+import maeilwiki.comment.domain.CommentLike;
+import maeilwiki.comment.domain.CommentLikeRepository;
 import maeilwiki.comment.domain.CommentRepository;
 import maeilwiki.member.application.MemberIdentity;
 import maeilwiki.member.domain.Member;
@@ -31,6 +34,9 @@ class WikiServiceTest extends IntegrationTestSupport {
 
     @Autowired
     private CommentRepository commentRepository;
+
+    @Autowired
+    private CommentLikeRepository commentLikeRepository;
 
     @Autowired
     private WikiService wikiService;
@@ -89,15 +95,25 @@ class WikiServiceTest extends IntegrationTestSupport {
         // given
         Member prin = createMember();
         Member atom = createMember();
+        Member leesang = createMember();
+        MemberIdentity identity = new MemberIdentity(prin.getId(), "prin", "profileImage");
+
         Wiki wiki1 = createWiki(prin);
-        Wiki wiki2 = createWiki(prin);
         Comment wiki1Comment1 = createComment(atom, wiki1);
-        createComment(atom, wiki2);
-        Comment wiki1Comment2 = createComment(atom, wiki1);
+        createCommentLike(leesang, wiki1Comment1);
+        createCommentLike(prin, wiki1Comment1);
+        Comment wiki1Comment2 = createComment(prin, wiki1);
+        createCommentLike(atom, wiki1Comment2);
+        Comment wiki1Comment3 = createComment(leesang, wiki1);
+
+
+        Wiki wiki2 = createWiki(prin);
+        Comment wiki2Comment1 = createComment(atom, wiki2);
+        createCommentLike(prin, wiki2Comment1);
         createComment(atom, wiki2);
 
         // when
-        WikiResponse wikiResponse = wikiService.getWikiById(wiki1.getId());
+        WikiResponse wikiResponse = wikiService.getWikiById(identity, wiki1.getId());
 
         // then
         assertSoftly(softAssertions -> {
@@ -105,12 +121,29 @@ class WikiServiceTest extends IntegrationTestSupport {
             softAssertions.assertThat(wikiResponse.question()).isEqualTo(wiki1.getQuestion());
             softAssertions.assertThat(wikiResponse.questionDetail()).isEqualTo(wiki1.getQuestionDetail());
             softAssertions.assertThat(wikiResponse.category()).isEqualTo(wiki1.getCategory().toString().toLowerCase());
-            softAssertions.assertThat(wikiResponse.owner().name()).isEqualTo(wiki1.getMember().getName());
-            softAssertions.assertThat(wikiResponse.owner().profileImage()).isEqualTo(wiki1.getMember().getProfileImageUrl());
-            softAssertions.assertThat(wikiResponse.owner().github()).isEqualTo(wiki1.getMember().getGithubUrl());
-            softAssertions.assertThat(wikiResponse.comments()).hasSize(2);
-            softAssertions.assertThat(wikiResponse.comments().get(0).id()).isEqualTo(wiki1Comment1.getId());
-            softAssertions.assertThat(wikiResponse.comments().get(1).id()).isEqualTo(wiki1Comment2.getId());
+            MemberThumbnail wikiOwner = wikiResponse.owner();
+            softAssertions.assertThat(wikiOwner.name()).isEqualTo(wiki1.getMember().getName());
+            softAssertions.assertThat(wikiOwner.profileImage()).isEqualTo(wiki1.getMember().getProfileImageUrl());
+            softAssertions.assertThat(wikiOwner.github()).isEqualTo(wiki1.getMember().getGithubUrl());
+            softAssertions.assertThat(wikiResponse.comments()).hasSize(3);
+            CommentResponse commentResponse1 = wikiResponse.comments().get(0);
+            softAssertions.assertThat(commentResponse1.id()).isEqualTo(wiki1Comment1.getId());
+            softAssertions.assertThat(commentResponse1.answer()).isEqualTo(wiki1Comment1.getAnswer());
+            softAssertions.assertThat(commentResponse1.isLiked()).isTrue();
+            softAssertions.assertThat(commentResponse1.likeCount()).isEqualTo(2);
+            softAssertions.assertThat(commentResponse1.owner().id()).isEqualTo(atom.getId());
+            CommentResponse commentResponse2 = wikiResponse.comments().get(1);
+            softAssertions.assertThat(commentResponse2.id()).isEqualTo(wiki1Comment2.getId());
+            softAssertions.assertThat(commentResponse2.answer()).isEqualTo(wiki1Comment2.getAnswer());
+            softAssertions.assertThat(commentResponse2.isLiked()).isFalse();
+            softAssertions.assertThat(commentResponse2.likeCount()).isEqualTo(1);
+            softAssertions.assertThat(commentResponse2.owner().id()).isEqualTo(prin.getId());
+            CommentResponse commentResponse3 = wikiResponse.comments().get(2);
+            softAssertions.assertThat(commentResponse3.id()).isEqualTo(wiki1Comment3.getId());
+            softAssertions.assertThat(commentResponse3.answer()).isEqualTo(wiki1Comment3.getAnswer());
+            softAssertions.assertThat(commentResponse3.isLiked()).isFalse();
+            softAssertions.assertThat(commentResponse3.likeCount()).isEqualTo(0);
+            softAssertions.assertThat(commentResponse3.owner().id()).isEqualTo(leesang.getId());
         });
     }
 
@@ -120,11 +153,12 @@ class WikiServiceTest extends IntegrationTestSupport {
         // given
         boolean isAnonymousWiki = true;
         Member prin = createMember();
+        MemberIdentity identity = new MemberIdentity(prin.getId(), "prin", "profileImage");
         Wiki wiki = createWiki(prin, isAnonymousWiki);
         createComment(prin, wiki);
 
         // when
-        WikiResponse wikiResponse = wikiService.getWikiById(wiki.getId());
+        WikiResponse wikiResponse = wikiService.getWikiById(identity, wiki.getId());
 
         // then
         assertSoftly(softAssertions -> {
@@ -142,11 +176,12 @@ class WikiServiceTest extends IntegrationTestSupport {
         // given
         boolean isAnonymousWiki = false;
         Member prin = createMember();
+        MemberIdentity identity = new MemberIdentity(prin.getId(), "prin", "profileImage");
         Wiki wiki = createWiki(prin, isAnonymousWiki);
         createComment(prin, wiki);
 
         // when
-        WikiResponse wikiResponse = wikiService.getWikiById(wiki.getId());
+        WikiResponse wikiResponse = wikiService.getWikiById(identity, wiki.getId());
 
         // then
         assertSoftly(softAssertions -> {
@@ -164,11 +199,12 @@ class WikiServiceTest extends IntegrationTestSupport {
         // given
         boolean isAnonymousComment = true;
         Member atom = createMember();
+        MemberIdentity identity = new MemberIdentity(atom.getId(), "atom", "profileImage");
         Wiki wiki = createWiki(atom);
         createComment(atom, wiki, isAnonymousComment);
 
         // when
-        WikiResponse wikiResponse = wikiService.getWikiById(wiki.getId());
+        WikiResponse wikiResponse = wikiService.getWikiById(identity, wiki.getId());
 
         // then
         assertSoftly(softAssertions -> {
@@ -186,11 +222,12 @@ class WikiServiceTest extends IntegrationTestSupport {
         // given
         boolean isAnonymousComment = false;
         Member atom = createMember();
+        MemberIdentity identity = new MemberIdentity(atom.getId(), "atom", "profileImage");
         Wiki wiki = createWiki(atom);
         createComment(atom, wiki, isAnonymousComment);
 
         // when
-        WikiResponse wikiResponse = wikiService.getWikiById(wiki.getId());
+        WikiResponse wikiResponse = wikiService.getWikiById(identity, wiki.getId());
 
         // then
         assertSoftly(softAssertions -> {
@@ -294,5 +331,11 @@ class WikiServiceTest extends IntegrationTestSupport {
         Comment comment = new Comment("answer", isAnonymous, member, wiki.getId());
 
         return commentRepository.save(comment);
+    }
+
+    private CommentLike createCommentLike(Member member, Comment comment) {
+        CommentLike commentLike = new CommentLike(member, comment);
+
+        return commentLikeRepository.save(commentLike);
     }
 }

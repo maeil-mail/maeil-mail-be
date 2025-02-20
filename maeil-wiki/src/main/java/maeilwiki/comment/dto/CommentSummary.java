@@ -24,6 +24,10 @@ public record CommentSummary(
         return new CommentSummary(id, answer, isAnonymous, createdAt, likeMemberIds, anonymousOwner);
     }
 
+    public boolean isLikedBy(Long memberId) {
+        return likeMemberIds.contains(memberId);
+    }
+
     public long likeCount() {
         return likeMemberIds.size();
     }
