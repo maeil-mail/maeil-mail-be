@@ -1,5 +1,6 @@
 package maeilwiki.wiki.api;
 
+import java.net.URI;
 import lombok.RequiredArgsConstructor;
 import maeilsupport.PaginationResponse;
 import maeilwiki.comment.application.CommentRequest;
@@ -29,9 +30,10 @@ class WikiApi {
 
     @PostMapping("/wiki")
     public ResponseEntity<Void> createWiki(MemberIdentity identity, @RequestBody WikiRequest request) {
-        wikiService.create(identity, request);
+        Long resourceId = wikiService.create(identity, request);
+        URI location = URI.create(resourceId.toString());
 
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.created(location).build();
     }
 
     @DeleteMapping("/wiki/{id}")
