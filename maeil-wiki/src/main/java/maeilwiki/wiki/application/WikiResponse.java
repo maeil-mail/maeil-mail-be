@@ -1,13 +1,12 @@
 package maeilwiki.wiki.application;
 
-import static com.fasterxml.jackson.annotation.JsonInclude.Include;
-
-import java.time.LocalDateTime;
-import java.util.List;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import maeilwiki.comment.application.CommentResponse;
 import maeilwiki.member.dto.MemberThumbnail;
 import maeilwiki.wiki.dto.WikiSummary;
+
+import java.time.LocalDateTime;
+
+import static com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 public record WikiResponse(
         Long id,
@@ -16,11 +15,10 @@ public record WikiResponse(
         String category,
         MemberThumbnail owner,
         LocalDateTime createdAt,
-        @JsonInclude(Include.NON_NULL) List<CommentResponse> comments,
-        @JsonInclude(Include.NON_NULL) Long commentCount
+        Long commentCount
 ) {
 
-    public static WikiResponse withComments(WikiSummary wikiSummary, List<CommentResponse> commentResponses) {
+    public static WikiResponse of(WikiSummary wikiSummary, Long commentCount) {
         return new WikiResponse(
                 wikiSummary.id(),
                 wikiSummary.question(),
@@ -28,20 +26,6 @@ public record WikiResponse(
                 wikiSummary.category(),
                 wikiSummary.owner(),
                 wikiSummary.createdAt(),
-                commentResponses,
-                null
-        );
-    }
-
-    public static WikiResponse withCommentCount(WikiSummary wikiSummary, Long commentCount) {
-        return new WikiResponse(
-                wikiSummary.id(),
-                wikiSummary.question(),
-                wikiSummary.questionDetail(),
-                wikiSummary.category(),
-                wikiSummary.owner(),
-                wikiSummary.createdAt(),
-                null,
                 commentCount
         );
     }

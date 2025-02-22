@@ -1,16 +1,19 @@
 package maeilwiki.comment.application;
 
-import java.util.NoSuchElementException;
 import lombok.RequiredArgsConstructor;
 import maeilwiki.comment.domain.Comment;
 import maeilwiki.comment.domain.CommentLike;
 import maeilwiki.comment.domain.CommentLikeRepository;
 import maeilwiki.comment.domain.CommentRepository;
+import maeilwiki.comment.dto.CommentSummary;
 import maeilwiki.member.application.MemberIdentity;
 import maeilwiki.member.application.MemberService;
 import maeilwiki.member.domain.Member;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
@@ -62,5 +65,13 @@ public class CommentService {
     private void like(Member member, Comment comment) {
         CommentLike commentLike = new CommentLike(member, comment);
         commentLikeRepository.save(commentLike);
+    }
+
+    @Transactional(readOnly = true)
+    public CommentResponses list(MemberIdentity identity, Long wikiId, Long cursorId, Long size) {
+        List<CommentSummary> commentSummaries = commentRepository.queryByWikiIdAndIdGreaterThan(wikiId, identity.id(), cursorId, size);
+        Long totalCount = commentRepository.countAllByWikiId(wikiId);
+
+        return CommentResponses.of(commentSummaries, totalCount);
     }
 }

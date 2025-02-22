@@ -1,10 +1,5 @@
 package maeilwiki.wiki.domain;
 
-import static maeilwiki.comment.domain.QComment.comment;
-import static maeilwiki.member.domain.QMember.member;
-import static maeilwiki.wiki.domain.QWiki.wiki;
-
-import java.util.Optional;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -18,6 +13,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
+
+import static maeilwiki.comment.domain.QComment.comment;
+import static maeilwiki.member.domain.QMember.member;
+import static maeilwiki.wiki.domain.QWiki.wiki;
 
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -77,6 +78,7 @@ class WikiRepositoryImpl implements WikiRepositoryCustom {
                 wiki.questionDetail,
                 wiki.category.stringValue().lower(),
                 wiki.isAnonymous,
+
                 wiki.createdAt,
                 projectionMemberThumbnail()
         );
