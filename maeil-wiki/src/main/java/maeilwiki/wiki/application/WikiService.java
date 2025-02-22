@@ -31,11 +31,11 @@ public class WikiService {
     private final MemberService memberService;
 
     @Transactional
-    public void create(MemberIdentity identity, WikiRequest request) {
+    public Long create(MemberIdentity identity, WikiRequest request) {
         Member member = memberService.findById(identity.id());
         Wiki wiki = request.toWiki(member);
 
-        wikiRepository.save(wiki);
+        return wikiRepository.save(wiki).getId();
     }
 
     @Transactional
