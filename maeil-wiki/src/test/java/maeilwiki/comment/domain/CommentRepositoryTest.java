@@ -1,11 +1,5 @@
 package maeilwiki.comment.domain;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.SoftAssertions.assertSoftly;
-import static org.junit.jupiter.api.Assertions.assertAll;
-
-import java.util.List;
-import java.util.UUID;
 import maeilwiki.comment.dto.CommentSummary;
 import maeilwiki.member.domain.Member;
 import maeilwiki.member.domain.MemberRepository;
@@ -16,6 +10,13 @@ import maeilwiki.wiki.domain.WikiRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
+import java.util.UUID;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.SoftAssertions.assertSoftly;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 class CommentRepositoryTest extends IntegrationTestSupport {
 
@@ -64,7 +65,7 @@ class CommentRepositoryTest extends IntegrationTestSupport {
         createCommentLike(prin, wiki2comment1);
 
         // when
-        List<CommentSummary> commentSummaries = commentRepository.queryAllByWikiId(wiki1.getId());
+        List<CommentSummary> commentSummaries = commentRepository.queryByWikiIdAndIdGreaterThan(wiki1.getId(), prin.getId(), 0L, 10L);
 
         // then
         assertSoftly(softAssertions -> {
@@ -75,7 +76,7 @@ class CommentRepositoryTest extends IntegrationTestSupport {
             softAssertions.assertThat(comment1.answer()).isEqualTo(wiki1comment1.getAnswer());
             softAssertions.assertThat(comment1.isAnonymous()).isEqualTo(wiki1comment1.isAnonymous());
             softAssertions.assertThat(comment1.likeCount()).isEqualTo(2);
-            softAssertions.assertThat(comment1.likeMemberIds()).contains(prin.getId(), leesang.getId());
+            softAssertions.assertThat(comment1.isLiked()).isTrue();
             MemberThumbnail comment1Owner = comment1.owner();
             softAssertions.assertThat(comment1Owner.id()).isEqualTo(atom.getId());
             softAssertions.assertThat(comment1Owner.name()).isEqualTo(atom.getName());
@@ -87,6 +88,7 @@ class CommentRepositoryTest extends IntegrationTestSupport {
             softAssertions.assertThat(comment2.answer()).isEqualTo(wiki1comment2.getAnswer());
             softAssertions.assertThat(comment2.isAnonymous()).isEqualTo(wiki1comment2.isAnonymous());
             softAssertions.assertThat(comment2.likeCount()).isEqualTo(0);
+            softAssertions.assertThat(comment2.isLiked()).isFalse();
             MemberThumbnail comment2Owner = comment2.owner();
             softAssertions.assertThat(comment2Owner.id()).isEqualTo(atom.getId());
             softAssertions.assertThat(comment2Owner.name()).isEqualTo(atom.getName());
@@ -103,7 +105,7 @@ class CommentRepositoryTest extends IntegrationTestSupport {
         Wiki wiki = createWiki(atom);
 
         // when
-        List<CommentSummary> commentSummary = commentRepository.queryAllByWikiId(wiki.getId());
+        List<CommentSummary> commentSummary = commentRepository.queryByWikiIdAndIdGreaterThan(wiki.getId(), null, 0L, 10L);
 
         // then
         assertThat(commentSummary).isEmpty();
