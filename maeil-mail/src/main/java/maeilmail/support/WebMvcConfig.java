@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import maeilmail.admin.AdminAuthInterceptor;
 import maeilwiki.member.api.MemberIdentityArgumentResolver;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
@@ -50,6 +51,7 @@ class WebMvcConfig implements WebMvcConfigurer {
                         "https://maeil-mail.kr",
                         "https://wiki.maeil-mail.kr"
                 )
+                .exposedHeaders(HttpHeaders.LOCATION)
                 .allowCredentials(true);
     }
 }
