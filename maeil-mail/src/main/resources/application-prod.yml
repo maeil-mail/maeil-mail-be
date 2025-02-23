@@ -30,7 +30,7 @@ spring:
       mail:
         smtp:
           auth: true
-          timeout: 5000
+          timeout: 30000
           starttls:
             enable: true
 
