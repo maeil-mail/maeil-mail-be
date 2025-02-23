@@ -1,5 +1,6 @@
 package maeilwiki.comment.domain;
 
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -28,7 +29,7 @@ class CommentRepositoryImpl implements CommentRepositoryCustom {
                 .join(member).on(comment.member.eq(member))
                 .where(comment.wikiId.eq(wikiId),
                         comment.deletedAt.isNull(),
-                        cursorId != null ? comment.id.gt(cursorId) : null)
+                        idGreaterThan(cursorId))
                 .orderBy(comment.id.asc())
                 .limit(size)
                 .fetch();
@@ -56,6 +57,13 @@ class CommentRepositoryImpl implements CommentRepositoryCustom {
         );
     }
 
+    private BooleanExpression idGreaterThan(Long cursorId) {
+        if (cursorId == null) {
+            return null;
+        }
+        return comment.id.gt(cursorId);
+    }
+
     @Override
     public Long countAllByWikiId(Long wikiId) {
         return queryFactory.select(comment.id.count())
@@ -64,4 +72,3 @@ class CommentRepositoryImpl implements CommentRepositoryCustom {
                 .fetchOne();
     }
 }
-

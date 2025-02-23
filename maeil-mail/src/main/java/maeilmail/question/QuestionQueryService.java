@@ -26,13 +26,13 @@ public class QuestionQueryService {
 
     private final JPAQueryFactory queryFactory;
 
-    public PaginationResponse<QuestionSummary> pageByCategory(String category, Pageable pageable) {
+    public PaginationResponse<QuestionSummary> pageByCategory(String category, String searchParam, Pageable pageable) {
         JPAQuery<Long> countQuery = queryFactory.select(question.count())
                 .from(question)
                 .where(eqCategory(category));
         JPAQuery<QuestionSummary> resultQuery = queryFactory.select(projectionQuestionSummary())
                 .from(question)
-                .where(eqCategory(category))
+                .where(eqCategory(category), eqSearchParam(searchParam))
                 .offset(pageable.getOffset())
                 .orderBy(question.id.desc())
                 .limit(pageable.getPageSize());
@@ -56,6 +56,14 @@ public class QuestionQueryService {
         }
 
         return question.category.eq(QuestionCategory.from(category));
+    }
+
+    private BooleanExpression eqSearchParam(String searchParam) {
+        if (searchParam == null || searchParam.isEmpty()) {
+            return null;
+        }
+        return question.title.likeIgnoreCase(searchParam)
+                .or(question.content.likeIgnoreCase(searchParam));
     }
 
     public QuestionSummary queryOneById(Long id) {
