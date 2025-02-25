@@ -3,13 +3,11 @@ package maeilmail.statistics;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
 import lombok.RequiredArgsConstructor;
 import maeilmail.bulksend.schedule.SendWeeklyQuestionScheduler;
 import maeilmail.subscribe.command.domain.SubscribeFrequency;
-import maeilmail.subscribe.command.domain.SubscribeRepository;
 import maeilsupport.DateUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class StatisticsService {
 
-    private final SubscribeRepository subscribeRepository;
     private final StatisticsDao statisticsDao;
 
     /**
@@ -51,19 +48,18 @@ public class StatisticsService {
      * 메인 페이지에서 사용되는 구독자 수
      */
     public SubscribeReport generateSubscribeReport() {
-        List<String> distinctEmails = subscribeRepository.findDistinctEmails();
+        Long subscribeCount = statisticsDao.countDistinctSubscribeCount();
 
-        return new SubscribeReport((long) distinctEmails.size());
+        return new SubscribeReport(subscribeCount);
     }
 
     /**
      * 특정 날짜 신규 구독자 수
      */
-    public int countNewSubscribersOnSpecificDate(LocalDate date) {
+    public Long countNewSubscribersOnSpecificDate(LocalDate date) {
         LocalDateTime startOfDay = date.atStartOfDay();
         LocalDateTime endOfDay = startOfDay.plusDays(1).minusNanos(1);
-        List<String> distinctEmails = subscribeRepository.findDistinctEmailsByCreatedAtBetween(startOfDay, endOfDay);
 
-        return distinctEmails.size();
+        return statisticsDao.countDistinctSubscribeOnSpecificDate(startOfDay, endOfDay);
     }
 }
