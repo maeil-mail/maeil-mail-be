@@ -63,8 +63,11 @@ public class Subscribe extends BaseEntity {
         return 0L;
     }
 
-    // TODO: 기삭제 여부 판단
     public void unsubscribe() {
+        if (deletedAt != null) {
+            throw new IllegalStateException("이미 구독이 취소되었습니다.");
+        }
+
         this.deletedAt = LocalDateTime.now();
     }
 
