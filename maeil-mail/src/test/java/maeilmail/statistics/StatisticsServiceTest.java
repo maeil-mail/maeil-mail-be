@@ -6,12 +6,10 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.IntStream;
-import maeilmail.question.Question;
 import maeilmail.question.QuestionCategory;
 import maeilmail.question.QuestionRepository;
 import maeilmail.subscribe.command.domain.Subscribe;
 import maeilmail.subscribe.command.domain.SubscribeFrequency;
-import maeilmail.subscribe.command.domain.SubscribeQuestion;
 import maeilmail.subscribe.command.domain.SubscribeRepository;
 import maeilmail.support.IntegrationTestSupport;
 import maeilmail.support.data.SendReportCountingCase;
@@ -94,17 +92,5 @@ class StatisticsServiceTest extends IntegrationTestSupport {
                 () -> assertThat(actualTuesday.success()).isEqualTo(8L),
                 () -> assertThat(actualTuesday.fail()).isEqualTo(0L)
         );
-    }
-
-    private SubscribeQuestion createSubscribeQuestion(boolean isSuccess) {
-        Subscribe subscribe = subscribeRepository.save(new Subscribe("test@gmail.com", QuestionCategory.BACKEND, SubscribeFrequency.DAILY));
-        Question question = questionRepository.save(
-                new Question(
-                        "test-title",
-                        "test-content",
-                        QuestionCategory.BACKEND
-                )
-        );
-        return new SubscribeQuestion(subscribe, question, isSuccess);
     }
 }
