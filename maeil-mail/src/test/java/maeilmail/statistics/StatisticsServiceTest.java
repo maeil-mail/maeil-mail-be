@@ -7,7 +7,6 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.IntStream;
 import maeilmail.question.QuestionCategory;
-import maeilmail.question.QuestionRepository;
 import maeilmail.subscribe.command.domain.Subscribe;
 import maeilmail.subscribe.command.domain.SubscribeFrequency;
 import maeilmail.subscribe.command.domain.SubscribeRepository;
@@ -24,9 +23,6 @@ class StatisticsServiceTest extends IntegrationTestSupport {
 
     @Autowired
     private SubscribeRepository subscribeRepository;
-
-    @Autowired
-    private QuestionRepository questionRepository;
 
     @Autowired
     private SendReportCountingCase sendReportCountingCase;
@@ -56,7 +52,7 @@ class StatisticsServiceTest extends IntegrationTestSupport {
         subscribeRepository.save(new Subscribe("test" + 2, QuestionCategory.FRONTEND, SubscribeFrequency.DAILY));
         subscribeRepository.save(new Subscribe("test" + 2, QuestionCategory.FRONTEND, SubscribeFrequency.DAILY));
 
-        int distinctEmailsCount = statisticsService.countNewSubscribersOnSpecificDate(LocalDate.now());
+        Long distinctEmailsCount = statisticsService.countNewSubscribersOnSpecificDate(LocalDate.now());
 
         assertThat(distinctEmailsCount).isEqualTo(2);
     }
@@ -66,7 +62,7 @@ class StatisticsServiceTest extends IntegrationTestSupport {
     void countNewSubscribersOnSpecificDate2() {
         subscribeRepository.save(new Subscribe("test" + 1, QuestionCategory.FRONTEND, SubscribeFrequency.DAILY));
 
-        int distinctEmailsCount = statisticsService.countNewSubscribersOnSpecificDate(LocalDate.now().minusDays(1));
+        Long distinctEmailsCount = statisticsService.countNewSubscribersOnSpecificDate(LocalDate.now().minusDays(1));
 
         assertThat(distinctEmailsCount).isEqualTo(0);
     }

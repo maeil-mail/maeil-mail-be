@@ -25,6 +25,21 @@ class StatisticsDao {
 
     private final JPAQueryFactory queryFactory;
 
+    public Long countDistinctSubscribeCount() {
+        return queryFactory.select(subscribe.email.countDistinct())
+                .from(subscribe)
+                .where(subscribe.deletedAt.isNull())
+                .fetchOne();
+    }
+
+    // 주어진 일자의 중복을 제거한 구독자를 조회하는 용도로 사용되므로 논리 삭제는 고려하지 않는다.
+    public Long countDistinctSubscribeOnSpecificDate(LocalDateTime startOfDay, LocalDateTime endOfDay) {
+        return queryFactory.select(subscribe.email.countDistinct())
+                .from(subscribe)
+                .where(subscribe.createdAt.between(startOfDay, endOfDay))
+                .fetchOne();
+    }
+
     public Map<Boolean, Long> querySuccessFailCount(LocalDateTime dateTime) {
         List<Tuple> fetch = queryFactory.select(subscribeQuestion.isSuccess, subscribeQuestion.count())
                 .from(subscribeQuestion)
