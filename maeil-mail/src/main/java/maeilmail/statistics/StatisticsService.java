@@ -9,8 +9,6 @@ import java.util.function.BiFunction;
 import lombok.RequiredArgsConstructor;
 import maeilmail.bulksend.schedule.SendWeeklyQuestionScheduler;
 import maeilmail.subscribe.command.domain.SubscribeFrequency;
-import maeilmail.subscribe.command.domain.SubscribeQuestion;
-import maeilmail.subscribe.command.domain.SubscribeQuestionRepository;
 import maeilmail.subscribe.command.domain.SubscribeRepository;
 import maeilsupport.DateUtils;
 import org.springframework.stereotype.Service;
@@ -22,22 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class StatisticsService {
 
     private final SubscribeRepository subscribeRepository;
-    private final SubscribeQuestionRepository subscribeQuestionRepository;
-    private final EventAggregator eventAggregator;
     private final StatisticsDao statisticsDao;
-
-    /***
-     * 금일 발송 질문 건수
-     */
-    // TODO : 사용 클라이언트 코드 존재하지 않음, 추후 삭제 예정
-    public EventReport generateDailySubscribeQuestionReport() {
-        LocalDate today = LocalDate.now();
-        LocalDateTime startOfDay = today.atStartOfDay();
-        LocalDateTime endOfDay = today.plusDays(1).atStartOfDay().minusNanos(1);
-        List<SubscribeQuestion> result = subscribeQuestionRepository.findSubscribeQuestionByCreatedAtBetween(startOfDay, endOfDay);
-
-        return eventAggregator.aggregate(result);
-    }
 
     /**
      * 일간 전송 통계

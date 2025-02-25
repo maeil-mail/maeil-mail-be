@@ -6,13 +6,10 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.IntStream;
-import maeilmail.question.Question;
 import maeilmail.question.QuestionCategory;
 import maeilmail.question.QuestionRepository;
 import maeilmail.subscribe.command.domain.Subscribe;
 import maeilmail.subscribe.command.domain.SubscribeFrequency;
-import maeilmail.subscribe.command.domain.SubscribeQuestion;
-import maeilmail.subscribe.command.domain.SubscribeQuestionRepository;
 import maeilmail.subscribe.command.domain.SubscribeRepository;
 import maeilmail.support.IntegrationTestSupport;
 import maeilmail.support.data.SendReportCountingCase;
@@ -27,9 +24,6 @@ class StatisticsServiceTest extends IntegrationTestSupport {
 
     @Autowired
     private SubscribeRepository subscribeRepository;
-
-    @Autowired
-    private SubscribeQuestionRepository subscribeQuestionRepository;
 
     @Autowired
     private QuestionRepository questionRepository;
@@ -78,19 +72,6 @@ class StatisticsServiceTest extends IntegrationTestSupport {
     }
 
     @Test
-    @DisplayName("주어진 타입의 오늘 발생한 메일 이벤트의 성공과 실패를 집계한다.")
-    void generateDailySubscribeQuestionReport() {
-        subscribeQuestionRepository.save(createSubscribeQuestion(true));
-        subscribeQuestionRepository.save(createSubscribeQuestion(true));
-        subscribeQuestionRepository.save(createSubscribeQuestion(false));
-
-        EventReport eventReport = statisticsService.generateDailySubscribeQuestionReport();
-
-        assertThat(eventReport.success()).isEqualTo(2);
-        assertThat(eventReport.fail()).isEqualTo(1);
-    }
-
-    @Test
     @DisplayName("주어진 일자의 전송 통계를 생성한다.")
     void generateDailySendReport() {
         sendReportCountingCase.createData();
@@ -111,17 +92,5 @@ class StatisticsServiceTest extends IntegrationTestSupport {
                 () -> assertThat(actualTuesday.success()).isEqualTo(8L),
                 () -> assertThat(actualTuesday.fail()).isEqualTo(0L)
         );
-    }
-
-    private SubscribeQuestion createSubscribeQuestion(boolean isSuccess) {
-        Subscribe subscribe = subscribeRepository.save(new Subscribe("test@gmail.com", QuestionCategory.BACKEND, SubscribeFrequency.DAILY));
-        Question question = questionRepository.save(
-                new Question(
-                        "test-title",
-                        "test-content",
-                        QuestionCategory.BACKEND
-                )
-        );
-        return new SubscribeQuestion(subscribe, question, isSuccess);
     }
 }
