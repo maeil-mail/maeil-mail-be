@@ -1,5 +1,6 @@
 package maeilmail.statistics;
 
+import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,8 +20,8 @@ class StatisticsApi {
     }
 
     @GetMapping("/statistics/subscribe-question")
-    public ResponseEntity<EventReport> getDailySubscribeQuestionReport() {
-        EventReport report = statisticsService.generateDailySubscribeQuestionReport();
+    public ResponseEntity<DailySendReport> getDailySubscribeQuestionReport() {
+        DailySendReport report = statisticsService.generateDailySendReport(LocalDate.now());
 
         return ResponseEntity.ok(report);
     }

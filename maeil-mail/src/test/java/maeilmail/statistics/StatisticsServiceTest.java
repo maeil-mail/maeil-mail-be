@@ -12,7 +12,6 @@ import maeilmail.question.QuestionRepository;
 import maeilmail.subscribe.command.domain.Subscribe;
 import maeilmail.subscribe.command.domain.SubscribeFrequency;
 import maeilmail.subscribe.command.domain.SubscribeQuestion;
-import maeilmail.subscribe.command.domain.SubscribeQuestionRepository;
 import maeilmail.subscribe.command.domain.SubscribeRepository;
 import maeilmail.support.IntegrationTestSupport;
 import maeilmail.support.data.SendReportCountingCase;
@@ -27,9 +26,6 @@ class StatisticsServiceTest extends IntegrationTestSupport {
 
     @Autowired
     private SubscribeRepository subscribeRepository;
-
-    @Autowired
-    private SubscribeQuestionRepository subscribeQuestionRepository;
 
     @Autowired
     private QuestionRepository questionRepository;
@@ -75,19 +71,6 @@ class StatisticsServiceTest extends IntegrationTestSupport {
         int distinctEmailsCount = statisticsService.countNewSubscribersOnSpecificDate(LocalDate.now().minusDays(1));
 
         assertThat(distinctEmailsCount).isEqualTo(0);
-    }
-
-    @Test
-    @DisplayName("주어진 타입의 오늘 발생한 메일 이벤트의 성공과 실패를 집계한다.")
-    void generateDailySubscribeQuestionReport() {
-        subscribeQuestionRepository.save(createSubscribeQuestion(true));
-        subscribeQuestionRepository.save(createSubscribeQuestion(true));
-        subscribeQuestionRepository.save(createSubscribeQuestion(false));
-
-        EventReport eventReport = statisticsService.generateDailySubscribeQuestionReport();
-
-        assertThat(eventReport.success()).isEqualTo(2);
-        assertThat(eventReport.fail()).isEqualTo(1);
     }
 
     @Test
