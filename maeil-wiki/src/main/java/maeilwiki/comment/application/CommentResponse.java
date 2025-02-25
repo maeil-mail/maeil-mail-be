@@ -1,8 +1,9 @@
 package maeilwiki.comment.application;
 
-import java.time.LocalDateTime;
 import maeilwiki.comment.dto.CommentSummary;
 import maeilwiki.member.dto.MemberThumbnail;
+
+import java.time.LocalDateTime;
 
 public record CommentResponse(
         Long id,
@@ -13,12 +14,12 @@ public record CommentResponse(
         MemberThumbnail owner
 ) {
 
-    public static CommentResponse of(CommentSummary commentSummary, boolean isLiked) {
+    public static CommentResponse of(CommentSummary commentSummary) {
         return new CommentResponse(
                 commentSummary.id(),
                 commentSummary.answer(),
                 commentSummary.createdAt(),
-                isLiked,
+                commentSummary.isLiked(),
                 commentSummary.likeCount(),
                 commentSummary.owner()
         );

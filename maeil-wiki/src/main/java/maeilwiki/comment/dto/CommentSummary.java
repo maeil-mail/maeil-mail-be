@@ -1,16 +1,17 @@
 package maeilwiki.comment.dto;
 
-import java.time.LocalDateTime;
-import java.util.Set;
 import com.querydsl.core.annotations.QueryProjection;
 import maeilwiki.member.dto.MemberThumbnail;
+
+import java.time.LocalDateTime;
 
 public record CommentSummary(
         Long id,
         String answer,
         boolean isAnonymous,
+        boolean isLiked,
+        Long likeCount,
         LocalDateTime createdAt,
-        Set<Long> likeMemberIds,
         MemberThumbnail owner
 ) {
 
@@ -21,14 +22,6 @@ public record CommentSummary(
     public CommentSummary toAnonymousOwner() {
         MemberThumbnail anonymousOwner = new MemberThumbnail(owner.id(), null, null, null);
 
-        return new CommentSummary(id, answer, isAnonymous, createdAt, likeMemberIds, anonymousOwner);
-    }
-
-    public boolean isLikedBy(Long memberId) {
-        return likeMemberIds.contains(memberId);
-    }
-
-    public long likeCount() {
-        return likeMemberIds.size();
+        return new CommentSummary(id, answer, isAnonymous, isLiked, likeCount, createdAt, anonymousOwner);
     }
 }

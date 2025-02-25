@@ -1,9 +1,12 @@
 package maeilwiki.comment.domain;
 
-import java.util.List;
 import maeilwiki.comment.dto.CommentSummary;
+
+import java.util.List;
 
 public interface CommentRepositoryCustom {
 
-    List<CommentSummary> queryAllByWikiId(Long wikiId);
+    List<CommentSummary> queryByWikiIdAndIdGreaterThan(Long wikiId, Long memberId, Long cursorId, Long size);
+
+    Long countAllByWikiId(Long wikiId);
 }
