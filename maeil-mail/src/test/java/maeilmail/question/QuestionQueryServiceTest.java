@@ -1,19 +1,20 @@
 package maeilmail.question;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertAll;
-
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.NoSuchElementException;
 import maeilmail.support.IntegrationTestSupport;
 import maeilsupport.PaginationResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.NoSuchElementException;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 class QuestionQueryServiceTest extends IntegrationTestSupport {
 
@@ -72,7 +73,7 @@ class QuestionQueryServiceTest extends IntegrationTestSupport {
                 .subList(0, pageSize);
 
         PaginationResponse<QuestionSummary> response
-                = questionQueryService.pageByCategory("backend", PageRequest.of(0, pageSize));
+                = questionQueryService.pageByCategory("backend", null, PageRequest.of(0, pageSize));
 
         assertAll(
                 () -> assertThat(response.isLastPage()).isFalse(),

@@ -1,11 +1,8 @@
 package maeilwiki.wiki.application;
 
-import java.util.List;
-import java.util.NoSuchElementException;
 import lombok.RequiredArgsConstructor;
 import maeilsupport.PaginationResponse;
 import maeilwiki.comment.application.CommentRequest;
-import maeilwiki.comment.application.CommentResponse;
 import maeilwiki.comment.application.CommentService;
 import maeilwiki.comment.domain.CommentRepository;
 import maeilwiki.comment.dto.CommentSummary;
@@ -20,6 +17,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
@@ -75,20 +75,10 @@ public class WikiService {
     public WikiResponse getWikiById(MemberIdentity identity, Long wikiId) {
         WikiSummary wikiSummary = resolveAnonymousWiki(wikiRepository.queryOneById(wikiId)
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 위키입니다.")));
-        List<CommentResponse> commentResponses = commentRepository.queryAllByWikiId(wikiId)
-                .stream()
-                .map(this::resolveAnonymousComment)
-                .map(it -> CommentResponse.of(it, isCommentLikedByMember(identity, it)))
-                .toList();
 
-        return WikiResponse.withComments(wikiSummary, commentResponses);
-    }
+        Long commentCount = commentRepository.countAllByWikiId(wikiId);
 
-    public boolean isCommentLikedByMember(MemberIdentity identity, CommentSummary commentSummary) {
-        if (identity == null) {
-            return false;
-        }
-        return commentSummary.isLikedBy(identity.id());
+        return WikiResponse.of(wikiSummary, commentCount);
     }
 
     @Transactional(readOnly = true)
@@ -96,7 +86,7 @@ public class WikiService {
         Page<WikiSummaryWithCommentCount> pageResults = wikiRepository.pageByCategory(category, pageable);
         List<WikiResponse> wikiResponses = pageResults.getContent()
                 .stream()
-                .map(it -> WikiResponse.withCommentCount(resolveAnonymousWiki(it.wikiSummary()), it.commentCount()))
+                .map(it -> WikiResponse.of(resolveAnonymousWiki(it.wikiSummary()), it.commentCount()))
                 .toList();
 
         return new PaginationResponse<>(pageResults.isLast(), (long) pageResults.getTotalPages(), wikiResponses);
