@@ -35,13 +35,18 @@ class ResendQuestionScheduler {
     public void sendMail() {
         log.info("임시 재전송 로직을 수행합니다.");
         List<SubscribeQuestion> subscribeQuestions = getFailedSubscribeQuestions();
-        List<Long> ids = subscribeQuestions.stream().map(SubscribeQuestion::getId).toList();
-        subscribeQuestionRepository.removeAllByIdIn(ids);
-
         log.info("{}명의 일간 구독자에게 질문지를 재전송합니다.", subscribeQuestions.size());
 
-        subscribeQuestions.stream()
+        List<SubscribeQuestion> filteredSubscribeQuestions = subscribeQuestions.stream()
                 .filter(it -> distributedSupport.isMine(it.getId()))
+                .toList();
+
+        List<Long> removeTargetIds = filteredSubscribeQuestions.stream()
+                .map(SubscribeQuestion::getId)
+                .toList();
+        subscribeQuestionRepository.removeAllByIdIn(removeTargetIds);
+
+        filteredSubscribeQuestions.stream()
                 .map(this::generateQuestionMessage)
                 .forEach(questionSender::sendMail);
     }
