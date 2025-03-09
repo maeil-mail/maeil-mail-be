@@ -38,7 +38,7 @@ class ResendQuestionScheduler {
         List<SubscribeQuestion> subscribeQuestions = getFailedSubscribeQuestions();
 
         List<SubscribeQuestion> filteredSubscribeQuestions = subscribeQuestions.stream()
-                .filter(it -> it.getSubscribe().getFrequency() == SubscribeFrequency.DAILY)
+                .filter(this::isDaily)
                 .filter(it -> distributedSupport.isMine(it.getId()))
                 .toList();
         log.info("{}명의 일간 구독자에게 질문지를 재전송합니다.", filteredSubscribeQuestions.size());
@@ -51,6 +51,10 @@ class ResendQuestionScheduler {
         filteredSubscribeQuestions.stream()
                 .map(this::generateQuestionMessage)
                 .forEach(questionSender::sendMail);
+    }
+
+    private boolean isDaily(SubscribeQuestion it) {
+        return it.getSubscribe().getFrequency() == SubscribeFrequency.DAILY;
     }
 
     private List<SubscribeQuestion> getFailedSubscribeQuestions() {
