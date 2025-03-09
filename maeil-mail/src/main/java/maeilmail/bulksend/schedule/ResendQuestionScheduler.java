@@ -12,6 +12,7 @@ import maeilmail.bulksend.sender.SubscribeQuestionMessage;
 import maeilmail.bulksend.view.SubscribeQuestionView;
 import maeilmail.question.Question;
 import maeilmail.subscribe.command.domain.Subscribe;
+import maeilmail.subscribe.command.domain.SubscribeFrequency;
 import maeilmail.subscribe.command.domain.SubscribeQuestion;
 import maeilmail.subscribe.command.domain.SubscribeQuestionRepository;
 import maeilmail.support.DistributedSupport;
@@ -38,6 +39,7 @@ class ResendQuestionScheduler {
         log.info("{}명의 일간 구독자에게 질문지를 재전송합니다.", subscribeQuestions.size());
 
         List<SubscribeQuestion> filteredSubscribeQuestions = subscribeQuestions.stream()
+                .filter(it -> it.getSubscribe().getFrequency() == SubscribeFrequency.DAILY)
                 .filter(it -> distributedSupport.isMine(it.getId()))
                 .toList();
 
