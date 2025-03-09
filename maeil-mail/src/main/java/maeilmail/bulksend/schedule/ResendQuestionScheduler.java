@@ -30,7 +30,7 @@ class ResendQuestionScheduler {
     private final ResendDailyHelper resendDailyHelper;
     private final ResendWeeklyHelper resendWeeklyHelper;
 
-    @Scheduled(cron = "0 3 23 * * *", zone = "Asia/Seoul")
+    @Scheduled(cron = "0 25 7 * * MON-FRI", zone = "Asia/Seoul")
     public void resendMail() {
         List<SubscribeQuestion> failed = getFailedSubscribeQuestions();
         if (failed.isEmpty()) {
