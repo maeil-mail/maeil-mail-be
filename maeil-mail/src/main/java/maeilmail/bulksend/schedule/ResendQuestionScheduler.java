@@ -34,14 +34,14 @@ class ResendQuestionScheduler {
 
     @Scheduled(cron = "0 25 7 * * MON-FRI", zone = "Asia/Seoul")
     public void sendMail() {
-        log.info("임시 재전송 로직을 수행합니다.");
+        log.info("임시 재전송 로직을 수행합니다. (일간)");
         List<SubscribeQuestion> subscribeQuestions = getFailedSubscribeQuestions();
-        log.info("{}명의 일간 구독자에게 질문지를 재전송합니다.", subscribeQuestions.size());
 
         List<SubscribeQuestion> filteredSubscribeQuestions = subscribeQuestions.stream()
                 .filter(it -> it.getSubscribe().getFrequency() == SubscribeFrequency.DAILY)
                 .filter(it -> distributedSupport.isMine(it.getId()))
                 .toList();
+        log.info("{}명의 일간 구독자에게 질문지를 재전송합니다.", filteredSubscribeQuestions.size());
 
         List<Long> removeTargetIds = filteredSubscribeQuestions.stream()
                 .map(SubscribeQuestion::getId)
