@@ -53,8 +53,8 @@ class ResendQuestionScheduler {
                 .forEach(questionSender::sendMail);
     }
 
-    private boolean isDaily(SubscribeQuestion it) {
-        return it.getSubscribe().getFrequency() == SubscribeFrequency.DAILY;
+    private boolean isDaily(SubscribeQuestion subscribeQuestion) {
+        return subscribeQuestion.getSubscribe().getFrequency() == SubscribeFrequency.DAILY;
     }
 
     private List<SubscribeQuestion> getFailedSubscribeQuestions() {
