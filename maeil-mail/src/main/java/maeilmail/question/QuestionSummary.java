@@ -1,8 +1,7 @@
 package maeilmail.question;
 
-import com.querydsl.core.annotations.QueryProjection;
-
 import java.time.LocalDateTime;
+import com.querydsl.core.annotations.QueryProjection;
 
 public record QuestionSummary(
         Long id,

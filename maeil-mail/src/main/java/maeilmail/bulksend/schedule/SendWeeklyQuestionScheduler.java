@@ -80,7 +80,7 @@ public class SendWeeklyQuestionScheduler {
         return questions.subList(fromIndex, fromIndex + WEEKLY_MAIL_SEND_COUNT);
     }
 
-    private String createText(Subscribe subscribe, List<QuestionSummary> questions) {
+    public String createText(Subscribe subscribe, List<QuestionSummary> questions) {
         LocalDate today = LocalDate.now();
         HashMap<Object, Object> attribute = new HashMap<>();
         String category = subscribe.getCategory().getDescription();
@@ -97,7 +97,7 @@ public class SendWeeklyQuestionScheduler {
         return weeklySubscribeQuestionView.render(attribute);
     }
 
-    private WeeklySubscribeQuestionMessage createWeeklySubscribeQuestionMessage(
+    public WeeklySubscribeQuestionMessage createWeeklySubscribeQuestionMessage(
             Subscribe subscribe,
             List<QuestionSummary> summaries,
             String subject,
