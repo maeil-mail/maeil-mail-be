@@ -1,9 +1,5 @@
 package maeilmail.question;
 
-import static maeilmail.question.QQuestion.question;
-
-import java.util.List;
-import java.util.NoSuchElementException;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -17,6 +13,11 @@ import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.NoSuchElementException;
+
+import static maeilmail.question.QQuestion.question;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -25,13 +26,14 @@ public class QuestionQueryService {
 
     private final JPAQueryFactory queryFactory;
 
-    public PaginationResponse<QuestionSummary> pageByCategory(String category, Pageable pageable) {
+    public PaginationResponse<QuestionSummary> queryAllByCategoryAndSearchParam(String category, String searchParam, Pageable pageable) {
         JPAQuery<Long> countQuery = queryFactory.select(question.count())
                 .from(question)
-                .where(eqCategory(category));
+                .where(eqCategory(category), eqSearchParam(searchParam));
+
         JPAQuery<QuestionSummary> resultQuery = queryFactory.select(projectionQuestionSummary())
                 .from(question)
-                .where(eqCategory(category))
+                .where(eqCategory(category), eqSearchParam(searchParam))
                 .offset(pageable.getOffset())
                 .orderBy(question.id.desc())
                 .limit(pageable.getPageSize());
@@ -57,6 +59,14 @@ public class QuestionQueryService {
         return question.category.eq(QuestionCategory.from(category));
     }
 
+    private BooleanExpression eqSearchParam(String searchParam) {
+        if (searchParam == null || searchParam.trim().isEmpty()) {
+            return null;
+        }
+        return question.title.containsIgnoreCase(searchParam)
+                .or(question.content.containsIgnoreCase(searchParam));
+    }
+
     public QuestionSummary queryOneById(Long id) {
         QuestionSummary result = queryFactory.select(projectionQuestionSummary())
                 .from(question)
@@ -71,8 +81,9 @@ public class QuestionQueryService {
                 question.id,
                 question.title,
                 question.content,
-                question.customizedTitle,
-                question.category.stringValue().lower()
+                question.category.stringValue().lower(),
+                question.createdAt,
+                question.updatedAt
         );
     }
 

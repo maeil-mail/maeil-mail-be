@@ -7,17 +7,11 @@ record AdminQuestionRequest(
         Long id,
         String title,
         String content,
-        String customizedTitle,
         String category
 ) {
 
     public Question toQuestion() {
-        String actualCustomizedTitle = customizedTitle;
-        if (customizedTitle == null || customizedTitle.isBlank()) {
-            actualCustomizedTitle = null;
-        }
-
-        return new Question(id, title, content, actualCustomizedTitle, QuestionCategory.from(category));
+        return new Question(id, title, content, QuestionCategory.from(category));
     }
 
     public boolean isUpdate() {
