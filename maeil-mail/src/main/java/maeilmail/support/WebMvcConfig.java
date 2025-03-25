@@ -49,7 +49,8 @@ class WebMvcConfig implements WebMvcConfigurer {
                         "https://maeil-mail-fe.vercel.app",
                         "https://www.maeil-mail.kr",
                         "https://maeil-mail.kr",
-                        "https://wiki.maeil-mail.kr"
+                        "https://wiki.maeil-mail.kr",
+                        "https://maeil-wiki.vercel.app"
                 )
                 .exposedHeaders(HttpHeaders.LOCATION)
                 .allowCredentials(true);
