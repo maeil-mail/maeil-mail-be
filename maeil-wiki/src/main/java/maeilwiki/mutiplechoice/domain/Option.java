@@ -8,6 +8,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,7 +17,8 @@ import maeilsupport.BaseEntity;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class MultipleChoiceOption extends BaseEntity {
+@Table(name = "multiple_choice_option")
+public class Option extends BaseEntity {
 
     private static final int MAX_CONTENT_LENGTH = 255;
 
@@ -32,9 +34,9 @@ public class MultipleChoiceOption extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(nullable = false)
-    private MultipleChoiceQuestion question;
+    private Question question;
 
-    public MultipleChoiceOption(String content, boolean isCorrectAnswer, MultipleChoiceQuestion question) {
+    public Option(String content, boolean isCorrectAnswer, Question question) {
         validateContent(content);
         this.content = content;
         this.isCorrectAnswer = isCorrectAnswer;

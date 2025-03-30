@@ -11,6 +11,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,7 +21,8 @@ import maeilwiki.member.domain.Member;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class MultipleChoiceWorkbook extends BaseEntity {
+@Table(name = "multiple_choice_workbook")
+public class Workbook extends BaseEntity {
 
     private static final int DEFAULT_SOLVED_COUNT = 0;
     private static final int MAX_TITLE_LENGTH = 255;
@@ -54,7 +56,7 @@ public class MultipleChoiceWorkbook extends BaseEntity {
     @JoinColumn(nullable = false)
     private Member member;
 
-    public MultipleChoiceWorkbook(
+    public Workbook(
             String title,
             int difficultyLevel,
             String category,

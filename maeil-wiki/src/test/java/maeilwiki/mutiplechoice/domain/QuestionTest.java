@@ -8,15 +8,15 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 
-class MultipleChoiceQuestionTest {
+class QuestionTest {
 
     @ParameterizedTest
     @NullAndEmptySource
     @DisplayName("객관식 문제의 제목은 필수로 입력해야한다.")
     void validateTitleLength(String source) {
-        MultipleChoiceWorkbook workbook = mock(MultipleChoiceWorkbook.class);
+        Workbook workbook = mock(Workbook.class);
 
-        assertThatThrownBy(() -> new MultipleChoiceQuestion(source, "explanation", workbook))
+        assertThatThrownBy(() -> new Question(source, "explanation", workbook))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("객관식 문제의 제목은 필수 입력값입니다.");
     }
@@ -25,9 +25,9 @@ class MultipleChoiceQuestionTest {
     @DisplayName("객관식 문제 제목의 최대 길이는 255자이다.")
     void validateTitleMaxLength() {
         String invalidTitle = "*".repeat(256);
-        MultipleChoiceWorkbook workbook = mock(MultipleChoiceWorkbook.class);
+        Workbook workbook = mock(Workbook.class);
 
-        assertThatThrownBy(() -> new MultipleChoiceQuestion(invalidTitle, "explanation", workbook))
+        assertThatThrownBy(() -> new Question(invalidTitle, "explanation", workbook))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("객관식 문제의 제목은 255자 이하여야 합니다.");
     }
