@@ -29,14 +29,6 @@ class MultipleChoiceWorkbookTest {
                 .hasMessage("객관식 문제집의 제목은 255자 이하여야 합니다.");
     }
 
-    @Test
-    @DisplayName("객관식 문제집의 난이도는 필수로 입력해야한다.")
-    void validateDifficultyLevel() {
-        assertThatThrownBy(() -> createWorkBook("title", null))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("객관식 문제집의 난이도는 필수 입력값입니다.");
-    }
-
     @ParameterizedTest
     @ValueSource(ints = {0, 6})
     @DisplayName("객관식 문제집의 난이도는 1 이상 5이하이다.")
@@ -46,7 +38,7 @@ class MultipleChoiceWorkbookTest {
                 .hasMessage("객관식 문제집의 난이도는 1 ~ 5 사이의 값으로 설정해주세요.");
     }
 
-    private void createWorkBook(String title, Integer difficultyLevel) {
+    private void createWorkBook(String title, int difficultyLevel) {
         new MultipleChoiceWorkbook(title, difficultyLevel, "BACKEND", "detail", 5);
     }
 }

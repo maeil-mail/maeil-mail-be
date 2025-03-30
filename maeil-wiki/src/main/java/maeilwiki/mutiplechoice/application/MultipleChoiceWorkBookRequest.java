@@ -4,10 +4,10 @@ import java.util.List;
 
 public record MultipleChoiceWorkBookRequest(
         String workBookTitle,
-        Long difficultyLevel,
+        int difficultyLevel,
         String category,
         String workbookDetail,
-        Long timeLimit,
+        Integer timeLimit,
         List<MultipleChoiceQuestionRequest> questions
 ) {
 }

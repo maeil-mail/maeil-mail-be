@@ -31,7 +31,7 @@ public class MultipleChoiceWorkbook extends BaseEntity {
     private String title;
 
     @Column(nullable = false, columnDefinition = "INT")
-    private Integer difficultyLevel;
+    private int difficultyLevel;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, columnDefinition = "VARCHAR(10)")
@@ -44,11 +44,11 @@ public class MultipleChoiceWorkbook extends BaseEntity {
     private TimeLimit timeLimit;
 
     @Column(nullable = false, columnDefinition = "INT")
-    private Integer solvedCount;
+    private int solvedCount;
 
     public MultipleChoiceWorkbook(
             String title,
-            Integer difficultyLevel,
+            int difficultyLevel,
             String category,
             String workBookDetail,
             Integer timeLimit
@@ -73,11 +73,7 @@ public class MultipleChoiceWorkbook extends BaseEntity {
         }
     }
 
-    private void validateDifficultyLevel(Integer difficultyLevel) {
-        if (difficultyLevel == null) {
-            throw new IllegalArgumentException("객관식 문제집의 난이도는 필수 입력값입니다.");
-        }
-
+    private void validateDifficultyLevel(int difficultyLevel) {
         if (difficultyLevel < MIN_LEVEL || difficultyLevel > MAX_LEVEL) {
             String message = "객관식 문제집의 난이도는 %d ~ %d 사이의 값으로 설정해주세요.".formatted(MIN_LEVEL, MAX_LEVEL);
             throw new IllegalArgumentException(message);
