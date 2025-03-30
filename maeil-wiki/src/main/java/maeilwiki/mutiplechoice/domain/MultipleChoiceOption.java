@@ -29,7 +29,6 @@ public class MultipleChoiceOption extends BaseEntity {
 
     public MultipleChoiceOption(String content, boolean isCorrectAnswer) {
         validateContent(content);
-
         this.content = content;
         this.isCorrectAnswer = isCorrectAnswer;
     }

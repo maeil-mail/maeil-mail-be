@@ -19,9 +19,11 @@ class MultipleChoiceOptionTest {
     }
 
     @Test
-    @DisplayName("객관식 항목의 내용의 최대 길이는 255자이다.")
+    @DisplayName("객관식 항목 내용의 최대 길이는 255자이다.")
     void validateContentMaxLength() {
-        assertThatThrownBy(() -> new MultipleChoiceOption("*".repeat(256), false))
+        String invalidContent = "*".repeat(256);
+
+        assertThatThrownBy(() -> new MultipleChoiceOption(invalidContent, false))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("객관식 항목의 내용은 255자 이하여야 합니다.");
     }
