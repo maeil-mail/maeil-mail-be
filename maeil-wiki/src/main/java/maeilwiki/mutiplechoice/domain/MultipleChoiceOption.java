@@ -2,9 +2,12 @@ package maeilwiki.mutiplechoice.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,10 +30,15 @@ public class MultipleChoiceOption extends BaseEntity {
     @Column(nullable = false)
     private boolean isCorrectAnswer;
 
-    public MultipleChoiceOption(String content, boolean isCorrectAnswer) {
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(nullable = false)
+    private MultipleChoiceQuestion question;
+
+    public MultipleChoiceOption(String content, boolean isCorrectAnswer, MultipleChoiceQuestion question) {
         validateContent(content);
         this.content = content;
         this.isCorrectAnswer = isCorrectAnswer;
+        this.question = question;
     }
 
     private void validateContent(String content) {

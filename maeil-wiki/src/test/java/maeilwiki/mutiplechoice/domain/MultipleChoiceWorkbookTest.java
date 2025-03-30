@@ -1,7 +1,9 @@
 package maeilwiki.mutiplechoice.domain;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.mock;
 
+import maeilwiki.member.domain.Member;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -39,6 +41,8 @@ class MultipleChoiceWorkbookTest {
     }
 
     private void createWorkBook(String title, int difficultyLevel) {
-        new MultipleChoiceWorkbook(title, difficultyLevel, "BACKEND", "detail", 5);
+        Member member = mock(Member.class);
+
+        new MultipleChoiceWorkbook(title, difficultyLevel, "BACKEND", "detail", 5, member);
     }
 }

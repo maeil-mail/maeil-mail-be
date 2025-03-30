@@ -5,13 +5,17 @@ import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import maeilsupport.BaseEntity;
+import maeilwiki.member.domain.Member;
 
 @Entity
 @Getter
@@ -46,12 +50,17 @@ public class MultipleChoiceWorkbook extends BaseEntity {
     @Column(nullable = false, columnDefinition = "INT")
     private int solvedCount;
 
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(nullable = false)
+    private Member member;
+
     public MultipleChoiceWorkbook(
             String title,
             int difficultyLevel,
             String category,
             String workBookDetail,
-            Integer timeLimit
+            Integer timeLimit,
+            Member member
     ) {
         validateTitle(title);
         validateDifficultyLevel(difficultyLevel);
@@ -61,6 +70,7 @@ public class MultipleChoiceWorkbook extends BaseEntity {
         this.workBookDetail = workBookDetail;
         this.timeLimit = new TimeLimit(timeLimit);
         this.solvedCount = DEFAULT_SOLVED_COUNT;
+        this.member = member;
     }
 
     private void validateTitle(String title) {
