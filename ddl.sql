@@ -145,8 +145,8 @@ create table multiple_choice_option
     content           varchar(255) not null,
     is_correct_answer boolean      not null,
     question_id       bigint       not null,
-    created_at        datetime(6)  not null,
-    updated_at        datetime(6)  not null,
+    created_at        timestamp(6)  not null,
+    updated_at        timestamp(6)  not null,
     primary key (id),
     constraint `fk_multiple_choice_option_question_id` foreign key (question_id) references multiple_choice_question (id)
 );
@@ -157,8 +157,8 @@ create table multiple_choice_question
     title                      varchar(255) not null,
     correct_answer_explanation text,
     workbook_id                bigint       not null,
-    created_at                 datetime(6)  not null,
-    updated_at                 datetime(6)  not null,
+    created_at                 timestamp(6)  not null,
+    updated_at                 timestamp(6)  not null,
     primary key (id),
     constraint `fk_multiple_choice_question_workbook_id` foreign key (workbook_id) references multiple_choice_workbook (id)
 );
@@ -173,8 +173,8 @@ create table multiple_choice_workbook
     time_limit       int,
     solved_count     int          not null,
     member_id        bigint       not null,
-    created_at       datetime(6)  not null,
-    updated_at       datetime(6)  not null,
+    created_at       timestamp(6)  not null,
+    updated_at       timestamp(6)  not null,
     primary key (id),
     constraint `fk_multiple_choice_workbook_member_id` foreign key (member_id) references member (id)
 )
