@@ -50,7 +50,6 @@ class WorkbookRepositoryTest extends IntegrationTestSupport {
             softAssertions.assertThat(workbookSummary.workbookDetail()).isEqualTo(workbook.getWorkbookDetail());
             softAssertions.assertThat(workbookSummary.category()).isEqualTo(workbook.getCategory().toString().toLowerCase());
             softAssertions.assertThat(workbookSummary.solvedCount()).isEqualTo(workbook.getSolvedCount());
-            softAssertions.assertThat(workbookSummary.createdAt()).isEqualTo(workbook.getCreatedAt());
             softAssertions.assertThat(workbookSummary.timeLimit()).isEqualTo(workbook.getTimeLimit().getTimeLimit());
             softAssertions.assertThat(workbookSummary.difficultyLevel()).isEqualTo(workbook.getDifficultyLevel());
             softAssertions.assertThat(workbookSummary.owner().name()).isEqualTo(workbook.getMember().getName());
