@@ -44,7 +44,7 @@ public class Workbook extends BaseEntity {
     private WorkbookCategory category;
 
     @Column(columnDefinition = "TEXT")
-    private String workBookDetail;
+    private String workbookDetail;
 
     @Embedded
     private TimeLimit timeLimit;
@@ -60,7 +60,7 @@ public class Workbook extends BaseEntity {
             String title,
             int difficultyLevel,
             String category,
-            String workBookDetail,
+            String workbookDetail,
             Integer timeLimit,
             Member member
     ) {
@@ -69,7 +69,7 @@ public class Workbook extends BaseEntity {
         this.title = title;
         this.difficultyLevel = difficultyLevel;
         this.category = WorkbookCategory.from(category);
-        this.workBookDetail = workBookDetail;
+        this.workbookDetail = workbookDetail;
         this.timeLimit = new TimeLimit(timeLimit);
         this.solvedCount = DEFAULT_SOLVED_COUNT;
         this.member = member;
