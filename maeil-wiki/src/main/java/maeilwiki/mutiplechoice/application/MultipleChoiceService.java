@@ -41,18 +41,18 @@ public class MultipleChoiceService {
 
     private List<QuestionResponse> findQuestions(Long workbookId) {
         List<WorkbookQuestionSummary> workbookQuestionSummaries = workbookRepository.queryQuestionsByWorkbookId(workbookId);
-        List<Long> ids = workbookQuestionSummaries.stream()
+        List<Long> questionIds = workbookQuestionSummaries.stream()
                 .map(WorkbookQuestionSummary::id)
                 .toList();
-        Map<Long, List<OptionSummary>> bundledOptions = findOptions(ids);
+        Map<Long, List<OptionSummary>> bundledOptions = findOptions(questionIds);
 
         return workbookQuestionSummaries.stream()
                 .map(buildQuestions(bundledOptions))
                 .toList();
     }
 
-    private Map<Long, List<OptionSummary>> findOptions(List<Long> ids) {
-        List<OptionSummary> optionSummaries = workbookRepository.queryOptionsByQuestionIdsIn(ids);
+    private Map<Long, List<OptionSummary>> findOptions(List<Long> questionIds) {
+        List<OptionSummary> optionSummaries = workbookRepository.queryOptionsByQuestionIdsIn(questionIds);
 
         return optionSummaries.stream()
                 .collect(Collectors.groupingBy(OptionSummary::questionId));
