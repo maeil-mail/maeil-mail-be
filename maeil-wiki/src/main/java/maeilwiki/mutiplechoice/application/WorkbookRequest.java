@@ -5,7 +5,7 @@ import maeilwiki.member.domain.Member;
 import maeilwiki.mutiplechoice.domain.Workbook;
 
 public record WorkbookRequest(
-        String workBookTitle,
+        String workbookTitle,
         int difficultyLevel,
         String category,
         String workbookDetail,
@@ -14,6 +14,6 @@ public record WorkbookRequest(
 ) {
 
     public Workbook toWorkbook(Member member) {
-        return new Workbook(workBookTitle, difficultyLevel, category, workbookDetail, timeLimit, member);
+        return new Workbook(workbookTitle, difficultyLevel, category, workbookDetail, timeLimit, member);
     }
 }
