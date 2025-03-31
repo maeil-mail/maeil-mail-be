@@ -1,6 +1,6 @@
 package maeilwiki.mutiplechoice.domain;
 
-import java.util.List;
+import java.util.Set;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;
@@ -15,14 +15,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class TimeLimit {
 
-    private static final List<Integer> TIME_TABLE = List.of(5, 10, 15, 20, 25, 30, 40, 50, 60);
+    private static final Set<Integer> TIME_TABLE = Set.of(5, 10, 15, 20, 25, 30, 40, 50, 60);
 
     @Column(columnDefinition = "INT")
     private Integer timeLimit;
 
     public TimeLimit(Integer timeLimit) {
         if (isInvalidTime(timeLimit)) {
-            throw new IllegalArgumentException("값은 %s 중에 하나여야 합니다.".formatted(TIME_TABLE.toString()));
+            throw new IllegalArgumentException("유효하지 않은 시간 제한입니디.");
         }
 
         this.timeLimit = timeLimit;

@@ -31,6 +31,6 @@ class TimeLimitTest {
     void validateTimeLimitException(int source) {
         assertThatThrownBy(() -> new TimeLimit(source))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("값은 [5, 10, 15, 20, 25, 30, 40, 50, 60] 중에 하나여야 합니다.");
+                .hasMessage("유효하지 않은 시간 제한입니디.");
     }
 }
