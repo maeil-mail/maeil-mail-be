@@ -12,10 +12,14 @@ import maeilwiki.member.domain.MemberRepository;
 import maeilwiki.mutiplechoice.dto.OptionSummary;
 import maeilwiki.mutiplechoice.dto.WorkbookQuestionSummary;
 import maeilwiki.mutiplechoice.dto.WorkbookSummary;
+import maeilwiki.mutiplechoice.dto.WorkbookSummaryWithQuestionCount;
 import maeilwiki.support.IntegrationTestSupport;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.support.TransactionTemplate;
 
 class WorkbookRepositoryTest extends IntegrationTestSupport {
@@ -36,7 +40,7 @@ class WorkbookRepositoryTest extends IntegrationTestSupport {
     @DisplayName("문제집 아이디로 문제집을 단건 조회한다.")
     void queryOneById() {
         Member member = createMember();
-        Workbook workbook = createWorkbook(member);
+        Workbook workbook = createWorkbook(member, "backend");
 
         WorkbookSummary workbookSummary = workbookRepository.queryOneById(workbook.getId()).orElseThrow();
 
@@ -69,7 +73,7 @@ class WorkbookRepositoryTest extends IntegrationTestSupport {
     @DisplayName("문제집 아이디로 질문 목록을 조회한다.")
     void queryQuestionsByWorkbookId() {
         Member member = createMember();
-        Workbook workbook = createWorkbook(member);
+        Workbook workbook = createWorkbook(member, "backend");
         WorkbookQuestion question1 = createQuestion(workbook);
         WorkbookQuestion question2 = createQuestion(workbook);
 
@@ -94,7 +98,7 @@ class WorkbookRepositoryTest extends IntegrationTestSupport {
     @DisplayName("질문지 아이디 목록으로 옵션 목록을 조회한다.")
     void queryOptionsByQuestionIdsIn() {
         Member member = createMember();
-        Workbook workbook = createWorkbook(member);
+        Workbook workbook = createWorkbook(member, "backend");
         WorkbookQuestion question1 = createQuestion(workbook);
         WorkbookQuestion question2 = createQuestion(workbook);
         Option option1 = createOption(question1);
@@ -120,6 +124,68 @@ class WorkbookRepositoryTest extends IntegrationTestSupport {
         assertThat(optionSummaries).isEmpty();
     }
 
+    @Test
+    @DisplayName("카테고리에 해당하는 문제집 페이지를 id 기준 내림차순으로 조회한다.")
+    void pageByCategory() {
+        Member member = createMember();
+        Workbook backendWorkbook1 = createWorkbook(member, "backend");
+        Workbook backendWorkbook2 = createWorkbook(member, "backend");
+        Workbook backendWorkbook3 = createWorkbook(member, "backend");
+        Workbook backendWorkbook4 = createWorkbook(member, "backend");
+        Workbook frontendWorkbook1 = createWorkbook(member, "frontend");
+        Workbook frontendWorkbook2 = createWorkbook(member, "frontend");
+        createQuestions(backendWorkbook1, 1);
+        createQuestions(backendWorkbook2, 2);
+        createQuestions(backendWorkbook3, 3);
+        createQuestions(backendWorkbook4, 4);
+        Pageable pageable = PageRequest.of(0, 2);
+
+        Page<WorkbookSummaryWithQuestionCount> workbookSummaryPage = workbookRepository.pageByCategory("backend", pageable);
+
+        assertSoftly(softAssertions -> {
+            softAssertions.assertThat(workbookSummaryPage.getTotalElements()).isEqualTo(4);
+            softAssertions.assertThat(workbookSummaryPage.getTotalPages()).isEqualTo(2);
+            softAssertions.assertThat(workbookSummaryPage.getSize()).isEqualTo(2);
+            softAssertions.assertThat(workbookSummaryPage.getContent().get(0).workbookSummary().id()).isEqualTo(backendWorkbook4.getId());
+            softAssertions.assertThat(workbookSummaryPage.getContent().get(0).questionCount()).isEqualTo(4);
+            softAssertions.assertThat(workbookSummaryPage.getContent().get(1).workbookSummary().id()).isEqualTo(backendWorkbook3.getId());
+            softAssertions.assertThat(workbookSummaryPage.getContent().get(1).questionCount()).isEqualTo(3);
+        });
+    }
+
+    @Test
+    @DisplayName("카테고리가 all 이면 모든 카테고리의 문제집 페이지를 조회한다.")
+    void pageByDefaultCategory() {
+        Member member = createMember();
+        Workbook backendWorkbook1 = createWorkbook(member, "backend");
+        Workbook backendWorkbook2 = createWorkbook(member, "backend");
+        Workbook backendWorkbook3 = createWorkbook(member, "backend");
+        Workbook backendWorkbook4 = createWorkbook(member, "backend");
+        Workbook frontendWorkbook1 = createWorkbook(member, "frontend");
+        Workbook frontendWorkbook2 = createWorkbook(member, "frontend");
+        createQuestions(backendWorkbook1, 1);
+        createQuestions(backendWorkbook2, 2);
+        createQuestions(backendWorkbook3, 3);
+        createQuestions(backendWorkbook4, 4);
+        createQuestions(frontendWorkbook1, 1);
+        createQuestions(frontendWorkbook2, 2);
+        Pageable pageable = PageRequest.of(0, 3);
+
+        Page<WorkbookSummaryWithQuestionCount> workbookSummaryPage = workbookRepository.pageByCategory("all", pageable);
+
+        assertSoftly(softAssertions -> {
+            softAssertions.assertThat(workbookSummaryPage.getTotalElements()).isEqualTo(6);
+            softAssertions.assertThat(workbookSummaryPage.getTotalPages()).isEqualTo(2);
+            softAssertions.assertThat(workbookSummaryPage.getSize()).isEqualTo(3);
+            softAssertions.assertThat(workbookSummaryPage.getContent().get(0).workbookSummary().id()).isEqualTo(frontendWorkbook2.getId());
+            softAssertions.assertThat(workbookSummaryPage.getContent().get(0).questionCount()).isEqualTo(2);
+            softAssertions.assertThat(workbookSummaryPage.getContent().get(1).workbookSummary().id()).isEqualTo(frontendWorkbook1.getId());
+            softAssertions.assertThat(workbookSummaryPage.getContent().get(1).questionCount()).isEqualTo(1);
+            softAssertions.assertThat(workbookSummaryPage.getContent().get(2).workbookSummary().id()).isEqualTo(backendWorkbook4.getId());
+            softAssertions.assertThat(workbookSummaryPage.getContent().get(2).questionCount()).isEqualTo(4);
+        });
+    }
+
     private Member createMember() {
         Member member = new Member(UUID.randomUUID().toString(), UUID.randomUUID().toString(), "GITHUB");
         member.setRefreshToken(UUID.randomUUID().toString());
@@ -127,12 +193,11 @@ class WorkbookRepositoryTest extends IntegrationTestSupport {
         return memberRepository.save(member);
     }
 
-    private Workbook createWorkbook(Member member) {
-        Workbook workbook = new Workbook("title", 4, "backend", "detail", 5, member);
+    private Workbook createWorkbook(Member member, String category) {
+        Workbook workbook = new Workbook("title", 4, category, "detail", 5, member);
 
         return workbookRepository.save(workbook);
     }
-
 
     private WorkbookQuestion createQuestion(Workbook workbook) {
         WorkbookQuestion workbookQuestion = new WorkbookQuestion("title", "explanation", workbook);
@@ -144,6 +209,12 @@ class WorkbookRepositoryTest extends IntegrationTestSupport {
         Option content = new Option("content", false, workbookQuestion);
 
         return save(content);
+    }
+
+    private void createQuestions(Workbook workbook, int times) {
+        for (int i = 0; i < times; i++) {
+            createQuestion(workbook);
+        }
     }
 
     private <T> T save(T entity) {
