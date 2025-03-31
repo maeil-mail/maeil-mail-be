@@ -8,7 +8,7 @@ import maeilwiki.member.application.MemberIdentity;
 import maeilwiki.member.domain.Member;
 import maeilwiki.member.domain.MemberRepository;
 import maeilwiki.mutiplechoice.domain.Option;
-import maeilwiki.mutiplechoice.domain.Question;
+import maeilwiki.mutiplechoice.domain.WorkbookQuestion;
 import maeilwiki.mutiplechoice.domain.Workbook;
 import maeilwiki.support.IntegrationTestSupport;
 import org.assertj.core.api.SoftAssertions;
@@ -37,7 +37,7 @@ class MultipleChoiceServiceTest extends IntegrationTestSupport {
         multipleChoiceService.create(identity, workbookRequest);
 
         Workbook workbook = entityManager.createQuery("select wb from Workbook wb", Workbook.class).getSingleResult();
-        List<Question> questions = entityManager.createQuery("select q from Question q", Question.class).getResultList();
+        List<WorkbookQuestion> questions = entityManager.createQuery("select q from WorkbookQuestion q", WorkbookQuestion.class).getResultList();
         List<Option> options = entityManager.createQuery("select o from Option o", Option.class).getResultList();
         List<Option> question1options = filterOption(options, questions, 0);
         List<Option> question2options = filterOption(options, questions, 1);
@@ -64,7 +64,7 @@ class MultipleChoiceServiceTest extends IntegrationTestSupport {
         });
     }
 
-    private List<Option> filterOption(List<Option> options, List<Question> questions, int i) {
+    private List<Option> filterOption(List<Option> options, List<WorkbookQuestion> questions, int i) {
         return options.stream()
                 .filter(it -> it.getQuestion().getId().equals(questions.get(i).getId()))
                 .toList();

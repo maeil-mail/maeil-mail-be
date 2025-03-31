@@ -34,9 +34,9 @@ public class Option extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(nullable = false)
-    private Question question;
+    private WorkbookQuestion question;
 
-    public Option(String content, boolean isCorrectAnswer, Question question) {
+    public Option(String content, boolean isCorrectAnswer, WorkbookQuestion question) {
         validateContent(content);
         this.content = content;
         this.isCorrectAnswer = isCorrectAnswer;

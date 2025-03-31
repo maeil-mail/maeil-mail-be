@@ -12,7 +12,7 @@ class QuestionsTest {
     @Test
     @DisplayName("객관식 질문은 최소 1개 이상이어야 한다.")
     void validateSize() {
-        List<Question> questions = Collections.emptyList();
+        List<WorkbookQuestion> questions = Collections.emptyList();
         List<Options> options = Collections.emptyList();
 
         assertThatThrownBy(() -> new Questions(questions, options))

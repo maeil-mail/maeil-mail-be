@@ -8,7 +8,7 @@ import maeilwiki.member.application.MemberService;
 import maeilwiki.member.domain.Member;
 import maeilwiki.mutiplechoice.domain.Option;
 import maeilwiki.mutiplechoice.domain.Options;
-import maeilwiki.mutiplechoice.domain.Question;
+import maeilwiki.mutiplechoice.domain.WorkbookQuestion;
 import maeilwiki.mutiplechoice.domain.Questions;
 import maeilwiki.mutiplechoice.domain.Workbook;
 import maeilwiki.mutiplechoice.domain.WorkbookRepository;
@@ -34,10 +34,10 @@ public class MultipleChoiceService {
 
     private Questions generateQuestions(WorkbookRequest workBookRequest, Workbook workBook) {
         List<Options> options = new ArrayList<>();
-        List<Question> questions = new ArrayList<>();
+        List<WorkbookQuestion> questions = new ArrayList<>();
 
         for (QuestionRequest questionRequest : workBookRequest.questions()) {
-            Question question = questionRequest.toQuestion(workBook);
+            WorkbookQuestion question = questionRequest.toQuestion(workBook);
             questions.add(question);
             options.add(generateOptions(questionRequest, question));
         }
@@ -45,7 +45,7 @@ public class MultipleChoiceService {
         return new Questions(questions, options);
     }
 
-    private Options generateOptions(QuestionRequest questionRequest, Question question) {
+    private Options generateOptions(QuestionRequest questionRequest, WorkbookQuestion question) {
         List<OptionRequest> optionsRequests = questionRequest.options();
         List<Option> options = optionsRequests.stream()
                 .map(it -> it.toOption(question))

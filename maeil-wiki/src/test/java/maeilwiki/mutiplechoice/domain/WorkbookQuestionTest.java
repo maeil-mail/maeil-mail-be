@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 
-class QuestionTest {
+class WorkbookQuestionTest {
 
     @ParameterizedTest
     @NullAndEmptySource
@@ -16,7 +16,7 @@ class QuestionTest {
     void validateTitleLength(String source) {
         Workbook workbook = mock(Workbook.class);
 
-        assertThatThrownBy(() -> new Question(source, "explanation", workbook))
+        assertThatThrownBy(() -> new WorkbookQuestion(source, "explanation", workbook))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("객관식 문제의 제목은 필수 입력값입니다.");
     }
@@ -27,7 +27,7 @@ class QuestionTest {
         String invalidTitle = "*".repeat(256);
         Workbook workbook = mock(Workbook.class);
 
-        assertThatThrownBy(() -> new Question(invalidTitle, "explanation", workbook))
+        assertThatThrownBy(() -> new WorkbookQuestion(invalidTitle, "explanation", workbook))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("객관식 문제의 제목은 255자 이하여야 합니다.");
     }

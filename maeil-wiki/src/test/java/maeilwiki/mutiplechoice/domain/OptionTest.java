@@ -14,7 +14,7 @@ class OptionTest {
     @NullAndEmptySource
     @DisplayName("객관식 항목의 내용은 필수로 입력해야한다.")
     void validateContentLength(String source) {
-        Question question = mock(Question.class);
+        WorkbookQuestion question = mock(WorkbookQuestion.class);
 
         assertThatThrownBy(() -> new Option(source, false, question))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -25,7 +25,7 @@ class OptionTest {
     @DisplayName("객관식 항목 내용의 최대 길이는 255자이다.")
     void validateContentMaxLength() {
         String invalidContent = "*".repeat(256);
-        Question question = mock(Question.class);
+        WorkbookQuestion question = mock(WorkbookQuestion.class);
 
         assertThatThrownBy(() -> new Option(invalidContent, false, question))
                 .isInstanceOf(IllegalArgumentException.class)

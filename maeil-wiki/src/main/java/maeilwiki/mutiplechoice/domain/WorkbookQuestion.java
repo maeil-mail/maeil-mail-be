@@ -18,7 +18,7 @@ import maeilsupport.BaseEntity;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "multiple_choice_question")
-public class Question extends BaseEntity {
+public class WorkbookQuestion extends BaseEntity {
 
     private static final int MAX_TITLE_LENGTH = 255;
 
@@ -36,7 +36,7 @@ public class Question extends BaseEntity {
     @JoinColumn(nullable = false)
     private Workbook workbook;
 
-    public Question(String title, String correctAnswerExplanation, Workbook workbook) {
+    public WorkbookQuestion(String title, String correctAnswerExplanation, Workbook workbook) {
         validateTitle(title);
         this.title = title;
         this.correctAnswerExplanation = correctAnswerExplanation;
