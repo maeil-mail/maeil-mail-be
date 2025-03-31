@@ -28,5 +28,7 @@ logging:
           jdbc:
             bind: TRACE
       springframework:
+        jdbc:
+          core: TRACE
         transaction:
           interceptor: TRACE
