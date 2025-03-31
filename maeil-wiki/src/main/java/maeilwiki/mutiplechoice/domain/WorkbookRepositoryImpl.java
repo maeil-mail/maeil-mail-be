@@ -1,107 +1,87 @@
 package maeilwiki.mutiplechoice.domain;
 
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collection;
+import static maeilwiki.member.domain.QMember.member;
+import static maeilwiki.mutiplechoice.domain.QOption.option;
+import static maeilwiki.mutiplechoice.domain.QWorkbook.workbook;
+import static maeilwiki.mutiplechoice.domain.QWorkbookQuestion.workbookQuestion;
+
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
-import org.springframework.jdbc.core.BatchPreparedStatementSetter;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.PreparedStatementCreator;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
+import maeilwiki.member.dto.QMemberThumbnail;
+import maeilwiki.mutiplechoice.dto.OptionSummary;
+import maeilwiki.mutiplechoice.dto.QOptionSummary;
+import maeilwiki.mutiplechoice.dto.QWorkbookQuestionSummary;
+import maeilwiki.mutiplechoice.dto.QWorkbookSummary;
+import maeilwiki.mutiplechoice.dto.WorkbookQuestionSummary;
+import maeilwiki.mutiplechoice.dto.WorkbookSummary;
 import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 class WorkbookRepositoryImpl implements WorkbookRepositoryCustom {
 
-    private final JdbcTemplate jdbcTemplate;
+    private final JPAQueryFactory queryFactory;
 
     @Override
-    public void bulkSave(Questions questions) {
-        List<Object> keys = bulkSaveQuestions(questions);
-        bulkSaveOptions(questions.options(), keys);
+    public Optional<WorkbookSummary> queryOneById(Long workbookId) {
+        WorkbookSummary workbookSummary = queryFactory.select(projectionWorkbookSummary())
+                .from(workbook)
+                .join(member).on(workbook.member.eq(member))
+                .where(workbook.id.eq(workbookId))
+                .fetchOne();
+
+        return Optional.ofNullable(workbookSummary);
     }
 
-    private List<Object> bulkSaveQuestions(Questions questions) {
-        GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
-        List<WorkbookQuestion> questionEntities = questions.questions();
-
-        jdbcTemplate.batchUpdate(questionPsc(), questionsPss(questionEntities), keyHolder);
-
-        List<Map<String, Object>> keyList = keyHolder.getKeyList();
-        return keyList.stream()
-                .map(Map::values)
-                .flatMap(Collection::stream)
-                .toList();
+    @Override
+    public List<WorkbookQuestionSummary> queryQuestionsByWorkbookId(Long workbookId) {
+        return queryFactory.select(projectionWorkbookQuestionSummary())
+                .from(workbookQuestion)
+                .where(workbookQuestion.workbook.id.eq(workbookId))
+                .fetch();
     }
 
-    private PreparedStatementCreator questionPsc() {
-        String sql = """
-                insert into multiple_choice_question (title, correct_answer_explanation, created_at, updated_at, workbook_id) 
-                values (?, ?, ?, ?, ?)
-                """;
-
-        return con -> con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+    @Override
+    public List<OptionSummary> queryOptionsByQuestionIdsIn(List<Long> questionIds) {
+        return queryFactory.select(projectionOptionSummary())
+                .from(option)
+                .where(option.question.id.in(questionIds))
+                .fetch();
     }
 
-    private BatchPreparedStatementSetter questionsPss(List<WorkbookQuestion> questionEntities) {
-        return new BatchPreparedStatementSetter() {
-
-            @Override
-            public void setValues(PreparedStatement ps, int i) throws SQLException {
-                WorkbookQuestion question = questionEntities.get(i);
-                Workbook workbook = question.getWorkbook();
-                LocalDateTime now = LocalDateTime.now();
-                ps.setString(1, question.getTitle());
-                ps.setString(2, question.getCorrectAnswerExplanation());
-                ps.setObject(3, now);
-                ps.setObject(4, now);
-                ps.setLong(5, workbook.getId());
-            }
-
-            @Override
-            public int getBatchSize() {
-                return questionEntities.size();
-            }
-        };
+    private QWorkbookSummary projectionWorkbookSummary() {
+        return new QWorkbookSummary(
+                workbook.title,
+                workbook.difficultyLevel,
+                workbook.category.stringValue().lower(),
+                workbook.workbookDetail,
+                projectionMemberThumbnail(),
+                workbook.createdAt,
+                workbook.timeLimit.timeLimit,
+                workbook.solvedCount
+        );
     }
 
-    private void bulkSaveOptions(List<Options> optionsList, List<Object> keys) {
-        String sql = """
-                insert into multiple_choice_option (content, is_correct_answer, created_at, updated_at, question_id) 
-                values (?, ?, ?, ?, ?)
-                """;
-
-        List<Object[]> batchArgs = createOptionBatchArgs(optionsList, keys);
-
-        jdbcTemplate.batchUpdate(sql, batchArgs);
+    private QMemberThumbnail projectionMemberThumbnail() {
+        return new QMemberThumbnail(member.id, member.name, member.profileImageUrl, member.githubUrl);
     }
 
-    private List<Object[]> createOptionBatchArgs(List<Options> optionsList, List<Object> keys) {
-        List<Object[]> batchArgs = new ArrayList<>();
-        int size = optionsList.size();
-
-        for (int i = 0; i < size; i++) {
-            Options options = optionsList.get(i);
-            Object questionId = keys.get(i);
-            List<Option> optionEntities = options.options();
-
-            optionEntities.stream()
-                    .map(it -> mapToOptionBatchArg(it, questionId))
-                    .forEach(batchArgs::add);
-        }
-
-        return batchArgs;
+    private QWorkbookQuestionSummary projectionWorkbookQuestionSummary() {
+        return new QWorkbookQuestionSummary(
+                workbookQuestion.id,
+                workbookQuestion.title,
+                workbookQuestion.correctAnswerExplanation
+        );
     }
 
-    private Object[] mapToOptionBatchArg(Option option, Object questionId) {
-        LocalDateTime now = LocalDateTime.now();
-
-        return new Object[]{option.getContent(), option.isCorrectAnswer(), now, now, questionId};
+    private QOptionSummary projectionOptionSummary() {
+        return new QOptionSummary(
+                option.id,
+                option.question.id,
+                option.content,
+                option.isCorrectAnswer
+        );
     }
 }
