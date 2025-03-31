@@ -13,8 +13,4 @@ public record Options(List<Option> options) {
             throw new IllegalArgumentException("객관식 항목은 최소 1개 이상이어야 합니다.");
         }
     }
-
-    public int size() {
-        return options.size();
-    }
 }
