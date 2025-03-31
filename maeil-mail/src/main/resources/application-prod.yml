@@ -11,7 +11,7 @@ spring:
     timeout-per-shutdown-phase: 30s
 
   datasource:
-    url: jdbc:mysql://${db.endpoint}/${db.dbname}?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&serverTimezone=Asia/Seoul
+    url: jdbc:mysql://${db.endpoint}/${db.dbname}?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&serverTimezone=Asia/Seoul&rewriteBatchedStatements=true
     driverClassName: com.mysql.cj.jdbc.Driver
     username: ${db.username}
     password: ${db.password}

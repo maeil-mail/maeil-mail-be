@@ -1,11 +1,11 @@
 create table question
 (
-    id               bigint auto_increment,
-    content          text                        not null,
-    title            varchar(255)                not null,
-    category         enum ('BACKEND','FRONTEND') not null,
-    created_at       timestamp(6),
-    updated_at       timestamp(6),
+    id         bigint auto_increment,
+    content    text                        not null,
+    title      varchar(255)                not null,
+    category   enum ('BACKEND','FRONTEND') not null,
+    created_at timestamp(6),
+    updated_at timestamp(6),
     primary key (id)
 );
 
@@ -137,3 +137,44 @@ create table comment_like
     constraint `fk_comment_like_comment_id` foreign key (comment_id) references comment (id),
     constraint `fk_comment_like_member_id` foreign key (member_id) references member (id)
 );
+
+
+create table multiple_choice_option
+(
+    id                bigint       not null auto_increment,
+    content           varchar(255) not null,
+    is_correct_answer boolean      not null,
+    question_id       bigint       not null,
+    created_at        timestamp(6)  not null,
+    updated_at        timestamp(6)  not null,
+    primary key (id),
+    constraint `fk_multiple_choice_option_question_id` foreign key (question_id) references multiple_choice_question (id)
+);
+
+create table multiple_choice_question
+(
+    id                         bigint       not null auto_increment,
+    title                      varchar(255) not null,
+    correct_answer_explanation text,
+    workbook_id                bigint       not null,
+    created_at                 timestamp(6)  not null,
+    updated_at                 timestamp(6)  not null,
+    primary key (id),
+    constraint `fk_multiple_choice_question_workbook_id` foreign key (workbook_id) references multiple_choice_workbook (id)
+);
+
+create table multiple_choice_workbook
+(
+    id               bigint       not null auto_increment,
+    title            varchar(255) not null,
+    difficulty_level int          not null,
+    category         varchar(10)  not null,
+    workbook_detail  text,
+    time_limit       int,
+    solved_count     int          not null,
+    member_id        bigint       not null,
+    created_at       timestamp(6)  not null,
+    updated_at       timestamp(6)  not null,
+    primary key (id),
+    constraint `fk_multiple_choice_workbook_member_id` foreign key (member_id) references member (id)
+)
