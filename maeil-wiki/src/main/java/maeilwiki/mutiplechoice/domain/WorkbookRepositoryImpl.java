@@ -88,7 +88,7 @@ class WorkbookRepositoryImpl implements WorkbookRepositoryCustom {
 
         for (int i = 0; i < size; i++) {
             Options options = optionsList.get(i);
-            Long questionId = (Long) keys.get(i);
+            Object questionId = keys.get(i);
             List<Option> optionEntities = options.options();
 
             optionEntities.stream()
@@ -99,7 +99,7 @@ class WorkbookRepositoryImpl implements WorkbookRepositoryCustom {
         return batchArgs;
     }
 
-    private Object[] mapToOptionBatchArg(Option option, Long questionId) {
+    private Object[] mapToOptionBatchArg(Option option, Object questionId) {
         LocalDateTime now = LocalDateTime.now();
 
         return new Object[]{option.getContent(), option.isCorrectAnswer(), now, now, questionId};
