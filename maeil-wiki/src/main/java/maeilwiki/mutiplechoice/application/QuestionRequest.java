@@ -1,8 +1,8 @@
 package maeilwiki.mutiplechoice.application;
 
 import java.util.List;
-import maeilwiki.mutiplechoice.domain.WorkbookQuestion;
 import maeilwiki.mutiplechoice.domain.Workbook;
+import maeilwiki.mutiplechoice.domain.WorkbookQuestion;
 
 public record QuestionRequest(
         String title,
