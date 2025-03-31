@@ -1,9 +1,12 @@
 package maeilwiki.mutiplechoice.application;
 
+import static org.assertj.core.api.SoftAssertions.assertSoftly;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import jakarta.persistence.EntityManager;
+import maeilsupport.PaginationResponse;
 import maeilwiki.member.application.MemberIdentity;
 import maeilwiki.member.domain.Member;
 import maeilwiki.member.domain.MemberRepository;
@@ -16,6 +19,7 @@ import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 
 class MultipleChoiceServiceTest extends IntegrationTestSupport {
 
@@ -31,7 +35,7 @@ class MultipleChoiceServiceTest extends IntegrationTestSupport {
     @Test
     @DisplayName("객관식 문제집 ID로 단건 조회를 수행한다.")
     void getWorkbookById() {
-        WorkbookRequest workbookRequest = createWorkbookRequest();
+        WorkbookRequest workbookRequest = createWorkbookRequest("BACKEND", 2);
         Member member = createMember();
         MemberIdentity identity = new MemberIdentity(member.getId(), member.getName(), member.getProfileImageUrl());
         WorkbookCreatedResponse workbookCreatedResponse = multipleChoiceService.create(identity, workbookRequest);
@@ -82,9 +86,37 @@ class MultipleChoiceServiceTest extends IntegrationTestSupport {
     }
 
     @Test
+    @DisplayName("카테고리에 해당되는 문제집 페이지를 조회한다.")
+    void pageByCategory() {
+        WorkbookRequest workbookRequest1 = createWorkbookRequest("BACKEND", 1);
+        WorkbookRequest workbookRequest2 = createWorkbookRequest("BACKEND", 2);
+        WorkbookRequest workbookRequest3 = createWorkbookRequest("BACKEND", 3);
+        WorkbookRequest workbookRequest4 = createWorkbookRequest("FRONTEND", 4);
+        Member member = createMember();
+        MemberIdentity identity = new MemberIdentity(member.getId(), member.getName(), member.getProfileImageUrl());
+        List<Long> ids = List.of(workbookRequest1, workbookRequest2, workbookRequest3, workbookRequest4).stream()
+                .map(req -> multipleChoiceService.create(identity, req).id())
+                .toList();
+
+        PaginationResponse<WorkbookResponse> workbookResponses = multipleChoiceService.pageByCategory("backend", PageRequest.of(0, 3));
+
+        assertSoftly(softAssertions -> {
+            softAssertions.assertThat(workbookResponses.isLastPage()).isTrue();
+            softAssertions.assertThat(workbookResponses.totalPage()).isEqualTo(1);
+            softAssertions.assertThat(workbookResponses.data()).hasSize(3);
+            softAssertions.assertThat(workbookResponses.data().get(0).id()).isEqualTo(ids.get(2));
+            softAssertions.assertThat(workbookResponses.data().get(0).questionCount()).isEqualTo(3);
+            softAssertions.assertThat(workbookResponses.data().get(1).id()).isEqualTo(ids.get(1));
+            softAssertions.assertThat(workbookResponses.data().get(1).questionCount()).isEqualTo(2);
+            softAssertions.assertThat(workbookResponses.data().get(2).id()).isEqualTo(ids.get(0));
+            softAssertions.assertThat(workbookResponses.data().get(2).questionCount()).isEqualTo(1);
+        });
+    }
+
+    @Test
     @DisplayName("객관식 문제를 출제한다.")
     void create() {
-        WorkbookRequest workbookRequest = createWorkbookRequest();
+        WorkbookRequest workbookRequest = createWorkbookRequest("BACKEND", 2);
         Member member = createMember();
         MemberIdentity identity = new MemberIdentity(member.getId(), member.getName(), member.getProfileImageUrl());
 
@@ -124,15 +156,12 @@ class MultipleChoiceServiceTest extends IntegrationTestSupport {
                 .toList();
     }
 
-    /**
-     * 질문 2, 질문 당 항목 2, 정답은 같은 인덱스
-     */
-    private WorkbookRequest createWorkbookRequest() {
+    private WorkbookRequest createWorkbookRequest(String category, int questionAndOptionSize) {
         List<QuestionRequest> questionRequests = new ArrayList<>();
-        for (int i = 1; i <= 2; i++) {
+        for (int i = 1; i <= questionAndOptionSize; i++) {
             List<OptionRequest> optionRequests = new ArrayList<>();
 
-            for (int j = 1; j <= 2; j++) {
+            for (int j = 1; j <= questionAndOptionSize; j++) {
                 boolean isCorrectAnswer = i == j;
                 OptionRequest optionRequest = new OptionRequest("question" + i + "option" + j, isCorrectAnswer);
                 optionRequests.add(optionRequest);
@@ -142,7 +171,7 @@ class MultipleChoiceServiceTest extends IntegrationTestSupport {
             questionRequests.add(questionRequest);
         }
 
-        return new WorkbookRequest("title", 5, "BACKEND", "detail", 50, questionRequests);
+        return new WorkbookRequest("title", 5, category, "detail", 50, questionRequests);
     }
 
     private Member createMember() {
