@@ -23,13 +23,15 @@ public class MultipleChoiceService {
     private final WorkbookRepository workbookRepository;
 
     @Transactional
-    public void create(MemberIdentity identity, WorkbookRequest request) {
+    public WorkbookResponse create(MemberIdentity identity, WorkbookRequest request) {
         Member member = memberService.findById(identity.id());
         Workbook workBook = request.toWorkbook(member);
         workbookRepository.save(workBook);
 
         Questions questions = generateQuestions(request, workBook);
         workbookRepository.bulkSave(questions);
+
+        return new WorkbookResponse(workBook.getId());
     }
 
     private Questions generateQuestions(WorkbookRequest workBookRequest, Workbook workBook) {
