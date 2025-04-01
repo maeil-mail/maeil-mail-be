@@ -5,6 +5,7 @@ import com.querydsl.core.annotations.QueryProjection;
 import maeilwiki.member.dto.MemberThumbnail;
 
 public record WorkbookSummary(
+        Long id,
         String workbookTitle,
         int difficultyLevel,
         String category,

@@ -7,6 +7,7 @@ import java.util.NoSuchElementException;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import maeilsupport.PaginationResponse;
 import maeilwiki.member.application.MemberIdentity;
 import maeilwiki.member.application.MemberService;
 import maeilwiki.member.domain.Member;
@@ -19,6 +20,9 @@ import maeilwiki.mutiplechoice.domain.WorkbookRepository;
 import maeilwiki.mutiplechoice.dto.OptionSummary;
 import maeilwiki.mutiplechoice.dto.WorkbookQuestionSummary;
 import maeilwiki.mutiplechoice.dto.WorkbookSummary;
+import maeilwiki.mutiplechoice.dto.WorkbookSummaryWithQuestionCount;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,6 +33,17 @@ public class MultipleChoiceService {
     private final MemberService memberService;
     private final JdbcQuestionsBatchInsertManager jdbcQuestionsBatchInsertManager;
     private final WorkbookRepository workbookRepository;
+
+    @Transactional(readOnly = true)
+    public PaginationResponse<WorkbookResponse> pageByCategory(String category, Pageable pageable) {
+        Page<WorkbookSummaryWithQuestionCount> pageResults = workbookRepository.pageByCategory(category, pageable);
+        List<WorkbookResponse> workbookResponses = pageResults.getContent()
+                .stream()
+                .map(it -> WorkbookResponse.withQuestionCount(it.workbookSummary(), it.questionCount()))
+                .toList();
+
+        return new PaginationResponse<>(pageResults.isLast(), (long) pageResults.getTotalPages(), workbookResponses);
+    }
 
     @Transactional(readOnly = true)
     public WorkbookResponse getWorkbookById(Long workbookId) {
