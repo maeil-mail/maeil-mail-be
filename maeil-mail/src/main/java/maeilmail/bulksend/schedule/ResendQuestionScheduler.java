@@ -17,7 +17,6 @@ import maeilmail.support.DistributedSupport;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-// TODO: 간헐적으로 메일 전송이 실패하는 현상을 해결하기 이전까지 임시로 사용합니다.
 @Slf4j
 @Component
 @RequiredArgsConstructor
