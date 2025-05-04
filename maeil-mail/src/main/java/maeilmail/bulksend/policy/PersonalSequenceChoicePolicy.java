@@ -1,67 +1,35 @@
 package maeilmail.bulksend.policy;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.Period;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import maeilmail.bulksend.sender.ChoiceQuestionPolicy;
-import maeilmail.question.QuestionCategory;
 import maeilmail.question.QuestionQueryService;
 import maeilmail.question.QuestionSummary;
 import maeilmail.subscribe.command.domain.Subscribe;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
+@Primary
 @Component
 @RequiredArgsConstructor
 class PersonalSequenceChoicePolicy implements ChoiceQuestionPolicy {
 
-    private final LocalDateTime backendDefaultSubscribedAt = LocalDateTime.of(2024, 10, 11, 0, 0);
-    private final LocalDateTime frontendDefaultSubscribedAt = LocalDateTime.of(2024, 10, 14, 0, 0);
-    private final LocalTime datePlusBase = LocalTime.of(6, 59, 59);
     private final QuestionQueryService questionQueryService;
 
     @Override
-    public QuestionSummary choice(Subscribe subscribe, LocalDate today) {
-        LocalDateTime subscribeAt = getOrDefaultSubscribeAt(subscribe.getCreatedAt(), subscribe.getCategory());
-        LocalDate actualDate = getActualDate(subscribeAt);
-        validateInvalidDate(actualDate, today);
+    public QuestionSummary choice(Subscribe subscribe) {
         List<QuestionSummary> questions = findQuestions(subscribe);
-        Period period = Period.between(actualDate, today);
+        Long nextQuestionSequence = subscribe.getNextQuestionSequence();
 
-        return questions.get(period.getDays() % questions.size());
+        return choiceQuestionBySequence(questions, nextQuestionSequence);
     }
 
-    private LocalDate getActualDate(LocalDateTime subscribeAt) {
-        LocalTime subscribedTime = subscribeAt.toLocalTime();
-        if (subscribedTime.isAfter(datePlusBase)) {
-            return subscribeAt.toLocalDate().plusDays(1);
-        }
+    @Override
+    public QuestionSummary choiceByRound(Subscribe subscribe, int round) {
+        List<QuestionSummary> questions = findQuestions(subscribe);
+        Long nextQuestionSequence = subscribe.getNextQuestionSequence() + round;
 
-        return subscribeAt.toLocalDate();
-    }
-
-    private LocalDateTime getOrDefaultSubscribeAt(LocalDateTime subscribeAt, QuestionCategory category) {
-        if (subscribeAt == null) {
-            return getDefaultSubscribeDate(category);
-        }
-
-        return subscribeAt;
-    }
-
-    private LocalDateTime getDefaultSubscribeDate(QuestionCategory category) {
-        if (category.equals(QuestionCategory.BACKEND)) {
-            return backendDefaultSubscribedAt;
-        }
-
-        return frontendDefaultSubscribedAt;
-    }
-
-    private void validateInvalidDate(LocalDate subscribeDate, LocalDate today) {
-        if (subscribeDate.isAfter(today)) {
-            throw new IllegalArgumentException("질문지를 결정할 수 없습니다.");
-        }
+        return choiceQuestionBySequence(questions, nextQuestionSequence);
     }
 
     private List<QuestionSummary> findQuestions(Subscribe subscribe) {
@@ -75,5 +43,9 @@ class PersonalSequenceChoicePolicy implements ChoiceQuestionPolicy {
         if (questions.isEmpty()) {
             throw new IllegalStateException("질문지를 결정할 수 없습니다.");
         }
+    }
+
+    private QuestionSummary choiceQuestionBySequence(List<QuestionSummary> questions, Long nextQuestionSequence) {
+        return questions.get(nextQuestionSequence.intValue() % questions.size());
     }
 }

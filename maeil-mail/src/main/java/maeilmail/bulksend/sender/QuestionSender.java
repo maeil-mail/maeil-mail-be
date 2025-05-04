@@ -9,6 +9,7 @@ import maeilmail.subscribe.command.domain.SubscribeQuestion;
 import maeilmail.subscribe.command.domain.SubscribeQuestionRepository;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Component("questionSender")
@@ -31,7 +32,12 @@ public class QuestionSender extends AbstractMailSender<SubscribeQuestionMessage,
     }
 
     @Override
+    @Transactional
     protected void handleSuccess(SubscribeQuestionMessage message) {
+        subscribeQuestionRepository
+                .findBySubscribeAndQuestion(message.subscribe(), message.question())
+                .ifPresent(subscribeQuestionRepository::delete);
+
         subscribeQuestionRepository.save(SubscribeQuestion.success(message.subscribe(), message.question()));
     }
 
