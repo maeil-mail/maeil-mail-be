@@ -28,14 +28,16 @@ class StatisticsServiceTest extends IntegrationTestSupport {
     private SendReportCountingCase sendReportCountingCase;
 
     @Test
-    @DisplayName("고유한 이메일을 가진 누적 구독자 수를 반환한다.")
+    @DisplayName("고유한 이메일을 가진 누적 구독자 수를 반환한다. (탈퇴자 포함)")
     void generateSubscribeReport() {
         List<Subscribe> subscribes = IntStream.rangeClosed(1, 10)
                 .mapToObj(index -> new Subscribe("test" + index, QuestionCategory.BACKEND, SubscribeFrequency.DAILY))
                 .toList();
         subscribeRepository.save(new Subscribe("test" + 1, QuestionCategory.FRONTEND, SubscribeFrequency.DAILY));
         subscribeRepository.save(new Subscribe("test" + 2, QuestionCategory.FRONTEND, SubscribeFrequency.DAILY));
-        subscribeRepository.save(new Subscribe("test" + 3, QuestionCategory.FRONTEND, SubscribeFrequency.DAILY));
+        Subscribe unsubscribed = new Subscribe("test" + 3, QuestionCategory.FRONTEND, SubscribeFrequency.DAILY);
+        unsubscribed.unsubscribe();
+        subscribeRepository.save(unsubscribed);
         subscribeRepository.saveAll(subscribes);
 
         SubscribeReport subscribeReport = statisticsService.generateSubscribeReport();
