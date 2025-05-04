@@ -39,18 +39,22 @@ public class WeeklyQuestionSender extends AbstractMailSender<WeeklySubscribeQues
     @Transactional
     protected void handleSuccess(WeeklySubscribeQuestionMessage message) {
         List<Question> questions = message.questions();
+        removeAlreadySaved(message.subscribe(), questions);
+
         List<SubscribeQuestion> subscribeQuestions = questions.stream()
                 .map(it -> SubscribeQuestion.success(message.subscribe(), it))
                 .toList();
 
-        subscribeQuestions.forEach(this::removeIfExist);
-
         subscribeQuestionRepository.saveAll(subscribeQuestions);
     }
 
-    private void removeIfExist(SubscribeQuestion subscribeQuestion) {
-        subscribeQuestionRepository.findBySubscribeAndQuestion(subscribeQuestion.getSubscribe(), subscribeQuestion.getQuestion())
-                .ifPresent(subscribeQuestionRepository::delete);
+    private void removeAlreadySaved(Subscribe subscribe, List<Question> questions) {
+        List<SubscribeQuestion> alreadySaved = subscribeQuestionRepository.findBySubscribeAndQuestionIn(subscribe, questions);
+        List<Long> removeTargetIds = alreadySaved.stream()
+                .map(SubscribeQuestion::getId)
+                .toList();
+
+        subscribeQuestionRepository.removeAllByIdIn(removeTargetIds);
     }
 
     @Override

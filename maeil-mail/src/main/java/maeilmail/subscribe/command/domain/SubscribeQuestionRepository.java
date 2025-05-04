@@ -12,6 +12,8 @@ public interface SubscribeQuestionRepository extends JpaRepository<SubscribeQues
 
     Optional<SubscribeQuestion> findBySubscribeAndQuestion(Subscribe subscribe, Question question);
 
+    List<SubscribeQuestion> findBySubscribeAndQuestionIn(Subscribe subscribe, List<Question> question);
+
     @Query("""
             select sq
             from SubscribeQuestion sq
