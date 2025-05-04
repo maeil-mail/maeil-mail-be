@@ -1,6 +1,5 @@
 package maeilmail.bulksend.schedule;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -64,7 +63,7 @@ class SendQuestionScheduler {
 
     private SubscribeQuestionMessage choiceQuestion(Subscribe subscribe) {
         try {
-            QuestionSummary questionSummary = choiceQuestionPolicy.choice(subscribe, LocalDate.now());
+            QuestionSummary questionSummary = choiceQuestionPolicy.choice(subscribe);
             String subject = createSubject(questionSummary);
             String text = createText(subscribe, questionSummary);
             return new SubscribeQuestionMessage(subscribe, questionSummary.toQuestion(), subject, text);
