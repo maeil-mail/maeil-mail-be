@@ -10,6 +10,7 @@ import maeilmail.subscribe.command.domain.SubscribeQuestion;
 import maeilmail.subscribe.command.domain.SubscribeQuestionRepository;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Component("weeklyQuestionSender")
@@ -35,13 +36,21 @@ public class WeeklyQuestionSender extends AbstractMailSender<WeeklySubscribeQues
     }
 
     @Override
+    @Transactional
     protected void handleSuccess(WeeklySubscribeQuestionMessage message) {
         List<Question> questions = message.questions();
         List<SubscribeQuestion> subscribeQuestions = questions.stream()
                 .map(it -> SubscribeQuestion.success(message.subscribe(), it))
                 .toList();
 
+        subscribeQuestions.forEach(this::removeIfExist);
+
         subscribeQuestionRepository.saveAll(subscribeQuestions);
+    }
+
+    private void removeIfExist(SubscribeQuestion subscribeQuestion) {
+        subscribeQuestionRepository.findBySubscribeAndQuestion(subscribeQuestion.getSubscribe(), subscribeQuestion.getQuestion())
+                .ifPresent(subscribeQuestionRepository::delete);
     }
 
     @Override
