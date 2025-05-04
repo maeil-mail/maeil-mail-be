@@ -30,6 +30,13 @@ class MultipleChoiceApi {
         return ResponseEntity.ok(response);
     }
 
+    @PostMapping("/wiki/multiple-choice/{id}/solved")
+    public ResponseEntity<WorkbookCreatedResponse> solveWorkbook(MemberIdentity identity, @PathVariable Long id) {
+        multipleChoiceService.solve(identity, id);
+
+        return ResponseEntity.noContent().build();
+    }
+
     @GetMapping("/wiki/multiple-choice/{id}")
     public ResponseEntity<WorkbookResponse> getWorkbook(@PathVariable Long id) {
         WorkbookResponse response = multipleChoiceService.getWorkbookById(id);

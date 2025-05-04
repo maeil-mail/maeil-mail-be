@@ -1,9 +1,12 @@
 package maeilwiki.mutiplechoice.application;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.UUID;
 import jakarta.persistence.EntityManager;
 import maeilsupport.PaginationResponse;
@@ -111,6 +114,31 @@ class MultipleChoiceServiceTest extends IntegrationTestSupport {
             softAssertions.assertThat(workbookResponses.data().get(2).id()).isEqualTo(ids.get(0));
             softAssertions.assertThat(workbookResponses.data().get(2).questionCount()).isEqualTo(1);
         });
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 객관식 문제집의 풀이 횟수를 증가시킬 수 없다.")
+    void notFoundWorkbook() {
+        MemberIdentity identity = new MemberIdentity(1L, "name", "image");
+        long unknownWorkbookId = -1L;
+
+        assertThatThrownBy(() -> multipleChoiceService.solve(identity, unknownWorkbookId))
+                .isInstanceOf(NoSuchElementException.class)
+                .hasMessage("존재하지 않는 객관식 문제집입니다.");
+    }
+
+    @Test
+    @DisplayName("객관식 문제집의 풀이 횟수를 증가시킬 수 있다.")
+    void solve() {
+        WorkbookRequest workbookRequest = createWorkbookRequest("BACKEND", 2);
+        Member member = createMember();
+        MemberIdentity identity = new MemberIdentity(member.getId(), member.getName(), member.getProfileImageUrl());
+        WorkbookCreatedResponse response = multipleChoiceService.create(identity, workbookRequest);
+
+        multipleChoiceService.solve(identity, response.id());
+
+        WorkbookResponse workbook = multipleChoiceService.getWorkbookById(response.id());
+        assertThat(workbook.solvedCount()).isEqualTo(1);
     }
 
     @Test
