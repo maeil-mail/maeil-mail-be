@@ -91,4 +91,8 @@ public class Workbook extends BaseEntity {
             throw new IllegalArgumentException(message);
         }
     }
+
+    public void solve() {
+        this.solvedCount++;
+    }
 }

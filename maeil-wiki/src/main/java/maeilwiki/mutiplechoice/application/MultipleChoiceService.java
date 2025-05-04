@@ -48,7 +48,7 @@ public class MultipleChoiceService {
     @Transactional(readOnly = true)
     public WorkbookResponse getWorkbookById(Long workbookId) {
         WorkbookSummary workbookSummary = workbookRepository.queryOneById(workbookId)
-                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 객관식 문제집입니다."));
+                .orElseThrow(this::getNotFoundWorkBookException);
         List<QuestionResponse> questionResponses = findQuestions(workbookId);
 
         return WorkbookResponse.withQuestions(workbookSummary, questionResponses);
@@ -116,5 +116,17 @@ public class MultipleChoiceService {
                 .toList();
 
         return new Options(options);
+    }
+
+    @Transactional
+    public void solve(MemberIdentity identity, Long workbookId) {
+        Workbook workbook = workbookRepository.findById(workbookId)
+                .orElseThrow(this::getNotFoundWorkBookException);
+
+        workbook.solve();
+    }
+
+    private NoSuchElementException getNotFoundWorkBookException() {
+        return new NoSuchElementException("존재하지 않는 객관식 문제집입니다.");
     }
 }
