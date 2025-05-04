@@ -1,6 +1,5 @@
 package maeilmail.bulksend.policy;
 
-import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import maeilmail.bulksend.sender.ChoiceQuestionPolicy;
@@ -13,16 +12,24 @@ import org.springframework.stereotype.Component;
 @Primary
 @Component
 @RequiredArgsConstructor
-class WeekdaysPersonalSequenceChoicePolicy implements ChoiceQuestionPolicy {
+class PersonalSequenceChoicePolicy implements ChoiceQuestionPolicy {
 
     private final QuestionQueryService questionQueryService;
 
     @Override
-    public QuestionSummary choice(Subscribe subscribe, LocalDate ignore) {
+    public QuestionSummary choice(Subscribe subscribe) {
         List<QuestionSummary> questions = findQuestions(subscribe);
         Long nextQuestionSequence = subscribe.getNextQuestionSequence();
 
-        return questions.get(nextQuestionSequence.intValue() % questions.size());
+        return choiceQuestionBySequence(questions, nextQuestionSequence);
+    }
+
+    @Override
+    public QuestionSummary choiceByRound(Subscribe subscribe, int round) {
+        List<QuestionSummary> questions = findQuestions(subscribe);
+        Long nextQuestionSequence = subscribe.getNextQuestionSequence() + round;
+
+        return choiceQuestionBySequence(questions, nextQuestionSequence);
     }
 
     private List<QuestionSummary> findQuestions(Subscribe subscribe) {
@@ -36,5 +43,9 @@ class WeekdaysPersonalSequenceChoicePolicy implements ChoiceQuestionPolicy {
         if (questions.isEmpty()) {
             throw new IllegalStateException("질문지를 결정할 수 없습니다.");
         }
+    }
+
+    private QuestionSummary choiceQuestionBySequence(List<QuestionSummary> questions, Long nextQuestionSequence) {
+        return questions.get(nextQuestionSequence.intValue() % questions.size());
     }
 }

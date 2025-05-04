@@ -7,6 +7,7 @@ import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.IntStream;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import maeilmail.bulksend.sender.ChoiceQuestionPolicy;
@@ -14,7 +15,6 @@ import maeilmail.bulksend.sender.WeeklyQuestionSender;
 import maeilmail.bulksend.sender.WeeklySubscribeQuestionMessage;
 import maeilmail.bulksend.view.WeeklySubscribeQuestionView;
 import maeilmail.question.Question;
-import maeilmail.question.QuestionQueryService;
 import maeilmail.question.QuestionSummary;
 import maeilmail.subscribe.command.domain.Subscribe;
 import maeilmail.subscribe.command.domain.SubscribeFrequency;
@@ -37,7 +37,6 @@ public class SendWeeklyQuestionScheduler {
     private final WeeklySubscribeQuestionView weeklySubscribeQuestionView;
     private final SubscribeRepository subscribeRepository;
     private final DistributedSupport distributedSupport;
-    private final QuestionQueryService questionQueryService;
 
     @Scheduled(cron = "0 0 7 * * MON", zone = "Asia/Seoul")
     public void sendMail() {
@@ -58,14 +57,11 @@ public class SendWeeklyQuestionScheduler {
         return subscribeRepository.findAllByCreatedAtBeforeAndDeletedAtIsNullAndFrequency(now, SubscribeFrequency.WEEKLY);
     }
 
-    // TODO : subscribe의 frequency 필드를 이용해서 choiceQuestionPolicy 자체를 개선
     private WeeklySubscribeQuestionMessage choiceQuestion(Subscribe subscribe) {
         try {
-            QuestionSummary baseQuestionSummary = choiceQuestionPolicy.choice(subscribe, LocalDate.now());
-            List<QuestionSummary> questions = choiceWeeklyQuestions(subscribe, baseQuestionSummary);
-            String subject = "이번주 면접 질문을 보내드려요.";
+            List<QuestionSummary> questions = choiceWeeklyQuestions(subscribe);
+            String subject = createSubject();
             String text = createText(subscribe, questions);
-
             return createWeeklySubscribeQuestionMessage(subscribe, questions, subject, text);
         } catch (Exception e) {
             log.error("주간 면접 질문 선택 실패. 구독자 id = {}", subscribe.getId(), e);
@@ -73,11 +69,14 @@ public class SendWeeklyQuestionScheduler {
         }
     }
 
-    private List<QuestionSummary> choiceWeeklyQuestions(Subscribe subscribe, QuestionSummary baseQuestionSummary) {
-        List<QuestionSummary> questions = questionQueryService.queryAllByCategory(subscribe.getCategory().name());
-        int fromIndex = questions.indexOf(baseQuestionSummary);
+    private List<QuestionSummary> choiceWeeklyQuestions(Subscribe subscribe) {
+        return IntStream.range(0, WEEKLY_MAIL_SEND_COUNT)
+                .mapToObj(round -> choiceQuestionPolicy.choiceByRound(subscribe, round))
+                .toList();
+    }
 
-        return questions.subList(fromIndex, fromIndex + WEEKLY_MAIL_SEND_COUNT);
+    private String createSubject() {
+        return "이번주 면접 질문을 보내드려요.";
     }
 
     public String createText(Subscribe subscribe, List<QuestionSummary> questions) {
