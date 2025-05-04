@@ -28,7 +28,6 @@ class StatisticsDao {
     public Long countDistinctSubscribeCount() {
         return queryFactory.select(subscribe.email.countDistinct())
                 .from(subscribe)
-                .where(subscribe.deletedAt.isNull())
                 .fetchOne();
     }
 
