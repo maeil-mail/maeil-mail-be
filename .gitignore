@@ -46,3 +46,6 @@ test-db/
 
 ### Docker Env ###
 **/*.env
+
+### Docker Volume ###
+docker/perf/mysql/data
