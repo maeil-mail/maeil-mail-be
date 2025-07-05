@@ -90,9 +90,9 @@ services:
       perf-network:
         ipv4_address: 172.16.0.8
     environment:
-      - DD_API_KEY=${DD_API_KEY}
-      - DD_SITE=${DD_SITE}
-      - DD_APM_NON_LOCAL_TRAFFIC=true
+      DD_API_KEY: ${DD_API_KEY}
+      DD_SITE: ${DD_SITE}
+      DD_APM_NON_LOCAL_TRAFFIC: true
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - /proc/:/host/proc/:ro
