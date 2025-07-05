@@ -7,26 +7,58 @@ services:
     build:
       context: ../../
       dockerfile: docker/perf/Dockerfile
-    ports:
-      - "8080:8080"
+    restart: no
+    networks:
+      perf-network:
+        ipv4_address: 172.16.0.5
     depends_on:
       - mm-mysql
       - mm-mail
       - dd-agent
-    networks:
-      perf-network:
-        ipv4_address: 172.16.0.5
     cpus: 1.0
     mem_limit: 1g
+    environment:
+      ## datadog
+      DD_AGENT_HOST: dd-agent
+      DD_SERVICE: maeilmail-api-perf
+      DD_ENV: perf
+      DD_PROFILING_ENABLED: true
+      DD_LOGS_INJECTION: true
+      DATADOG_TAG: perf_app_1
+      DATADOG_KEY: ${DD_API_KEY}
+      DATADOG_URI: ${DATADOG_URI}
+      DATADOG_FREQUENCY: ${DATADOG_FREQUENCY}
+
+      ## db
+      DB_DBNAME: maeilmail
+      DB_ENDPOINT: mm-mysql:3306
+      DB_USERNAME: atom
+      DB_PASSWORD: atom
+
+      ## mail
+      MAIL_HOST: host.docker.internal
+      MAIL_USERNAME: atom
+      MAIL_PASSWORD: atom
+
+      ## app
+      TOKEN_ACCESS_EXP_TIME: ${TOKEN_ACCESS_EXP_TIME}
+      TOKEN_REFRESH_EXP_TIME: ${TOKEN_REFRESH_EXP_TIME}
+      TOKEN_SECRET_KEY: ${TOKEN_SECRET_KEY}
+      ADMIN_SECRET: ${ADMIN_SECRET}
+      DISTRIBUTE_SERVER_INDEX: 1
+      DISTRIBUTE_SERVER_COUNT: 2
+      USER_TIMEZONE: Asia/Seoul
+      SPRING_PROFILES_ACTIVE: prod
+    ports:
+      - "8080:8080"
 
   mm-mysql:
     container_name: mm-mysql
     image: mysql:8.0.40
+    restart: no
     networks:
       perf-network:
         ipv4_address: 172.16.0.6
-    ports:
-      - "3306:3306"
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: maeilmail
@@ -36,13 +68,16 @@ services:
     volumes:
       - ./mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
       - ./mysql/data:/var/lib/mysql
+    ports:
+      - "3306:3306"
 
   mm-mail:
     container_name: mm-mail
+    image: mailhog/mailhog
+    restart: no
     networks:
       perf-network:
         ipv4_address: 172.16.0.7
-    image: mailhog/mailhog
     ports:
       - "587:1025"
       - "8025:8025"
@@ -50,12 +85,13 @@ services:
   dd-agent:
     container_name: dd-agent
     image: gcr.io/datadoghq/agent:latest
+    restart: no
     networks:
       perf-network:
         ipv4_address: 172.16.0.8
     environment:
       - DD_API_KEY=${DD_API_KEY}
-      - DD_SITE=us5.datadoghq.com
+      - DD_SITE=${DD_SITE}
       - DD_APM_NON_LOCAL_TRAFFIC=true
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
