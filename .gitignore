@@ -43,3 +43,9 @@ test-db/
 
 ### Local Spring Properties ###
 **/application-local.yml
+
+### Docker Env ###
+**/*.env
+
+### Docker Volume ###
+docker/perf/mysql/data
