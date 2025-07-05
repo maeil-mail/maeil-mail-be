@@ -43,3 +43,6 @@ test-db/
 
 ### Local Spring Properties ###
 **/application-local.yml
+
+### Docker Env ###
+**/*.env
