@@ -1,0 +1,70 @@
+# docker compose -f compose.perf.yml --env-file ./env/perf.env up -d --build
+# docker compose -f compose.perf.yml down
+
+services:
+  mm-app:
+    container_name: mm-app
+    build:
+      context: ../../
+      dockerfile: docker/perf/Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mm-mysql
+      - mm-mail
+      - dd-agent
+    networks:
+      perf-network:
+        ipv4_address: 172.16.0.5
+    cpus: 1.0
+    mem_limit: 1g
+
+  mm-mysql:
+    container_name: mm-mysql
+    image: mysql:8.0.40
+    networks:
+      perf-network:
+        ipv4_address: 172.16.0.6
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: maeilmail
+      MYSQL_USER: atom
+      MYSQL_PASSWORD: atom
+      TZ: Asia/Seoul
+    volumes:
+      - ./mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./mysql/data:/var/lib/mysql
+
+  mm-mail:
+    container_name: mm-mail
+    networks:
+      perf-network:
+        ipv4_address: 172.16.0.7
+    image: mailhog/mailhog
+    ports:
+      - "587:1025"
+      - "8025:8025"
+
+  dd-agent:
+    container_name: dd-agent
+    image: gcr.io/datadoghq/agent:latest
+    networks:
+      perf-network:
+        ipv4_address: 172.16.0.8
+    environment:
+      - DD_API_KEY=${DD_API_KEY}
+      - DD_SITE=us5.datadoghq.com
+      - DD_APM_NON_LOCAL_TRAFFIC=true
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /proc/:/host/proc/:ro
+      - /sys/fs/cgroup:/host/sys/fs/cgroup:ro
+
+networks:
+  perf-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.16.0.0/16
