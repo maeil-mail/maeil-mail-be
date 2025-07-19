@@ -1,6 +1,7 @@
-package maeilwiki.member.api;
+package maeilwiki.api;
 
 import lombok.RequiredArgsConstructor;
+import maeilwiki.auth.MemberIdentityCookieHelper;
 import maeilwiki.member.application.MemberIdentity;
 import maeilwiki.member.application.MemberRefreshRequest;
 import maeilwiki.member.application.MemberRequest;

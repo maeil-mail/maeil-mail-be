@@ -1,4 +1,4 @@
-package maeilwiki.member.api;
+package maeilwiki.auth;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

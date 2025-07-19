@@ -1,6 +1,6 @@
-package maeilwiki.member.api;
+package maeilwiki.auth;
 
-import static maeilwiki.member.api.MemberIdentityCookieType.ACCESS_TOKEN;
+import static maeilwiki.auth.MemberIdentityCookieType.ACCESS_TOKEN;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;

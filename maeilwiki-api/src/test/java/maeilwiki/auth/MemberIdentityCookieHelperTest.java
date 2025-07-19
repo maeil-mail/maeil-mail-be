@@ -1,4 +1,4 @@
-package maeilwiki.member.api;
+package maeilwiki.auth;
 
 import static maeilwiki.member.api.MemberIdentityCookieType.ACCESS_TOKEN;
 import static maeilwiki.member.api.MemberIdentityCookieType.REFRESH_TOKEN;

@@ -1,4 +1,4 @@
-package maeilwiki.wiki.api;
+package maeilwiki.api;
 
 import java.net.URI;
 import lombok.RequiredArgsConstructor;

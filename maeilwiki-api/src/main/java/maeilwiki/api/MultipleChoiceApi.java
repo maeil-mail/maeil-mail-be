@@ -1,4 +1,4 @@
-package maeilwiki.mutiplechoice.api;
+package maeilwiki.api;
 
 import lombok.RequiredArgsConstructor;
 import maeilsupport.PaginationResponse;
