@@ -1,6 +1,7 @@
-package maeilmail.admin;
+package maeilmail.admin.application;
 
 import java.time.LocalDate;
+import maeilmail.admin.domain.AdminNotice;
 
 public record AdminNoticeRequest(
         Long id,

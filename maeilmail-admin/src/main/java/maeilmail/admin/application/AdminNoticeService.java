@@ -1,7 +1,9 @@
-package maeilmail.admin;
+package maeilmail.admin.application;
 
 import java.util.NoSuchElementException;
 import lombok.RequiredArgsConstructor;
+import maeilmail.admin.domain.AdminNotice;
+import maeilmail.admin.domain.AdminNoticeRepository;
 import maeilmail.mail.MailMessage;
 import maeilmail.mail.MailSender;
 import org.springframework.stereotype.Service;

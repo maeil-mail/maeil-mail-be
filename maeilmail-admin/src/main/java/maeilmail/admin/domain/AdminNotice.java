@@ -1,4 +1,4 @@
-package maeilmail.admin;
+package maeilmail.admin.domain;
 
 import java.time.LocalDate;
 import jakarta.persistence.Column;
@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import maeilmail.admin.BaseEntity;
 
 @Entity
 @Getter

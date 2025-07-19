@@ -1,4 +1,4 @@
-package maeilmail.admin;
+package maeilmail.admin.api;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -11,6 +11,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.Collections;
+import maeilmail.PaginationResponse;
 import maeilmail.question.QuestionSummary;
 import maeilmail.support.ApiTestSupport;
 import org.junit.jupiter.api.DisplayName;

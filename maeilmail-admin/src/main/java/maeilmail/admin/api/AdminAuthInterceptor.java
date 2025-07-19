@@ -1,4 +1,4 @@
-package maeilmail.admin;
+package maeilmail.admin.api;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

@@ -1,4 +1,4 @@
-package maeilmail.admin;
+package maeilmail.admin.api;
 
 import maeilmail.question.Question;
 import maeilmail.question.QuestionCategory;

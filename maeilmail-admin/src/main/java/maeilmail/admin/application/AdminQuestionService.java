@@ -1,4 +1,4 @@
-package maeilmail.admin;
+package maeilmail.admin.application;
 
 import java.util.NoSuchElementException;
 import lombok.RequiredArgsConstructor;

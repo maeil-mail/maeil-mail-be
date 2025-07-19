@@ -1,4 +1,4 @@
-package maeilmail.admin;
+package maeilmail.admin.view;
 
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
@@ -9,7 +9,7 @@ import org.thymeleaf.spring6.SpringTemplateEngine;
 
 @Component
 @RequiredArgsConstructor
-class AdminReportView implements MailView {
+public class AdminReportView implements MailView {
 
     private final SpringTemplateEngine templateEngine;
 

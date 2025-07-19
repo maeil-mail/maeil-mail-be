@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import maeilmail.admin.domain.AdminNotice;
+import maeilmail.admin.domain.AdminNoticeRepository;
 import maeilmail.mail.MailMessage;
 import maeilmail.mail.MailSender;
 import maeilmail.subscribe.query.SubscribeEmail;

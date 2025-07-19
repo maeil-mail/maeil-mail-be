@@ -1,9 +1,9 @@
 package maeilmail.support;
 
-import maeilmail.admin.AdminApi;
-import maeilmail.admin.AdminNoticeRepository;
-import maeilmail.admin.AdminNoticeService;
-import maeilmail.admin.AdminQuestionService;
+import maeilmail.admin.api.AdminApi;
+import maeilmail.admin.domain.AdminNoticeRepository;
+import maeilmail.admin.application.AdminNoticeService;
+import maeilmail.admin.application.AdminQuestionService;
 import maeilmail.question.QuestionQueryService;
 import maeilmail.subscribe.query.SubscribeQuestionQueryService;
 import org.springframework.beans.factory.annotation.Autowired;

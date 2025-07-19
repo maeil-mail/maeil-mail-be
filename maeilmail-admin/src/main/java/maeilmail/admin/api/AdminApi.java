@@ -1,7 +1,14 @@
-package maeilmail.admin;
+package maeilmail.admin.api;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import maeilmail.PaginationResponse;
+import maeilmail.admin.application.AdminNoticeRequest;
+import maeilmail.admin.application.AdminNoticeResponse;
+import maeilmail.admin.application.AdminNoticeService;
+import maeilmail.admin.application.AdminNoticeTestRequest;
+import maeilmail.admin.application.AdminQuestionService;
+import maeilmail.admin.domain.AdminNoticeRepository;
 import maeilmail.question.QuestionQueryService;
 import maeilmail.question.QuestionSummary;
 import org.springframework.data.domain.Pageable;
