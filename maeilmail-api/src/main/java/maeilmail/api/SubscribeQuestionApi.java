@@ -1,6 +1,7 @@
 package maeilmail.api;
 
 import lombok.RequiredArgsConstructor;
+import maeilmail.PaginationResponse;
 import maeilmail.subscribe.query.SubscribeQuestionQueryService;
 import maeilmail.subscribe.query.SubscribeQuestionSummary;
 import maeilmail.subscribe.query.WeeklySubscribeQuestionResponse;

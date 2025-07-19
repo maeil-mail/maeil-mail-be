@@ -12,6 +12,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.Collections;
+import maeilmail.PaginationResponse;
 import maeilmail.subscribe.query.SubscribeQuestionSummary;
 import maeilmail.support.ApiTestSupport;
 import org.junit.jupiter.api.DisplayName;
