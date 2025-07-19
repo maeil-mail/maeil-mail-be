@@ -4,9 +4,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.Base64;
+import maeilwiki.common.IntegrationTestSupport;
 import maeilwiki.member.domain.Member;
 import maeilwiki.member.domain.MemberRepository;
-import maeilwiki.support.IntegrationTestSupport;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

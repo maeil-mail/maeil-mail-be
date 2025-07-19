@@ -7,7 +7,7 @@ import java.util.NoSuchElementException;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import maeilsupport.PaginationResponse;
+import maeilwiki.PaginationResponse;
 import maeilwiki.member.application.MemberIdentity;
 import maeilwiki.member.application.MemberService;
 import maeilwiki.member.domain.Member;

@@ -14,7 +14,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.Collections;
 import maeilmail.subscribe.query.SubscribeQuestionSummary;
 import maeilmail.support.ApiTestSupport;
-import maeilsupport.PaginationResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;

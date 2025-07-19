@@ -8,7 +8,7 @@ import java.time.ZonedDateTime;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import maeilmail.subscribe.command.domain.SubscribeRepository;
-import maeilmail.support.DistributedSupport;
+import maeilmail.utils.DistributedSupport;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;

@@ -9,7 +9,7 @@ import maeilmail.mail.MailMessage;
 import maeilmail.mail.MailSender;
 import maeilmail.subscribe.query.SubscribeEmail;
 import maeilmail.subscribe.query.SubscribeQueryService;
-import maeilmail.support.DistributedSupport;
+import maeilmail.utils.DistributedSupport;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 

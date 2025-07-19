@@ -6,7 +6,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.stream.Stream;
 import jakarta.servlet.http.Cookie;
-import maeilwiki.support.IntegrationTestSupport;
+import maeilwiki.common.IntegrationTestSupport;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;

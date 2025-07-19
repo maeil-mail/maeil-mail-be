@@ -13,7 +13,7 @@ import maeilmail.bulksend.schedule.helper.ResendWeeklyHelper;
 import maeilmail.subscribe.command.domain.Subscribe;
 import maeilmail.subscribe.command.domain.SubscribeQuestion;
 import maeilmail.subscribe.command.domain.SubscribeQuestionRepository;
-import maeilmail.support.DistributedSupport;
+import maeilmail.utils.DistributedSupport;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 

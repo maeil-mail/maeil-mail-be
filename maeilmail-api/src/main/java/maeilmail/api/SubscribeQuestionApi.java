@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import maeilmail.subscribe.query.SubscribeQuestionQueryService;
 import maeilmail.subscribe.query.SubscribeQuestionSummary;
 import maeilmail.subscribe.query.WeeklySubscribeQuestionResponse;
-import maeilsupport.PaginationResponse;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;

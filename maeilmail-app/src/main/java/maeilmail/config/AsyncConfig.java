@@ -1,4 +1,4 @@
-package maeilmail.support;
+package maeilmail.config;
 
 import java.util.concurrent.Executor;
 import org.springframework.context.annotation.Bean;

@@ -9,7 +9,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import maeilsupport.BaseEntity;
+import maeilmail.BaseEntity;
 
 @Entity
 @Getter

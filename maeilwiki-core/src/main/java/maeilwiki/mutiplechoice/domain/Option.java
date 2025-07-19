@@ -12,13 +12,12 @@ import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import maeilsupport.BaseEntity;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "multiple_choice_option")
-public class Option extends BaseEntity {
+public class Option extends maeilwiki.BaseEntity {
 
     private static final int MAX_CONTENT_LENGTH = 255;
 

@@ -8,7 +8,7 @@ import java.util.function.BiFunction;
 import lombok.RequiredArgsConstructor;
 import maeilmail.bulksend.schedule.SendWeeklyQuestionScheduler;
 import maeilmail.subscribe.command.domain.SubscribeFrequency;
-import maeilsupport.DateUtils;
+import maeilmail.utils.DateUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

@@ -1,4 +1,4 @@
-package maeilsupport;
+package maeilmail;
 
 import java.time.LocalDateTime;
 import jakarta.persistence.Column;

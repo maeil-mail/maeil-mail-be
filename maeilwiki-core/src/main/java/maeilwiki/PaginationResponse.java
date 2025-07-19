@@ -1,4 +1,4 @@
-package maeilsupport;
+package maeilwiki;
 
 import java.util.List;
 

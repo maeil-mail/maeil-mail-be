@@ -1,7 +1,6 @@
 rootProject.name = 'maeilmail-server'
 include 'maeilmail-core'
 include 'maeilwiki-core'
-include 'project-support'
 include 'maeilmail-admin'
 include 'maeilmail-api'
 include 'maeilmail-batch'

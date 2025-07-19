@@ -18,7 +18,7 @@ import maeilmail.question.QuestionSummary;
 import maeilmail.subscribe.command.domain.Subscribe;
 import maeilmail.subscribe.command.domain.SubscribeFrequency;
 import maeilmail.subscribe.command.domain.SubscribeRepository;
-import maeilmail.support.DistributedSupport;
+import maeilmail.utils.DistributedSupport;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 

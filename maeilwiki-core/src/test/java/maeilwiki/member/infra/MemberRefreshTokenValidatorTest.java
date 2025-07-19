@@ -3,10 +3,10 @@ package maeilwiki.member.infra;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.UUID;
+import maeilwiki.common.IntegrationTestSupport;
 import maeilwiki.member.application.MemberIdentityException;
 import maeilwiki.member.domain.Member;
 import maeilwiki.member.domain.MemberRepository;
-import maeilwiki.support.IntegrationTestSupport;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

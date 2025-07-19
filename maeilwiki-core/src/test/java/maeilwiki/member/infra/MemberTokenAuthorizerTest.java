@@ -6,12 +6,12 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import maeilwiki.common.IntegrationTestSupport;
 import maeilwiki.member.application.MemberIdentity;
 import maeilwiki.member.application.MemberIdentityException;
 import maeilwiki.member.domain.Member;
 import maeilwiki.member.domain.MemberRepository;
 import maeilwiki.member.domain.Provider;
-import maeilwiki.support.IntegrationTestSupport;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
