@@ -1,8 +1,0 @@
-bootJar.enabled = true
-jar.enabled = false
-
-dependencies {
-    implementation project(':maeilmail-api')
-    implementation project(':maeilwiki-api')
-    implementation project(':maeilmail-admin')
-}

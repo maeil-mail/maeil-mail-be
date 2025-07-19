@@ -22,4 +22,3 @@ class CoreConfiguration {
         return new JPAQueryFactory(JPQLTemplates.DEFAULT, entityManager);
     }
 }
-
