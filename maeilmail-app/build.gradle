@@ -1,4 +1,5 @@
-// 부트스트랩
+bootJar.enabled = true
+jar.enabled = false
 
 dependencies {
     implementation project(':maeilmail-api')

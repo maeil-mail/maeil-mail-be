@@ -2,10 +2,10 @@ package maeilwiki.api;
 
 import java.net.URI;
 import lombok.RequiredArgsConstructor;
-import maeilsupport.PaginationResponse;
+import maeilwiki.PaginationResponse;
+import maeilwiki.auth.NotRequiredIdentity;
 import maeilwiki.comment.application.CommentRequest;
 import maeilwiki.comment.application.CommentService;
-import maeilwiki.member.api.NotRequiredIdentity;
 import maeilwiki.member.application.MemberIdentity;
 import maeilwiki.wiki.application.WikiRequest;
 import maeilwiki.wiki.application.WikiResponse;

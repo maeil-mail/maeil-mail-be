@@ -3,7 +3,7 @@ package maeilwiki.wiki.application;
 import java.util.List;
 import java.util.NoSuchElementException;
 import lombok.RequiredArgsConstructor;
-import maeilsupport.PaginationResponse;
+import maeilwiki.PaginationResponse;
 import maeilwiki.comment.application.CommentRequest;
 import maeilwiki.comment.application.CommentResponse;
 import maeilwiki.comment.application.CommentService;

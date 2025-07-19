@@ -2,7 +2,6 @@ package maeilmail.config;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-
 import maeilmail.admin.api.AdminAuthInterceptor;
 import maeilwiki.auth.MemberIdentityArgumentResolver;
 import org.springframework.context.annotation.Configuration;

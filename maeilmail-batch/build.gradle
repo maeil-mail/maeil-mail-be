@@ -1,3 +1,6 @@
+bootJar.enabled = true
+jar.enabled = false
+
 dependencies {
     implementation project(':maeilmail-core')
 }

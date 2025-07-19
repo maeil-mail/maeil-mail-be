@@ -1,7 +1,7 @@
 package maeilwiki.api;
 
 import lombok.RequiredArgsConstructor;
-import maeilsupport.PaginationResponse;
+import maeilwiki.PaginationResponse;
 import maeilwiki.member.application.MemberIdentity;
 import maeilwiki.mutiplechoice.application.MultipleChoiceService;
 import maeilwiki.mutiplechoice.application.WorkbookCreatedResponse;
