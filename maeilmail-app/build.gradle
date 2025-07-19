@@ -1,0 +1,7 @@
+// 부트스트랩
+
+dependencies {
+    implementation project(':maeilmail-api')
+    implementation project(':maeilwiki-api')
+    implementation project(':maeilmail-admin')
+}
