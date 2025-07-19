@@ -1,12 +1,10 @@
-package maeilmail.bulksend.schedule;
+package maeilmail.admin;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import maeilmail.admin.AdminNotice;
-import maeilmail.admin.AdminNoticeRepository;
 import maeilmail.mail.MailMessage;
 import maeilmail.mail.MailSender;
 import maeilmail.subscribe.query.SubscribeEmail;
