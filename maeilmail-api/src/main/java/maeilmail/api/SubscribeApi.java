@@ -1,4 +1,4 @@
-package maeilmail.subscribe.api;
+package maeilmail.api;
 
 import lombok.RequiredArgsConstructor;
 import maeilmail.subscribe.command.application.SubscribeService;
