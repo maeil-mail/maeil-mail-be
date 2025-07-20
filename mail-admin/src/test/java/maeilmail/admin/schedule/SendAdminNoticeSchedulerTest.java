@@ -1,4 +1,4 @@
-package maeilmail.admin;
+package maeilmail.admin.schedule;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;

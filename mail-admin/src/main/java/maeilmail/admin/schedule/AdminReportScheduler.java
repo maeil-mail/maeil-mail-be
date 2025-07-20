@@ -1,4 +1,4 @@
-package maeilmail.admin;
+package maeilmail.admin.schedule;
 
 import java.time.LocalDate;
 import java.util.Map;
