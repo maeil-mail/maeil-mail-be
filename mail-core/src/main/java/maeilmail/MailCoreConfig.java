@@ -16,12 +16,14 @@ import org.springframework.cache.support.SimpleCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 @Configuration
 @EnableCaching
+@EnableScheduling
 @EnableJpaAuditing
 @RequiredArgsConstructor
-class CoreConfiguration {
+class MailCoreConfig {
 
     private final EntityManager entityManager;
 

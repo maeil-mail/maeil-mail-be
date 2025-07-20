@@ -13,7 +13,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 @EnableJpaAuditing
 @RequiredArgsConstructor
 @ConfigurationPropertiesScan
-class CoreConfiguration {
+class WikiCoreConfig {
 
     private final EntityManager entityManager;
 
