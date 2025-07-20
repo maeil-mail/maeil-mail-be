@@ -3,20 +3,18 @@ package maeilmail.subscribe.view;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import maeilmail.mail.MailView;
+import maeilmail.mail.MailViewRenderer;
 import org.springframework.stereotype.Component;
-import org.thymeleaf.context.Context;
-import org.thymeleaf.spring6.SpringTemplateEngine;
 
 @Component
 @RequiredArgsConstructor
 public class SubscribeWelcomeView implements MailView {
 
-    private final SpringTemplateEngine templateEngine;
+    private final MailViewRenderer mailViewRenderer;
 
     @Override
     public String render(Map<Object, Object> attribute) {
-        Context context = new Context();
-        return templateEngine.process("subscribe-welcome", context);
+        return mailViewRenderer.render(attribute, "subscribe-welcome");
     }
 
     @Override

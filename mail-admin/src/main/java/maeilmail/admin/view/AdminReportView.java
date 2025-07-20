@@ -3,22 +3,18 @@ package maeilmail.admin.view;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import maeilmail.mail.MailView;
+import maeilmail.mail.MailViewRenderer;
 import org.springframework.stereotype.Component;
-import org.thymeleaf.context.Context;
-import org.thymeleaf.spring6.SpringTemplateEngine;
 
 @Component
 @RequiredArgsConstructor
 public class AdminReportView implements MailView {
 
-    private final SpringTemplateEngine templateEngine;
+    private final MailViewRenderer mailViewRenderer;
 
     @Override
     public String render(Map<Object, Object> attribute) {
-        Context context = new Context();
-        context.setVariable("report", attribute.get("report"));
-
-        return templateEngine.process("report", context);
+        return mailViewRenderer.render(attribute, "report");
     }
 
     @Override

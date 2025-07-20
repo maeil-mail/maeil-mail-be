@@ -3,22 +3,18 @@ package maeilmail.bulksend.view;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import maeilmail.mail.MailView;
+import maeilmail.mail.MailViewRenderer;
 import org.springframework.stereotype.Component;
-import org.thymeleaf.context.Context;
-import org.thymeleaf.spring6.SpringTemplateEngine;
 
 @Component
 @RequiredArgsConstructor
 public class SubscribeQuestionView implements MailView {
 
-    private final SpringTemplateEngine templateEngine;
+    private final MailViewRenderer mailViewRenderer;
 
     @Override
     public String render(Map<Object, Object> attribute) {
-        Context context = new Context();
-        attribute.forEach((key, value) -> context.setVariable(key.toString(), value.toString()));
-
-        return templateEngine.process("question-v4", context);
+        return mailViewRenderer.render(attribute, "question-v4");
     }
 
     @Override
