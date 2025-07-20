@@ -1,6 +1,7 @@
 spring:
   main:
     allow-bean-definition-overriding: true
+
   jpa:
     hibernate:
       ddl-auto: create
@@ -12,6 +13,7 @@ spring:
   sql:
     init:
       mode: never
+
   mail:
     host: smtp.gmail.com
     port: 587
