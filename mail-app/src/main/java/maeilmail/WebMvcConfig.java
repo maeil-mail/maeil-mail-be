@@ -1,4 +1,4 @@
-package maeilmail.config;
+package maeilmail;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
