@@ -1,6 +1,3 @@
-bootJar.enabled = true
-jar.enabled = false
-
 dependencies {
     implementation project(':mail-api')
     implementation project(':wiki-api')
