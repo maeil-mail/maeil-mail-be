@@ -1,6 +1,7 @@
 spring:
   main:
     allow-bean-definition-overriding: true
+
   jpa:
     hibernate:
       ddl-auto: create
@@ -9,9 +10,11 @@ spring:
         auto_quote_keyword: true
         format_sql: true
     show-sql: true
+
   sql:
     init:
       mode: never
+
   mail:
     host: smtp.gmail.com
     port: 587
@@ -24,6 +27,9 @@ spring:
           timeout: 5000
           starttls:
             enable: true
+
+admin:
+  secret: "secret"
 
 distribute:
   server:

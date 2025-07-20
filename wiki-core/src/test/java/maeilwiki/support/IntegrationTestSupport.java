@@ -1,11 +1,11 @@
-package maeilwiki.common;
+package maeilwiki.support;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 
-import maeilwiki.common.extension.DatabaseCleanerExtension;
+import maeilwiki.support.extension.DatabaseCleanerExtension;
 import maeilwiki.member.infra.github.GithubClient;
 import maeilwiki.member.infra.github.GithubMember;
 import org.junit.jupiter.api.extension.ExtendWith;

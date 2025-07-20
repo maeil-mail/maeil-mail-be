@@ -1,12 +1,12 @@
 package maeilwiki.auth;
 
-import static maeilwiki.member.api.MemberIdentityCookieType.ACCESS_TOKEN;
-import static maeilwiki.member.api.MemberIdentityCookieType.REFRESH_TOKEN;
+import static maeilwiki.auth.MemberIdentityCookieType.ACCESS_TOKEN;
+import static maeilwiki.auth.MemberIdentityCookieType.REFRESH_TOKEN;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.stream.Stream;
 import jakarta.servlet.http.Cookie;
-import maeilwiki.common.IntegrationTestSupport;
+import maeilwiki.support.IntegrationTestSupport;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;

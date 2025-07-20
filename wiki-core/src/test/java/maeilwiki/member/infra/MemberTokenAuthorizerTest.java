@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
-import maeilwiki.common.IntegrationTestSupport;
+import maeilwiki.support.IntegrationTestSupport;
 import maeilwiki.member.application.MemberIdentity;
 import maeilwiki.member.application.MemberIdentityException;
 import maeilwiki.member.domain.Member;

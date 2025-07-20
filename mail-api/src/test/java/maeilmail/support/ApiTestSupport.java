@@ -1,7 +1,6 @@
 package maeilmail.support;
 
 import maeilmail.api.SubscribeQuestionApi;
-import maeilmail.question.QuestionQueryService;
 import maeilmail.subscribe.query.SubscribeQuestionQueryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -13,9 +12,6 @@ public abstract class ApiTestSupport {
 
     @Autowired
     protected MockMvc mockMvc;
-
-    @MockBean
-    protected QuestionQueryService questionQueryService;
 
     @MockBean
     protected SubscribeQuestionQueryService subscribeQuestionQueryService;

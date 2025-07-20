@@ -5,7 +5,6 @@ import maeilmail.admin.application.AdminNoticeService;
 import maeilmail.admin.application.AdminQuestionService;
 import maeilmail.admin.domain.AdminNoticeRepository;
 import maeilmail.question.QuestionQueryService;
-import maeilmail.subscribe.query.SubscribeQuestionQueryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -19,9 +18,6 @@ public abstract class ApiTestSupport {
 
     @MockBean
     protected QuestionQueryService questionQueryService;
-
-    @MockBean
-    protected SubscribeQuestionQueryService subscribeQuestionQueryService;
 
     @MockBean
     protected AdminQuestionService adminQuestionService;

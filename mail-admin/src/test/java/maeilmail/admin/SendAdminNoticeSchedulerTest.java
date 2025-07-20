@@ -1,4 +1,4 @@
-package maeilmail.bulksend.schedule;
+package maeilmail.admin;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -11,10 +11,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
-import maeilmail.admin.AdminNotice;
-import maeilmail.admin.AdminNoticeRepository;
+import maeilmail.admin.domain.AdminNotice;
+import maeilmail.admin.domain.AdminNoticeRepository;
 import maeilmail.mail.MailMessage;
-import maeilmail.mail.MailSender;
 import maeilmail.question.QuestionCategory;
 import maeilmail.subscribe.command.domain.Subscribe;
 import maeilmail.subscribe.command.domain.SubscribeFrequency;
@@ -25,7 +24,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 
 class SendAdminNoticeSchedulerTest extends IntegrationTestSupport {
 
@@ -37,9 +35,6 @@ class SendAdminNoticeSchedulerTest extends IntegrationTestSupport {
 
     @Autowired
     private SubscribeRepository subscribeRepository;
-
-    @MockBean
-    private MailSender mailSender;
 
     @Test
     @DisplayName("매주 월요일에 관리자 공지 메일을 전송하는 스케줄러가 동작하는지 확인한다.")

@@ -1,4 +1,4 @@
-package maeilwiki.common.extension;
+package maeilwiki.support.extension;
 
 import java.util.List;
 import jakarta.persistence.EntityManager;

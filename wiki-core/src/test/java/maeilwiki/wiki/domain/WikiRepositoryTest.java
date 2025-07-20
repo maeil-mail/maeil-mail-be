@@ -7,7 +7,7 @@ import java.util.Optional;
 import java.util.UUID;
 import maeilwiki.comment.domain.Comment;
 import maeilwiki.comment.domain.CommentRepository;
-import maeilwiki.common.IntegrationTestSupport;
+import maeilwiki.support.IntegrationTestSupport;
 import maeilwiki.member.domain.Member;
 import maeilwiki.member.domain.MemberRepository;
 import maeilwiki.wiki.dto.WikiSummary;

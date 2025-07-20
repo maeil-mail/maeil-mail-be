@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import java.util.List;
 import java.util.UUID;
 import maeilwiki.comment.dto.CommentSummary;
-import maeilwiki.common.IntegrationTestSupport;
+import maeilwiki.support.IntegrationTestSupport;
 import maeilwiki.member.domain.Member;
 import maeilwiki.member.domain.MemberRepository;
 import maeilwiki.member.dto.MemberThumbnail;

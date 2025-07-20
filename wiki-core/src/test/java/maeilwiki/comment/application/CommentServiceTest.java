@@ -10,7 +10,7 @@ import maeilwiki.comment.domain.Comment;
 import maeilwiki.comment.domain.CommentLike;
 import maeilwiki.comment.domain.CommentLikeRepository;
 import maeilwiki.comment.domain.CommentRepository;
-import maeilwiki.common.IntegrationTestSupport;
+import maeilwiki.support.IntegrationTestSupport;
 import maeilwiki.member.application.MemberIdentity;
 import maeilwiki.member.domain.Member;
 import maeilwiki.member.domain.MemberRepository;
