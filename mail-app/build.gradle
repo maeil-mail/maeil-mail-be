@@ -1,0 +1,5 @@
+dependencies {
+    implementation project(':mail-api')
+    implementation project(':wiki-api')
+    implementation project(':mail-admin')
+}
