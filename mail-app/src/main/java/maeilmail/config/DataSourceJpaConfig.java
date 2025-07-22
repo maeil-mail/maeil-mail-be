@@ -1,9 +1,9 @@
-package maeilmail;
+package maeilmail.config;
 
 import static maeilmail.BasePackages.MAEIL_MAIL;
 import static maeilmail.BasePackages.MAEIL_WIKI;
-import static maeilmail.HikariDataSourceJpaConfig.ENTITY_MANAGER_FACTORY;
-import static maeilmail.HikariDataSourceJpaConfig.TRANSACTION_MANAGER;
+import static maeilmail.config.DataSourceJpaConfig.ENTITY_MANAGER_FACTORY;
+import static maeilmail.config.DataSourceJpaConfig.TRANSACTION_MANAGER;
 
 import javax.sql.DataSource;
 import com.zaxxer.hikari.HikariDataSource;
@@ -34,7 +34,7 @@ import org.springframework.transaction.PlatformTransactionManager;
         entityManagerFactoryRef = ENTITY_MANAGER_FACTORY
 )
 @EntityScan(basePackages = {MAEIL_MAIL, MAEIL_WIKI})
-class HikariDataSourceJpaConfig {
+class DataSourceJpaConfig {
 
     public static final String TRANSACTION_MANAGER = "maeilmailTransactionManager";
     public static final String ENTITY_MANAGER_FACTORY = "maeilmailEntityManagerFactory";

@@ -1,4 +1,4 @@
-package maeilmail;
+package maeilmail.config;
 
 import com.querydsl.jpa.JPQLTemplates;
 import com.querydsl.jpa.impl.JPAQueryFactory;
