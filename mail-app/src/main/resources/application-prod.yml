@@ -6,6 +6,9 @@ server:
       min-spare: 50
     max-connections: 8192
 
+logging:
+  config: classpath:logback-prod.xml
+
 spring:
   config:
     import:
