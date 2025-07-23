@@ -1,4 +1,4 @@
-package maeilmail;
+package maeilmail.config;
 
 import java.util.concurrent.Executor;
 import org.springframework.context.annotation.Bean;
@@ -9,7 +9,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 @EnableAsync
 @Configuration
-class MailAsyncConfig implements AsyncConfigurer {
+class AsyncConfig implements AsyncConfigurer {
 
     /**
      * corePoolSize보다 적은 스레드가 있거나 maxPoolSize보다 적은 스레드가 실행중이고,
@@ -20,7 +20,7 @@ class MailAsyncConfig implements AsyncConfigurer {
     public Executor getAsyncExecutor() {
         ThreadPoolTaskExecutor threadPoolTaskExecutor = new ThreadPoolTaskExecutor();
         threadPoolTaskExecutor.setCorePoolSize(3);
-        threadPoolTaskExecutor.setThreadNamePrefix("async mail executor-");
+        threadPoolTaskExecutor.setThreadNamePrefix("mail -");
         threadPoolTaskExecutor.initialize();
 
         return threadPoolTaskExecutor;

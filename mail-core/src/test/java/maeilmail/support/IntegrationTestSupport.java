@@ -6,7 +6,11 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
+import com.querydsl.jpa.JPQLTemplates;
+import com.querydsl.jpa.impl.JPAQueryFactory;
+import jakarta.persistence.EntityManager;
 import maeilmail.bulksend.sender.QuestionSender;
 import maeilmail.mail.MailSender;
 import maeilmail.subscribe.command.application.VerifySubscribeService;
@@ -17,15 +21,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernatePropertiesCustomizer;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.cache.concurrent.ConcurrentMapCache;
+import org.springframework.cache.support.SimpleCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.auditing.AuditingHandler;
 import org.springframework.data.auditing.DateTimeProvider;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.transaction.annotation.Transactional;
 
-@SpringBootTest
 @Transactional
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @Import(IntegrationTestSupport.TestConfig.class)
 public abstract class IntegrationTestSupport {
 
@@ -54,6 +63,8 @@ public abstract class IntegrationTestSupport {
                 .thenReturn(Optional.of(time));
     }
 
+    @EnableCaching
+    @EnableJpaAuditing
     @TestConfiguration
     public static class TestConfig {
 
@@ -103,6 +114,20 @@ public abstract class IntegrationTestSupport {
 
             return hibernateProperties ->
                     hibernateProperties.put(AvailableSettings.STATEMENT_INSPECTOR, queryCountInspector);
+        }
+
+        @Bean(name = "mailCoreIntegrationTestJpaQueryFactory")
+        public JPAQueryFactory jpaQueryFactory(EntityManager entityManager) {
+            return new JPAQueryFactory(JPQLTemplates.DEFAULT, entityManager);
+        }
+
+        @Bean
+        public CacheManager cacheManager() {
+            List<Cache> caches = List.of(new ConcurrentMapCache("question"));
+            SimpleCacheManager simpleCacheManager = new SimpleCacheManager();
+            simpleCacheManager.setCaches(caches);
+
+            return simpleCacheManager;
         }
     }
 }

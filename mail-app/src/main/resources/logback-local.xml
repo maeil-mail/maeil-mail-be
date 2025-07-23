@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="false">
+
+    <property name="LOG_PATTERN" value="[%d{yyyy-MM-dd HH:mm:ss}:%-4relative] [%thread] %-5level %logger{36} - %msg%n"/>
+
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- 애플리케이션 로그 -->
+    <logger name="maeilmail" level="DEBUG"/>
+    <logger name="maeilwiki" level="DEBUG"/>
+
+    <!-- 스프링 프레임워크 로그 -->
+    <logger name="org.springframework" level="DEBUG"/>
+
+    <!-- Hibernate, JDBC, HikariCP 로그 -->
+    <logger name="org.hibernate.orm.jdbc.bind" level="TRACE"/>
+    <logger name="org.springframework.jdbc.core" level="TRACE"/>
+    <logger name="org.springframework.transaction.interceptor" level="TRACE"/>
+    <logger name="org.hibernate.SQL" level="DEBUG"/>
+    <logger name="com.zaxxer.hikari" level="DEBUG"/>
+
+    <root level="INFO">
+        <appender-ref ref="console"/>
+    </root>
+</configuration>
