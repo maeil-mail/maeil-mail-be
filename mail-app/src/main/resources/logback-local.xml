@@ -11,6 +11,7 @@
 
     <!-- 애플리케이션 로그 -->
     <logger name="maeilmail" level="DEBUG"/>
+    <logger name="maeilwiki" level="DEBUG"/>
 
     <!-- 스프링 프레임워크 로그 -->
     <logger name="org.springframework" level="DEBUG"/>
