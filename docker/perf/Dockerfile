@@ -15,6 +15,7 @@ ENTRYPOINT [ \
     "-Xms512m", \
     "-Xmx512m", \
     "-XX:+UseG1GC", \
+    "-XX:+UseContainerSupport", \
     "-XX:FlightRecorderOptions=stackdepth=256", \
     "-jar", "perf-test-app.jar" \
 ]
