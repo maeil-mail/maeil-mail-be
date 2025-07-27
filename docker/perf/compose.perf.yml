@@ -2,8 +2,8 @@
 # docker compose -f compose.perf.yml down
 
 services:
-  lb-active-1:
-    container_name: lb-active-1
+  lb-active:
+    container_name: lb-active
     build:
       context: .
       dockerfile: Dockerfile.lb
@@ -22,8 +22,8 @@ services:
       - "8888:80"
       - "8404:8404"
 
-  lb-active-2:
-    container_name: lb-active-2
+  lb-passive:
+    container_name: lb-passive
     build:
       context: .
       dockerfile: Dockerfile.lb
@@ -187,6 +187,21 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - /proc/:/host/proc/:ro
       - /sys/fs/cgroup:/host/sys/fs/cgroup:ro
+
+  k6:
+    container_name: k6
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: Dockerfile.k6
+    restart: no
+    networks:
+      perf-network:
+        ipv4_address: 172.16.0.10
+    cpus: 2.0
+    mem_limit: 2g
+    stdin_open: true
+    tty: true
 
 networks:
   perf-network:
