@@ -7,7 +7,7 @@ RUN ./gradlew clean build --no-daemon
 
 FROM gcr.io/distroless/java17-debian12
 WORKDIR /app
-COPY --from=build /app/maeil-mail/build/libs/*.jar perf-test-app.jar
+COPY --from=build /app/mail-app/build/libs/*.jar perf-test-app.jar
 COPY --from=build /app/dd-java-agent.jar dd-java-agent.jar
 ENTRYPOINT [ \
     "java", \
@@ -15,6 +15,7 @@ ENTRYPOINT [ \
     "-Xms512m", \
     "-Xmx512m", \
     "-XX:+UseG1GC", \
+    "-XX:+UseContainerSupport", \
     "-XX:FlightRecorderOptions=stackdepth=256", \
     "-jar", "perf-test-app.jar" \
 ]
