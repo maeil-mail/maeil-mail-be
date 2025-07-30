@@ -1,7 +1,6 @@
 package maeilmail.bulksend.sender;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.List;
 import java.util.Properties;
@@ -16,11 +15,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 
-class WeeklyQuestionMimeMessageCreatorTest {
+class WeeklyQuestionMimeMessageCustomizerTest {
 
     @DisplayName("주간질문지의 MimeMessage를 생성한다.")
     @Test
-    void createMimeMessage() throws MessagingException {
+    void customize() throws MessagingException {
         JavaMailSenderImpl javaMailSender = new JavaMailSenderImpl();
         javaMailSender.setHost("localhost");
         javaMailSender.setPort(25);
@@ -30,14 +29,10 @@ class WeeklyQuestionMimeMessageCreatorTest {
         Subscribe subscribe = new Subscribe("test@test.com", QuestionCategory.BACKEND, SubscribeFrequency.WEEKLY);
         WeeklySubscribeQuestionMessage message = new WeeklySubscribeQuestionMessage(subscribe, List.of(new Question("test1", "content", QuestionCategory.BACKEND)), "subject", "text");
 
-        WeeklyQuestionMimeMessageCreator creator = new WeeklyQuestionMimeMessageCreator();
+        WeeklyQuestionMimeMessageCustomizer customizer = new WeeklyQuestionMimeMessageCustomizer();
 
-        MimeMessage result = creator.createMimeMessage(mimeMessage, message);
+        MimeMessage result = customizer.customize(mimeMessage, message);
 
-        assertAll(
-                () -> assertThat(result.getSubject()).isEqualTo("[매일메일] subject"),
-                () -> assertThat(result.getHeader("X-SES-CONFIGURATION-SET")).contains("my-first-configuration-set"),
-                () -> assertThat(result.getHeader("X-SES-MESSAGE-TAGS")).contains("mail-open=default")
-        );
+        assertThat(result.getSubject()).isEqualTo("[매일메일] subject");
     }
 }

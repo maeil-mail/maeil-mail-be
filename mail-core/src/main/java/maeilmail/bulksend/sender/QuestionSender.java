@@ -13,12 +13,16 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Component("questionSender")
-public class QuestionSender extends AbstractMailSender<SubscribeQuestionMessage, QuestionMimeMessageCreator> {
+public class QuestionSender extends AbstractMailSender<SubscribeQuestionMessage> {
 
     private final SubscribeQuestionRepository subscribeQuestionRepository;
 
-    public QuestionSender(JavaMailSender javaMailSender, QuestionMimeMessageCreator mimeMessageCreator, SubscribeQuestionRepository subscribeQuestionRepository) {
-        super(javaMailSender, mimeMessageCreator);
+    public QuestionSender(
+            JavaMailSender javaMailSender,
+            QuestionMimeMessageCustomizer mimeMessageCustomizer,
+            SubscribeQuestionRepository subscribeQuestionRepository
+    ) {
+        super(javaMailSender, mimeMessageCustomizer);
         this.subscribeQuestionRepository = subscribeQuestionRepository;
     }
 
