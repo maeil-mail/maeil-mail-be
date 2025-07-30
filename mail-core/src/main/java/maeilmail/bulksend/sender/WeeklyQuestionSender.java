@@ -18,7 +18,11 @@ public class WeeklyQuestionSender extends AbstractMailSender<WeeklySubscribeQues
 
     private final SubscribeQuestionRepository subscribeQuestionRepository;
 
-    public WeeklyQuestionSender(JavaMailSender javaMailSender, WeeklyQuestionMimeMessageCreator mimeMessageCreator, SubscribeQuestionRepository subscribeQuestionRepository) {
+    public WeeklyQuestionSender(
+            JavaMailSender javaMailSender,
+            WeeklyQuestionMimeMessageCreator mimeMessageCreator,
+            SubscribeQuestionRepository subscribeQuestionRepository
+    ) {
         super(javaMailSender, mimeMessageCreator);
         this.subscribeQuestionRepository = subscribeQuestionRepository;
     }

@@ -10,7 +10,11 @@ public class MailSender extends AbstractMailSender<MailMessage, MailMimeMessageC
 
     private final MailEventRepository mailEventRepository;
 
-    public MailSender(JavaMailSender javaMailSender, MailMimeMessageCreator mimeMessageCreator, MailEventRepository mailEventRepository) {
+    public MailSender(
+            JavaMailSender javaMailSender,
+            MailMimeMessageCreator mimeMessageCreator,
+            MailEventRepository mailEventRepository
+    ) {
         super(javaMailSender, mimeMessageCreator);
         this.mailEventRepository = mailEventRepository;
     }
