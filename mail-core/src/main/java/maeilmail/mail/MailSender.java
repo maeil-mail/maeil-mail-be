@@ -12,10 +12,10 @@ public class MailSender extends AbstractMailSender<MailMessage> {
 
     public MailSender(
             JavaMailSender javaMailSender,
-            MailMimeMessageCreator mimeMessageCreator,
+            MailMimeMessageCustomizer mimeMessageCustomizer,
             MailEventRepository mailEventRepository
     ) {
-        super(javaMailSender, mimeMessageCreator);
+        super(javaMailSender, mimeMessageCustomizer);
         this.mailEventRepository = mailEventRepository;
     }
 

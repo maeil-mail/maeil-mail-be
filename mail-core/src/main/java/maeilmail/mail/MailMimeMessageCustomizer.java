@@ -3,7 +3,7 @@ package maeilmail.mail;
 import org.springframework.stereotype.Component;
 
 @Component
-public class MailMimeMessageCreator extends MimeMessageCreator<MailMessage> {
+public class MailMimeMessageCustomizer extends MimeMessageCustomizer<MailMessage> {
 
     @Override
     public String extractTo(MailMessage message) {

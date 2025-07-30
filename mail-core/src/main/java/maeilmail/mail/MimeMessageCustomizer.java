@@ -4,12 +4,12 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.mail.javamail.MimeMessageHelper;
 
-public abstract class MimeMessageCreator<T> {
+public abstract class MimeMessageCustomizer<T> {
 
     protected static final String FROM_EMAIL = "maeil-mail <noreply@maeil-mail.kr>";
     protected static final String TITLE_PREFIX = "[매일메일] %s";
 
-    public MimeMessage createMimeMessage(MimeMessage mimeMessage, T message) throws MessagingException {
+    public MimeMessage customize(MimeMessage mimeMessage, T message) throws MessagingException {
         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, false, "UTF-8");
         helper.setFrom(FROM_EMAIL);
         helper.setTo(extractTo(message));

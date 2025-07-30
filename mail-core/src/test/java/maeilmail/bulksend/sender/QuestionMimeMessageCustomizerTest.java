@@ -2,7 +2,6 @@ package maeilmail.bulksend.sender;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.List;
 import java.util.Properties;
 import jakarta.mail.MessagingException;
 import jakarta.mail.Session;
@@ -15,24 +14,24 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 
-class WeeklyQuestionMimeMessageCreatorTest {
+class QuestionMimeMessageCustomizerTest {
 
-    @DisplayName("주간질문지의 MimeMessage를 생성한다.")
+    @DisplayName("일간질문지의 MimeMessage를 생성한다.")
     @Test
-    void createMimeMessage() throws MessagingException {
+    void customize() throws MessagingException {
         JavaMailSenderImpl javaMailSender = new JavaMailSenderImpl();
         javaMailSender.setHost("localhost");
         javaMailSender.setPort(25);
         javaMailSender.setSession(Session.getDefaultInstance(new Properties()));
 
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
-        Subscribe subscribe = new Subscribe("test@test.com", QuestionCategory.BACKEND, SubscribeFrequency.WEEKLY);
-        WeeklySubscribeQuestionMessage message = new WeeklySubscribeQuestionMessage(subscribe, List.of(new Question("test1", "content", QuestionCategory.BACKEND)), "subject", "text");
+        Subscribe subscribe = new Subscribe("test@test.com", QuestionCategory.BACKEND, SubscribeFrequency.DAILY);
+        Question question = new Question("test1", "content", QuestionCategory.BACKEND);
+        SubscribeQuestionMessage message = new SubscribeQuestionMessage(subscribe, question, "subject", "text");
 
-        WeeklyQuestionMimeMessageCreator creator = new WeeklyQuestionMimeMessageCreator();
+        QuestionMimeMessageCustomizer customizer = new QuestionMimeMessageCustomizer();
 
-        MimeMessage result = creator.createMimeMessage(mimeMessage, message);
-
+        MimeMessage result = customizer.customize(mimeMessage, message);
 
         assertThat(result.getSubject()).isEqualTo("[매일메일] subject");
     }

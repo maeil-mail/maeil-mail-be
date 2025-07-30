@@ -1,11 +1,11 @@
 package maeilmail.bulksend.sender;
 
-import maeilmail.mail.MimeMessageCreator;
+import maeilmail.mail.MimeMessageCustomizer;
 import maeilmail.subscribe.command.domain.Subscribe;
 import org.springframework.stereotype.Component;
 
 @Component
-public class WeeklyQuestionMimeMessageCreator extends MimeMessageCreator<WeeklySubscribeQuestionMessage> {
+public class WeeklyQuestionMimeMessageCustomizer extends MimeMessageCustomizer<WeeklySubscribeQuestionMessage> {
 
     @Override
     public String extractTo(WeeklySubscribeQuestionMessage message) {

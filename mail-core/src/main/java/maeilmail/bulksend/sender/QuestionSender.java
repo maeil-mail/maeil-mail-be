@@ -19,10 +19,10 @@ public class QuestionSender extends AbstractMailSender<SubscribeQuestionMessage>
 
     public QuestionSender(
             JavaMailSender javaMailSender,
-            QuestionMimeMessageCreator mimeMessageCreator,
+            QuestionMimeMessageCustomizer mimeMessageCustomizer,
             SubscribeQuestionRepository subscribeQuestionRepository
     ) {
-        super(javaMailSender, mimeMessageCreator);
+        super(javaMailSender, mimeMessageCustomizer);
         this.subscribeQuestionRepository = subscribeQuestionRepository;
     }
 

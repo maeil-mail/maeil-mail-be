@@ -72,9 +72,9 @@ class QuestionSenderTest extends IntegrationTestSupport {
 
     private QuestionSender createQuestionSender() {
         JavaMailSender mailSender = mock(JavaMailSender.class);
-        QuestionMimeMessageCreator creator = mock(QuestionMimeMessageCreator.class);
+        QuestionMimeMessageCustomizer customizer = mock(QuestionMimeMessageCustomizer.class);
 
-        return new QuestionSender(mailSender, creator, subscribeQuestionRepository);
+        return new QuestionSender(mailSender, customizer, subscribeQuestionRepository);
     }
 
     private Subscribe createSubscribe() {

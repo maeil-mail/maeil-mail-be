@@ -77,9 +77,9 @@ class WeeklyQuestionSenderTest extends IntegrationTestSupport {
 
     private WeeklyQuestionSender createWeeklyQuestionSender() {
         JavaMailSender mailSender = mock(JavaMailSender.class);
-        WeeklyQuestionMimeMessageCreator creator = mock(WeeklyQuestionMimeMessageCreator.class);
+        WeeklyQuestionMimeMessageCustomizer customizer = mock(WeeklyQuestionMimeMessageCustomizer.class);
 
-        return new WeeklyQuestionSender(mailSender, creator, subscribeQuestionRepository);
+        return new WeeklyQuestionSender(mailSender, customizer, subscribeQuestionRepository);
     }
 
     private Subscribe createSubscribe() {

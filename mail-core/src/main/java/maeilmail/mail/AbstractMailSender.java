@@ -15,14 +15,14 @@ public abstract class AbstractMailSender<T> {
     private static final int MAIL_SENDER_RATE_MILLISECONDS = 500;
 
     protected final JavaMailSender javaMailSender;
-    protected final MimeMessageCreator<T> mimeMessageCreator;
+    protected final MimeMessageCustomizer<T> mimeMessageCustomizer;
 
     @Async
     public void sendMail(T message) {
         try {
             logSending(message);
             MimeMessage emptyMimeMessage = javaMailSender.createMimeMessage();
-            MimeMessage targetMimeMessage = mimeMessageCreator.createMimeMessage(emptyMimeMessage, message);
+            MimeMessage targetMimeMessage = mimeMessageCustomizer.customize(emptyMimeMessage, message);
             javaMailSender.send(targetMimeMessage);
             handleSuccess(message);
         } catch (MessagingException | MailException e) {
