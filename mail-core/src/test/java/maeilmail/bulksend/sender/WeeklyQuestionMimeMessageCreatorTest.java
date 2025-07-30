@@ -1,7 +1,6 @@
 package maeilmail.bulksend.sender;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.List;
 import java.util.Properties;
@@ -34,10 +33,7 @@ class WeeklyQuestionMimeMessageCreatorTest {
 
         MimeMessage result = creator.createMimeMessage(mimeMessage, message);
 
-        assertAll(
-                () -> assertThat(result.getSubject()).isEqualTo("[매일메일] subject"),
-                () -> assertThat(result.getHeader("X-SES-CONFIGURATION-SET")).contains("my-first-configuration-set"),
-                () -> assertThat(result.getHeader("X-SES-MESSAGE-TAGS")).contains("mail-open=default")
-        );
+
+        assertThat(result.getSubject()).isEqualTo("[매일메일] subject");
     }
 }

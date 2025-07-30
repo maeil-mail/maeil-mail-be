@@ -13,10 +13,6 @@ public class WeeklyQuestionMimeMessageCreator extends MimeMessageCreator<WeeklyS
     @Override
     public MimeMessage createMimeMessage(MimeMessage mimeMessage, WeeklySubscribeQuestionMessage message) throws MessagingException {
         Subscribe subscribe = message.subscribe();
-
-        mimeMessage.setHeader("X-SES-CONFIGURATION-SET", "my-first-configuration-set");
-        mimeMessage.setHeader("X-SES-MESSAGE-TAGS", "mail-open=default");
-
         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, false, "UTF-8");
         helper.setFrom(FROM_EMAIL);
         helper.setTo(subscribe.getEmail());
