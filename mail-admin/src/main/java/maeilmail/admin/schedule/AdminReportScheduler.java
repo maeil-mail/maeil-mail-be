@@ -28,7 +28,7 @@ class AdminReportScheduler {
     private final DistributedSupport distributedSupport;
     private final StatisticsService statisticsService;
 
-    @Scheduled(cron = "0 30 7 * * MON-FRI", zone = "Asia/Seoul")
+    @Scheduled(cron = "0 40 7 * * MON-FRI", zone = "Asia/Seoul")
     public void sendReport() {
         LocalDate today = LocalDate.now();
         log.info("관리자 결과 전송, date = {}", today);
