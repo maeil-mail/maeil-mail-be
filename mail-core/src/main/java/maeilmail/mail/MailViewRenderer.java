@@ -14,7 +14,7 @@ public class MailViewRenderer {
 
     public String render(Map<Object, Object> attribute, String template) {
         Context context = new Context();
-        attribute.forEach((key, value) -> context.setVariable(key.toString(), value.toString()));
+        attribute.forEach((key, value) -> context.setVariable(key.toString(), value));
 
         return templateEngine.process(template, context);
     }
