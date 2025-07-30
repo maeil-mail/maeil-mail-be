@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Component("weeklyQuestionSender")
-public class WeeklyQuestionSender extends AbstractMailSender<WeeklySubscribeQuestionMessage, WeeklyQuestionMimeMessageCreator> {
+public class WeeklyQuestionSender extends AbstractMailSender<WeeklySubscribeQuestionMessage> {
 
     private final SubscribeQuestionRepository subscribeQuestionRepository;
 

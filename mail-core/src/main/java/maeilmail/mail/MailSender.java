@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component("emailSender")
-public class MailSender extends AbstractMailSender<MailMessage, MailMimeMessageCreator> {
+public class MailSender extends AbstractMailSender<MailMessage> {
 
     private final MailEventRepository mailEventRepository;
 

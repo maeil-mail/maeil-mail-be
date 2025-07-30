@@ -10,12 +10,12 @@ import org.springframework.scheduling.annotation.Async;
 
 @Slf4j
 @RequiredArgsConstructor
-public abstract class AbstractMailSender<T, U extends MimeMessageCreator<T>> {
+public abstract class AbstractMailSender<T> {
 
     private static final int MAIL_SENDER_RATE_MILLISECONDS = 500;
 
     protected final JavaMailSender javaMailSender;
-    protected final U mimeMessageCreator;
+    protected final MimeMessageCreator<T> mimeMessageCreator;
 
     @Async
     public void sendMail(T message) {

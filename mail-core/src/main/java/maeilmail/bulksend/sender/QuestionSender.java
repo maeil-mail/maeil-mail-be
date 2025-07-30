@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Component("questionSender")
-public class QuestionSender extends AbstractMailSender<SubscribeQuestionMessage, QuestionMimeMessageCreator> {
+public class QuestionSender extends AbstractMailSender<SubscribeQuestionMessage> {
 
     private final SubscribeQuestionRepository subscribeQuestionRepository;
 
