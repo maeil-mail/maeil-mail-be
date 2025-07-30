@@ -72,7 +72,6 @@
     </appender>
 
     <root level="INFO">
-        <appender-ref ref="CONSOLE"/>
         <appender-ref ref="INFO_LOG"/>
         <appender-ref ref="WARN_LOG"/>
         <appender-ref ref="ERROR_LOG"/>
