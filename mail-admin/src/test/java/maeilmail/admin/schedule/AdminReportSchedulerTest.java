@@ -11,16 +11,16 @@ import org.junit.jupiter.api.Test;
 class AdminReportSchedulerTest {
 
     @Test
-    @DisplayName("매주 월요일부터 금요일까지 평일에 한해서 매일 아침 7시 30분에 관리자 리포트 스케줄러가 동작하는지 확인한다.")
+    @DisplayName("매주 월요일부터 금요일까지 평일에 한해서 매일 아침 7시 40분에 관리자 리포트 스케줄러가 동작하는지 확인한다.")
     void sendReportCronWeekday() {
-        LocalDateTime initialTime = LocalDateTime.of(2024, 8, 26, 7, 30); // 월요일
+        LocalDateTime initialTime = LocalDateTime.of(2024, 8, 26, 7, 40); // 월요일
         List<LocalDateTime> expectedTimes = List.of(
-                LocalDateTime.of(2024, 8, 27, 7, 30),  // 화요일
-                LocalDateTime.of(2024, 8, 28, 7, 30),  // 수요일
-                LocalDateTime.of(2024, 8, 29, 7, 30),  // 목요일
-                LocalDateTime.of(2024, 8, 30, 7, 30),  // 금요일
-                LocalDateTime.of(2024, 9, 2, 7, 30),   // 다음 주 월요일
-                LocalDateTime.of(2024, 9, 3, 7, 30)    // 다음 주 화요일
+                LocalDateTime.of(2024, 8, 27, 7, 40),  // 화요일
+                LocalDateTime.of(2024, 8, 28, 7, 40),  // 수요일
+                LocalDateTime.of(2024, 8, 29, 7, 40),  // 목요일
+                LocalDateTime.of(2024, 8, 30, 7, 40),  // 금요일
+                LocalDateTime.of(2024, 9, 2, 7, 40),   // 다음 주 월요일
+                LocalDateTime.of(2024, 9, 3, 7, 40)    // 다음 주 화요일
         );
         SchedulerTestUtils.assertCronExpression(
                 AdminReportScheduler.class,
