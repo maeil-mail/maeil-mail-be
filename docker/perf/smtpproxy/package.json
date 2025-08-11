@@ -1,0 +1,10 @@
+{
+  "name": "smtpproxy",
+  "version": "1.0.0",
+  "type": "commonjs",
+  "dependencies": {
+    "nodemailer": "^6.9.13",
+    "rate-limiter-flexible": "^5.0.0",
+    "smtp-server": "^3.13.0"
+  }
+}
