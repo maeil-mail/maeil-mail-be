@@ -89,8 +89,8 @@ services:
       DISTRIBUTE_SERVER_COUNT: 2
       USER_TIMEZONE: Asia/Seoul
       SPRING_PROFILES_ACTIVE: prod
-#    ports:
-#      - "8080:8080"
+  #    ports:
+  #      - "8080:8080"
 
   mm-app-2:
     container_name: mm-app-2
@@ -139,8 +139,8 @@ services:
       DISTRIBUTE_SERVER_COUNT: 2
       USER_TIMEZONE: Asia/Seoul
       SPRING_PROFILES_ACTIVE: prod
-#    ports:
-#      - "8080:8080"
+  #    ports:
+  #      - "8080:8080"
 
   mm-mysql:
     container_name: mm-mysql
@@ -169,8 +169,25 @@ services:
       perf-network:
         ipv4_address: 172.16.0.8
     ports:
-      - "587:1025"
       - "8025:8025"
+
+  mm-mail-proxy:
+    container_name: mm-mail-proxy
+    build:
+      context: .
+      dockerfile: Dockerfile.mailproxy
+    depends_on:
+      - mm-mail
+    restart: no
+    networks:
+      perf-network:
+        ipv4_address: 172.16.0.9
+    ports:
+      - "587:587"
+    environment:
+      TPS: 14
+      FORWARD_HOST: 172.16.0.8
+      FORWARD_PORT: 1025
 
   dd-agent:
     container_name: dd-agent
@@ -178,7 +195,7 @@ services:
     restart: no
     networks:
       perf-network:
-        ipv4_address: 172.16.0.9
+        ipv4_address: 172.16.0.10
     environment:
       DD_API_KEY: ${DD_API_KEY}
       DD_SITE: ${DD_SITE}
@@ -197,7 +214,7 @@ services:
     restart: no
     networks:
       perf-network:
-        ipv4_address: 172.16.0.10
+        ipv4_address: 172.16.0.11
     cpus: 2.0
     mem_limit: 2g
     stdin_open: true
