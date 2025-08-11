@@ -1,3 +1,10 @@
+/**
+ *  - 처리율 제한 : https://github.com/animir/node-rate-limiter-flexible
+ *  - smtp 서버 구성 : https://nodemailer.com/extras/smtp-server
+ *  - nodemailer sendMail 커스텀 소스 : https://nodemailer.com/message/custom-source
+ *     - proxy에서 mailhog로 메일 메시지를 전달만 하기 때문에, 이미 포맷된 message가 존재한다. (커스텀 소스 문서 참고)
+ */
+
 const {SMTPServer} = require('smtp-server');
 const nodemailer = require('nodemailer');
 const {RateLimiterMemory} = require('rate-limiter-flexible');
@@ -11,12 +18,10 @@ const transport = nodemailer.createTransport({
     host: FORWARD_HOST,
     port: FORWARD_PORT,
     secure: false
-}); // mailhog로 전송
+});
 
 const limiter = new RateLimiterMemory({points: TPS, duration: 1});
 
-// docs: https://nodemailer.com/extras/smtp-server
-// docs : https://nodemailer.com/message/custom-source
 const server = new SMTPServer({
     disabledCommands: ['AUTH', 'STARTTLS'],
     hideSTARTTLS: true,
@@ -35,7 +40,6 @@ const server = new SMTPServer({
     async onData(stream, session, callback) {
         try {
             const raw = await buffer(stream);
-
             await transport.sendMail({
                 envelope: {
                     from: session.envelope.mailFrom.address,
