@@ -76,6 +76,22 @@ configureByTypeHaving(project, ['boot', 'mvc', 'application'] as String[]) {
     }
 }
 
+configureByTypeHaving(project, ['boot', 'batch', 'application'] as String[]) {
+    configure(it) {
+        bootJar {
+            enabled = true
+        }
+
+        jar {
+            enabled = false
+        }
+
+        dependencies {
+            implementation 'org.springframework.boot:spring-boot-starter-batch'
+        }
+    }
+}
+
 configureByTypeHaving(project, ['boot', 'lib'] as String[]) {
     configure(it) {
         apply plugin: 'java-library'
