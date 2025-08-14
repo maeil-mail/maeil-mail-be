@@ -2,8 +2,8 @@ import static com.linecorp.support.project.multi.recipe.BuildRecipeExtensionsKt.
 
 plugins {
     id 'com.linecorp.build-recipe-plugin' version '1.1.1'
-    id 'org.springframework.boot' version '3.3.2' apply false
-    id 'io.spring.dependency-management' version '1.1.6' apply false
+    id 'org.springframework.boot' version '3.5.3' apply false
+    id 'io.spring.dependency-management' version '1.1.7' apply false
 }
 
 allprojects {
