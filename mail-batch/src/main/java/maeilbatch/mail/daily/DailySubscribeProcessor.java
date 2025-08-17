@@ -22,14 +22,19 @@ public class DailySubscribeProcessor implements ItemProcessor<Subscribe, Subscri
     @Override
     public SubscribeQuestionMessage process(Subscribe subscribe) {
         try {
-            QuestionSummary questionSummary = choiceQuestionPolicy.choice(subscribe);
-            String subject = createSubject(questionSummary);
-            String text = createText(subscribe, questionSummary);
-            return new SubscribeQuestionMessage(subscribe, questionSummary.toQuestion(), subject, text);
+            return createSubscribeMessage(subscribe);
         } catch (Exception e) {
             log.error("일간 면접 질문 선택 실패. 구독자 id = {}", subscribe.getId(), e);
             return null;
         }
+    }
+
+    private SubscribeQuestionMessage createSubscribeMessage(Subscribe subscribe) {
+        QuestionSummary questionSummary = choiceQuestionPolicy.choice(subscribe);
+        String subject = createSubject(questionSummary);
+        String text = createText(subscribe, questionSummary);
+
+        return new SubscribeQuestionMessage(subscribe, questionSummary.toQuestion(), subject, text);
     }
 
     private String createSubject(QuestionSummary question) {
