@@ -1,11 +1,9 @@
-package maeilbatch.jobconfig;
+package maeilbatch.mail.daily;
 
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import maeilbatch.processor.DailySubscribeProcessor;
-import maeilbatch.reader.SubscribeItemReaderGenerator;
-import maeilbatch.writer.DailyMailSendWriter;
+import maeilbatch.mail.SubscribeItemReaderGenerator;
 import maeilmail.bulksend.sender.SubscribeQuestionMessage;
 import maeilmail.subscribe.command.domain.Subscribe;
 import maeilmail.subscribe.command.domain.SubscribeFrequency;
