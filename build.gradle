@@ -88,6 +88,8 @@ configureByTypeHaving(project, ['boot', 'batch', 'application'] as String[]) {
 
         dependencies {
             implementation 'org.springframework.boot:spring-boot-starter-batch'
+            implementation 'org.springframework.boot:spring-boot-starter-cache'
+            implementation 'com.github.ben-manes.caffeine:caffeine:3.1.8'
         }
     }
 }
