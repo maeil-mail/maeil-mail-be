@@ -7,8 +7,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -18,12 +16,6 @@ public abstract class AbstractMailSender<T> {
 
     protected final JavaMailSender javaMailSender;
     protected final MimeMessageCustomizer<T> mimeMessageCustomizer;
-
-    @Async
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void sendMailWithTransaction(T message) {
-        sendMail(message);
-    }
 
     @Async
     public void sendMail(T message) {
