@@ -1,21 +1,21 @@
-package maeilbatch.mail.daily;
+package maeilbatch.mail;
 
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import maeilbatch.mail.IncreaseSubscribeSequenceTasklet;
-import maeilbatch.mail.SubscribeItemReaderGenerator;
+import maeilbatch.mail.daily.DailyMailSendWriter;
+import maeilbatch.mail.daily.DailySubscribeProcessor;
 import maeilmail.bulksend.sender.SubscribeQuestionMessage;
 import maeilmail.subscribe.command.domain.Subscribe;
 import maeilmail.subscribe.command.domain.SubscribeFrequency;
 import org.springframework.batch.core.Job;
+import org.springframework.batch.core.JobExecutionListener;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.item.database.JpaCursorItemReader;
-import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,7 +24,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 @Slf4j
 @Configuration
 @RequiredArgsConstructor
-class DailyMailSendJobConfig {
+class MailSendJobConfig {
 
     private static final int CHUNK_SIZE = 100;
 
@@ -34,12 +34,13 @@ class DailyMailSendJobConfig {
     @Bean
     public Job dailyMailSendJob(
             Step dailyMailSendStep,
-            Step changeSequenceStep
+            Step changeSequenceStep,
+            JobExecutionListener mailSendJobReportListener
     ) {
-        return new JobBuilder("dailyMailSendJob", jobRepository)
+        return new JobBuilder("mailSendJob", jobRepository)
                 .start(dailyMailSendStep)
                 .next(changeSequenceStep)
-                .next(adminReportSendStep())
+                .listener(mailSendJobReportListener)
                 .build();
     }
 
@@ -70,16 +71,6 @@ class DailyMailSendJobConfig {
     public Step changeSequenceStep(IncreaseSubscribeSequenceTasklet increaseSubscribeSequenceTasklet) {
         return new StepBuilder("dailyIncreaseSubscribeSequenceTasklet", jobRepository)
                 .tasklet(increaseSubscribeSequenceTasklet, transactionManager)
-                .build();
-    }
-
-    @Bean
-    public Step adminReportSendStep() {
-        return new StepBuilder("adminReportSendStep", jobRepository)
-                .tasklet((contribution, chunkContext) -> {
-                    System.out.println("오늘의 발송 결과 메일 전송!");
-                    return RepeatStatus.FINISHED;
-                }, transactionManager)
                 .build();
     }
 }

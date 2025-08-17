@@ -6,8 +6,8 @@ import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import maeilmail.admin.view.AdminReportView;
-import maeilmail.mail.MailMessage;
 import maeilmail.mail.MailSender;
+import maeilmail.mail.SimpleMailMessage;
 import maeilmail.statistics.DailySendReport;
 import maeilmail.statistics.StatisticsService;
 import org.springframework.batch.core.JobExecution;
@@ -37,15 +37,15 @@ public class MailSendJobReportListener implements JobExecutionListener {
     public void afterJob(JobExecution jobExecution) {
         LocalDate targetDate = baseDateTime.toLocalDate();
         DailySendReport dailySendReport = statisticsService.generateDailySendReport(targetDate);
-        MailMessage message = createMessage(dailySendReport);
+        SimpleMailMessage message = createMessage(dailySendReport);
 
         mailSender.sendMail(message);
     }
 
-    private MailMessage createMessage(DailySendReport report) {
+    private SimpleMailMessage createMessage(DailySendReport report) {
         String text = createText(report);
 
-        return new MailMessage(REPORT_TARGET, REPORT_SUBJECT, text, adminReportView.getType());
+        return new SimpleMailMessage(REPORT_TARGET, REPORT_SUBJECT, text, adminReportView.getType());
     }
 
     private String createText(DailySendReport report) {
