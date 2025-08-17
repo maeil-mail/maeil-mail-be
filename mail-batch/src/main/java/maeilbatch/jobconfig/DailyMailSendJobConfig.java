@@ -1,4 +1,4 @@
-package maeilbatch.config;
+package maeilbatch.jobconfig;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -67,7 +67,7 @@ class DailyMailSendJobConfig {
         return new JpaCursorItemReaderBuilder<Subscribe>()
                 .name("dailySubscribeReader")
                 .entityManagerFactory(entityManagerFactory)
-                .queryString("select subscribe where createdAt = :createdAt and deletedAt is null and frequency = DAILY")
+                .queryString("select s from Subscribe s where s.createdAt <= :createdAt and s.deletedAt is null and s.frequency = DAILY order by s.id ASC")
                 .parameterValues(Map.of("createdAt", startedAt))
                 .hintValues(Map.of("org.hibernate.fetchSize", 100))
                 .build();
@@ -103,14 +103,11 @@ class DailyMailSendJobConfig {
         return subscribeQuestionView.render(attribute);
     }
 
-    // TODO: 예외 처리 필요
     public ItemWriter<SubscribeQuestionMessage> dailyMailSendWriter() {
-        return chunk -> {
-            for (SubscribeQuestionMessage item : chunk.getItems()) {
-                questionSender.sendMail(item);
-            }
-        };
+        return chunk -> chunk.getItems()
+                .forEach(questionSender::sendMailWithTransaction);
     }
+
     @Bean
     public Step changeSequenceStep() {
         return new StepBuilder("changeSequenceStep", jobRepository)
