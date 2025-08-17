@@ -27,6 +27,8 @@ import org.springframework.transaction.PlatformTransactionManager;
 @RequiredArgsConstructor
 class DailyMailSendJobConfig {
 
+    private static final int CHUNK_SIZE = 100;
+
     private final JobRepository jobRepository;
     private final PlatformTransactionManager transactionManager;
 
@@ -46,7 +48,7 @@ class DailyMailSendJobConfig {
             DailyMailSendWriter dailyMailSendWriter
     ) {
         return new StepBuilder("dailyMailSendStep", jobRepository)
-                .<Subscribe, SubscribeQuestionMessage>chunk(100, transactionManager)
+                .<Subscribe, SubscribeQuestionMessage>chunk(CHUNK_SIZE, transactionManager)
                 .reader(dailySubscribeReader)
                 .processor(dailySubscribeProcessor)
                 .writer(dailyMailSendWriter)
@@ -58,7 +60,6 @@ class DailyMailSendJobConfig {
     public JpaCursorItemReader<Subscribe> dailySubscribeReader(
             @Value("#{jobParameters['datetime']}") LocalDateTime dateTime,
             SubscribeItemReaderGenerator subscribeItemReaderGenerator
-
     ) {
         return subscribeItemReaderGenerator.generate(SubscribeFrequency.DAILY, dateTime);
     }
