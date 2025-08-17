@@ -7,6 +7,7 @@ import static org.mockito.Mockito.mock;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import maeilmail.mail.MimeMessageCustomizer;
 import maeilmail.question.Question;
 import maeilmail.question.QuestionCategory;
 import maeilmail.question.QuestionRepository;
@@ -77,7 +78,7 @@ class WeeklyQuestionSenderTest extends IntegrationTestSupport {
 
     private WeeklyQuestionSender createWeeklyQuestionSender() {
         JavaMailSender mailSender = mock(JavaMailSender.class);
-        WeeklyQuestionMimeMessageCustomizer customizer = mock(WeeklyQuestionMimeMessageCustomizer.class);
+        MimeMessageCustomizer customizer = mock(MimeMessageCustomizer.class);
 
         return new WeeklyQuestionSender(mailSender, customizer, subscribeQuestionRepository);
     }

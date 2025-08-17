@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import maeilmail.mail.MailMessage;
 import maeilmail.mail.MailSender;
+import maeilmail.mail.SimpleMailMessage;
 import maeilmail.question.QuestionCategory;
 import maeilmail.subscribe.command.application.request.SubscribeRequest;
 import maeilmail.subscribe.command.application.request.VerifyEmailRequest;
@@ -77,7 +78,7 @@ public class SubscribeService {
     private void sendSubscribeWelcomeMail(String email) {
         String subject = "앞으로 면접 질문을 보내드릴게요.";
         String text = createText();
-        MailMessage mailMessage = new MailMessage(email, subject, text, welcomeView.getType());
+        SimpleMailMessage mailMessage = new SimpleMailMessage(email, subject, text, welcomeView.getType());
         mailSender.sendMail(mailMessage);
     }
 

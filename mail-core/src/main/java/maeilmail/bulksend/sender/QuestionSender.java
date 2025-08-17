@@ -2,6 +2,7 @@ package maeilmail.bulksend.sender;
 
 import lombok.extern.slf4j.Slf4j;
 import maeilmail.mail.AbstractMailSender;
+import maeilmail.mail.MimeMessageCustomizer;
 import maeilmail.question.Question;
 import maeilmail.question.QuestionCategory;
 import maeilmail.subscribe.command.domain.Subscribe;
@@ -19,10 +20,11 @@ public class QuestionSender extends AbstractMailSender<SubscribeQuestionMessage>
 
     public QuestionSender(
             JavaMailSender javaMailSender,
-            QuestionMimeMessageCustomizer mimeMessageCustomizer,
+            MimeMessageCustomizer mimeMessageCustomizer,
             SubscribeQuestionRepository subscribeQuestionRepository
     ) {
         super(javaMailSender, mimeMessageCustomizer);
+
         this.subscribeQuestionRepository = subscribeQuestionRepository;
     }
 

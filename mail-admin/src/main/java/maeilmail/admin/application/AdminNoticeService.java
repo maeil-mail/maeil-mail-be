@@ -4,8 +4,8 @@ import java.util.NoSuchElementException;
 import lombok.RequiredArgsConstructor;
 import maeilmail.admin.domain.AdminNotice;
 import maeilmail.admin.domain.AdminNoticeRepository;
-import maeilmail.mail.MailMessage;
 import maeilmail.mail.MailSender;
+import maeilmail.mail.SimpleMailMessage;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,7 +32,7 @@ public class AdminNoticeService {
 
     public void sendTest(Long id, AdminNoticeTestRequest request) {
         AdminNotice adminNotice = findNotice(id);
-        mailSender.sendMail(new MailMessage(request.target(), adminNotice.getTitle(), adminNotice.getContent(), "notice test"));
+        mailSender.sendMail(new SimpleMailMessage(request.target(), adminNotice.getTitle(), adminNotice.getContent(), "notice test"));
     }
 
     @Transactional

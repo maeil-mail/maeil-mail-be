@@ -7,8 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 import maeilmail.admin.domain.Admin;
 import maeilmail.admin.domain.AdminRepository;
 import maeilmail.admin.view.AdminReportView;
-import maeilmail.mail.MailMessage;
 import maeilmail.mail.MailSender;
+import maeilmail.mail.SimpleMailMessage;
 import maeilmail.statistics.DailySendReport;
 import maeilmail.statistics.StatisticsService;
 import maeilmail.utils.DistributedSupport;
@@ -55,7 +55,7 @@ class AdminReportScheduler {
         return adminReportView.render(Map.of("report", reportText));
     }
 
-    private MailMessage createMessage(Admin admin, String subject, String text) {
-        return new MailMessage(admin.getEmail(), subject, text, adminReportView.getType());
+    private SimpleMailMessage createMessage(Admin admin, String subject, String text) {
+        return new SimpleMailMessage(admin.getEmail(), subject, text, adminReportView.getType());
     }
 }
