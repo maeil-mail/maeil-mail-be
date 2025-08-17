@@ -14,9 +14,9 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @EnableJpaAuditing
 @EnableJpaRepositories(basePackages = {"maeilmail", "maeilbatch"})
 @EntityScan(basePackages = {"maeilmail", "maeilbatch"})
-class MailBatchApplication {
+class MaeilBatchApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(MailBatchApplication.class, args);
+        SpringApplication.run(MaeilBatchApplication.class, args);
     }
 }
