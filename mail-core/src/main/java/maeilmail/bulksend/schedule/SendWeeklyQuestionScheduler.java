@@ -1,5 +1,7 @@
 package maeilmail.bulksend.schedule;
 
+import static maeilmail.subscribe.command.domain.SubscribeFrequency.WEEKLY;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -17,7 +19,6 @@ import maeilmail.bulksend.view.WeeklySubscribeQuestionView;
 import maeilmail.question.Question;
 import maeilmail.question.QuestionSummary;
 import maeilmail.subscribe.command.domain.Subscribe;
-import maeilmail.subscribe.command.domain.SubscribeFrequency;
 import maeilmail.subscribe.command.domain.SubscribeRepository;
 import maeilmail.utils.DateUtils;
 import maeilmail.utils.DistributedSupport;
@@ -29,7 +30,6 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class SendWeeklyQuestionScheduler {
 
-    public static final int WEEKLY_MAIL_SEND_COUNT = 5;
     private static final ZoneId KOREA_ZONE = ZoneId.of("Asia/Seoul");
 
     private final ChoiceQuestionPolicy choiceQuestionPolicy;
@@ -54,7 +54,7 @@ public class SendWeeklyQuestionScheduler {
     private List<Subscribe> getSubscribes() {
         LocalDateTime now = ZonedDateTime.now(KOREA_ZONE).toLocalDateTime();
 
-        return subscribeRepository.findAllByCreatedAtBeforeAndDeletedAtIsNullAndFrequency(now, SubscribeFrequency.WEEKLY);
+        return subscribeRepository.findAllByCreatedAtBeforeAndDeletedAtIsNullAndFrequency(now, WEEKLY);
     }
 
     private WeeklySubscribeQuestionMessage choiceQuestion(Subscribe subscribe) {
@@ -70,7 +70,7 @@ public class SendWeeklyQuestionScheduler {
     }
 
     private List<QuestionSummary> choiceWeeklyQuestions(Subscribe subscribe) {
-        return IntStream.range(0, WEEKLY_MAIL_SEND_COUNT)
+        return IntStream.range(0, WEEKLY.getSendCount())
                 .mapToObj(round -> choiceQuestionPolicy.choiceByRound(subscribe, round))
                 .toList();
     }
