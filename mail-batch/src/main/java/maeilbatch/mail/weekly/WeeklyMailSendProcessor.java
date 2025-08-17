@@ -25,13 +25,13 @@ import org.springframework.stereotype.Component;
 @StepScope
 @Component
 @RequiredArgsConstructor
-class WeeklySubscribeProcessor implements ItemProcessor<Subscribe, WeeklySubscribeQuestionMessage> {
+class WeeklyMailSendProcessor implements ItemProcessor<Subscribe, WeeklySubscribeQuestionMessage> {
 
     private final ChoiceQuestionPolicy choiceQuestionPolicy;
     private final WeeklySubscribeQuestionView weeklySubscribeQuestionView;
 
     @Value("#{jobParameters['datetime']}")
-    private LocalDateTime baseDateTime;
+    private LocalDateTime dateTime;
 
     @Override
     public WeeklySubscribeQuestionMessage process(Subscribe subscribe) {
@@ -47,7 +47,7 @@ class WeeklySubscribeProcessor implements ItemProcessor<Subscribe, WeeklySubscri
     }
 
     private boolean isNotSendDate() {
-        return !DateUtils.isMonday(baseDateTime.toLocalDate());
+        return !DateUtils.isMonday(dateTime.toLocalDate());
     }
 
     private WeeklySubscribeQuestionMessage createWeeklySubscribeMessage(Subscribe subscribe) {

@@ -3,11 +3,8 @@ package maeilbatch.mail;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import maeilbatch.mail.daily.DailyMailSendWriter;
-import maeilbatch.mail.daily.DailySubscribeProcessor;
-import maeilmail.bulksend.sender.SubscribeQuestionMessage;
+import maeilmail.mail.MailMessage;
 import maeilmail.subscribe.command.domain.Subscribe;
-import maeilmail.subscribe.command.domain.SubscribeFrequency;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecutionListener;
 import org.springframework.batch.core.Step;
@@ -16,6 +13,8 @@ import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.item.database.JpaCursorItemReader;
+import org.springframework.batch.item.support.ClassifierCompositeItemProcessor;
+import org.springframework.batch.item.support.ClassifierCompositeItemWriter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -32,45 +31,61 @@ class MailSendJobConfig {
     private final PlatformTransactionManager transactionManager;
 
     @Bean
-    public Job dailyMailSendJob(
-            Step dailyMailSendStep,
+    public Job mailSendJob(
+            Step mailSendStep,
             Step changeSequenceStep,
             JobExecutionListener mailSendJobReportListener
     ) {
         return new JobBuilder("mailSendJob", jobRepository)
-                .start(dailyMailSendStep)
+                .start(mailSendStep)
                 .next(changeSequenceStep)
                 .listener(mailSendJobReportListener)
                 .build();
     }
 
     @Bean
-    public Step dailyMailSendStep(
-            JpaCursorItemReader<Subscribe> dailySubscribeReader,
-            DailySubscribeProcessor dailySubscribeProcessor,
-            DailyMailSendWriter dailyMailSendWriter
+    public Step mailSendStep(
+            JpaCursorItemReader<Subscribe> subscribeReader,
+            ClassifierCompositeItemProcessor<Subscribe, MailMessage> mailSendProcessor,
+            ClassifierCompositeItemWriter<MailMessage> mailSendWriter
     ) {
-        return new StepBuilder("dailyMailSendStep", jobRepository)
-                .<Subscribe, SubscribeQuestionMessage>chunk(CHUNK_SIZE, transactionManager)
-                .reader(dailySubscribeReader)
-                .processor(dailySubscribeProcessor)
-                .writer(dailyMailSendWriter)
+        return new StepBuilder("mailSendStep", jobRepository)
+                .<Subscribe, MailMessage>chunk(CHUNK_SIZE, transactionManager)
+                .reader(subscribeReader)
+                .processor(mailSendProcessor)
+                .writer(mailSendWriter)
                 .build();
     }
 
     @Bean
     @StepScope
-    public JpaCursorItemReader<Subscribe> dailySubscribeReader(
+    public JpaCursorItemReader<Subscribe> subscribeReader(
             @Value("#{jobParameters['datetime']}") LocalDateTime dateTime,
-            SubscribeItemReaderGenerator subscribeItemReaderGenerator
+            MailSendItemReader mailSendItemReader
     ) {
-        return subscribeItemReaderGenerator.generate(SubscribeFrequency.DAILY, dateTime);
+        return mailSendItemReader.generate(dateTime);
     }
 
     @Bean
-    public Step changeSequenceStep(IncreaseSubscribeSequenceTasklet increaseSubscribeSequenceTasklet) {
-        return new StepBuilder("dailyIncreaseSubscribeSequenceTasklet", jobRepository)
-                .tasklet(increaseSubscribeSequenceTasklet, transactionManager)
+    public ClassifierCompositeItemProcessor<Subscribe, MailMessage> mailSendProcessor(MailSendProcessorClassifier classifier) {
+        ClassifierCompositeItemProcessor<Subscribe, MailMessage> processor = new ClassifierCompositeItemProcessor<>();
+        processor.setClassifier(classifier);
+
+        return processor;
+    }
+
+    @Bean
+    public ClassifierCompositeItemWriter<MailMessage> mailSendWriter(MailSendWriterClassifier classifier) {
+        ClassifierCompositeItemWriter<MailMessage> writer = new ClassifierCompositeItemWriter<>();
+        writer.setClassifier(classifier);
+
+        return writer;
+    }
+
+    @Bean
+    public Step changeSequenceStep(ChangeSequenceTasklet changeSequenceTasklet) {
+        return new StepBuilder("changeSequenceTasklet", jobRepository)
+                .tasklet(changeSequenceTasklet, transactionManager)
                 .build();
     }
 }

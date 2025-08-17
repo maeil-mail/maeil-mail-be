@@ -3,6 +3,7 @@ package maeilbatch.mail.daily;
 import lombok.RequiredArgsConstructor;
 import maeilmail.bulksend.sender.QuestionSender;
 import maeilmail.bulksend.sender.SubscribeQuestionMessage;
+import maeilmail.mail.MailMessage;
 import org.springframework.batch.item.Chunk;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.stereotype.Component;

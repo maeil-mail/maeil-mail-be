@@ -3,7 +3,6 @@ package maeilbatch.mail;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import maeilmail.subscribe.command.domain.SubscribeFrequency;
 import maeilmail.subscribe.command.domain.SubscribeRepository;
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.configuration.annotation.StepScope;
@@ -17,22 +16,19 @@ import org.springframework.stereotype.Component;
 @StepScope
 @Component
 @RequiredArgsConstructor
-public class IncreaseSubscribeSequenceTasklet implements Tasklet {
+public class ChangeSequenceTasklet implements Tasklet {
 
     private final SubscribeRepository subscribeRepository;
 
     @Value("#{jobParameters['datetime']}")
-    private LocalDateTime baseDateTime;
-
-    @Value("#{jobParameters['sendTarget']}")
-    private SubscribeFrequency sendType;
+    private LocalDateTime dateTime;
 
     @Override
     public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) {
         try {
-            subscribeRepository.increasePartialNextQuestionSequence(baseDateTime, sendType.getSendCount());
+            subscribeRepository.increaseNextQuestionSequence(dateTime);
         } catch (Exception e) {
-            log.error("구독자 시퀀스 증가 실패 baseDatetime = {}, sendType = {}", baseDateTime, sendType.toLowerCase(), e);
+            log.error("구독자 시퀀스 증가 실패 baseDatetime = {}", dateTime, e);
         }
 
         return RepeatStatus.FINISHED;
