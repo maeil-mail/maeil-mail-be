@@ -3,6 +3,7 @@ package maeilbatch.mail.daily;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import maeilbatch.mail.IncreaseSubscribeSequenceTasklet;
 import maeilbatch.mail.SubscribeItemReaderGenerator;
 import maeilmail.bulksend.sender.SubscribeQuestionMessage;
 import maeilmail.subscribe.command.domain.Subscribe;
@@ -31,10 +32,13 @@ class DailyMailSendJobConfig {
     private final PlatformTransactionManager transactionManager;
 
     @Bean
-    public Job dailyMailSendJob(Step dailyMailSendStep) {
+    public Job dailyMailSendJob(
+            Step dailyMailSendStep,
+            Step changeSequenceStep
+    ) {
         return new JobBuilder("dailyMailSendJob", jobRepository)
                 .start(dailyMailSendStep)
-                .next(changeSequenceStep())
+                .next(changeSequenceStep)
                 .next(adminReportSendStep())
                 .build();
     }
@@ -63,12 +67,9 @@ class DailyMailSendJobConfig {
     }
 
     @Bean
-    public Step changeSequenceStep() {
-        return new StepBuilder("changeSequenceStep", jobRepository)
-                .tasklet((contribution, chunkContext) -> {
-                    System.out.println("구독자 시퀀스 1씩 증가");
-                    return RepeatStatus.FINISHED;
-                }, transactionManager)
+    public Step changeSequenceStep(IncreaseSubscribeSequenceTasklet increaseSubscribeSequenceTasklet) {
+        return new StepBuilder("dailyIncreaseSubscribeSequenceTasklet", jobRepository)
+                .tasklet(increaseSubscribeSequenceTasklet, transactionManager)
                 .build();
     }
 
