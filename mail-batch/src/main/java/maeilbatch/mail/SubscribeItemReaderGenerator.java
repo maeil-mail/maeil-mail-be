@@ -1,4 +1,4 @@
-package maeilbatch.reader;
+package maeilbatch.mail;
 
 import java.time.LocalDateTime;
 import java.util.Map;
@@ -17,8 +17,10 @@ public class SubscribeItemReaderGenerator {
     private final EntityManagerFactory entityManagerFactory;
 
     public JpaCursorItemReader<Subscribe> generate(SubscribeFrequency frequency, LocalDateTime datetime) {
+        String readerName = String.format("%sSubscribeReader", frequency.toLowerCase());
+
         return new JpaCursorItemReaderBuilder<Subscribe>()
-                .name("dailySubscribeReader")
+                .name(readerName)
                 .entityManagerFactory(entityManagerFactory)
                 .queryString("""
                            select s

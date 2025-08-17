@@ -1,4 +1,4 @@
-package maeilbatch.writer;
+package maeilbatch.mail.daily;
 
 import lombok.RequiredArgsConstructor;
 import maeilmail.bulksend.sender.QuestionSender;

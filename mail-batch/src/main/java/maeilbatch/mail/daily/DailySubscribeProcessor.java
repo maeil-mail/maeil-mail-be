@@ -1,4 +1,4 @@
-package maeilbatch.processor;
+package maeilbatch.mail.daily;
 
 import java.util.HashMap;
 import lombok.RequiredArgsConstructor;
