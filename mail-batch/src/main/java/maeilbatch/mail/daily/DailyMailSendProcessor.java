@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class DailySubscribeProcessor implements ItemProcessor<Subscribe, SubscribeQuestionMessage> {
+public class DailyMailSendProcessor implements ItemProcessor<Subscribe, SubscribeQuestionMessage> {
 
     private final ChoiceQuestionPolicy choiceQuestionPolicy;
     private final SubscribeQuestionView subscribeQuestionView;

@@ -31,11 +31,11 @@ public class MailSendJobReportListener implements JobExecutionListener {
     private final StatisticsService statisticsService;
 
     @Value("#{jobParameters['datetime']}")
-    private LocalDateTime baseDateTime;
+    private LocalDateTime dateTime;
 
     @Override
     public void afterJob(JobExecution jobExecution) {
-        LocalDate targetDate = baseDateTime.toLocalDate();
+        LocalDate targetDate = dateTime.toLocalDate();
         DailySendReport dailySendReport = statisticsService.generateDailySendReport(targetDate);
         SimpleMailMessage message = createMessage(dailySendReport);
 

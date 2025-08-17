@@ -31,23 +31,4 @@ public interface SubscribeRepository extends JpaRepository<Subscribe, Long> {
             """, nativeQuery = true)
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     void increaseNextQuestionSequence(LocalDateTime baseDateTime);
-
-    @Query(value = """
-            update subscribe as s
-            set s.next_question_sequence = s.next_question_sequence + :sendCount
-            where
-                s.deleted_at is null and
-                s.created_at < :baseDateTime and
-                exists (
-                    select 1
-                    from subscribe_question as sq
-                    where
-                        sq.created_at > curdate() and
-                        sq.subscribe_id = s.id
-                    group by sq.subscribe_id
-                    having count(sq.id) = :sendCount
-                )
-            """, nativeQuery = true)
-    @Modifying(clearAutomatically = true, flushAutomatically = true)
-    void increasePartialNextQuestionSequence(LocalDateTime baseDateTime, int sendCount);
 }
