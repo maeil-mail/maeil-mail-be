@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import maeilmail.mail.MailMessage;
 import maeilmail.mail.MailSender;
+import maeilmail.mail.SimpleMailMessage;
 import maeilmail.subscribe.command.application.request.VerifyEmailRequest;
 import maeilmail.subscribe.view.VerifyMailView;
 import org.springframework.stereotype.Service;
@@ -24,7 +25,7 @@ public class VerifySubscribeService {
         String subject = "이메일 인증을 진행해주세요.";
         String code = codeGenerator.generateCode();
         String text = createText(code);
-        MailMessage mailMessage = new MailMessage(request.email(), subject, text, verifyMailView.getType());
+        SimpleMailMessage mailMessage = new SimpleMailMessage(request.email(), subject, text, verifyMailView.getType());
 
         log.info("인증 코드 포함 메일 요청, 이메일 = {} 코드 = {}", request.email(), code);
         mailSender.sendMail(mailMessage);

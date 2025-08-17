@@ -6,6 +6,7 @@ import static org.mockito.Mockito.mock;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import maeilmail.mail.MimeMessageCustomizer;
 import maeilmail.question.Question;
 import maeilmail.question.QuestionCategory;
 import maeilmail.question.QuestionRepository;
@@ -72,7 +73,7 @@ class QuestionSenderTest extends IntegrationTestSupport {
 
     private QuestionSender createQuestionSender() {
         JavaMailSender mailSender = mock(JavaMailSender.class);
-        QuestionMimeMessageCustomizer customizer = mock(QuestionMimeMessageCustomizer.class);
+        MimeMessageCustomizer customizer = mock(MimeMessageCustomizer.class);
 
         return new QuestionSender(mailSender, customizer, subscribeQuestionRepository);
     }

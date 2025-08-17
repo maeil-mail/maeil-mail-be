@@ -10,7 +10,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 
-class MailMimeMessageCustomizerTest {
+class MimeMessageCustomizerTest {
 
     @DisplayName("메일의 MimeMessage를 생성한다.")
     @Test
@@ -21,9 +21,9 @@ class MailMimeMessageCustomizerTest {
         javaMailSender.setSession(Session.getDefaultInstance(new Properties()));
 
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
-        MailMessage message = new MailMessage("to", "subject", "text", "type");
+        MailMessage message = new SimpleMailMessage("to", "subject", "text", "type");
 
-        MailMimeMessageCustomizer customizer = new MailMimeMessageCustomizer();
+        MimeMessageCustomizer customizer = new MimeMessageCustomizer();
 
         MimeMessage result = customizer.customize(mimeMessage, message);
 

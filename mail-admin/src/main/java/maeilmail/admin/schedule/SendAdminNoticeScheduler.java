@@ -7,8 +7,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import maeilmail.admin.domain.AdminNotice;
 import maeilmail.admin.domain.AdminNoticeRepository;
-import maeilmail.mail.MailMessage;
 import maeilmail.mail.MailSender;
+import maeilmail.mail.SimpleMailMessage;
 import maeilmail.subscribe.query.SubscribeEmail;
 import maeilmail.subscribe.query.SubscribeQueryService;
 import maeilmail.utils.DistributedSupport;
@@ -38,7 +38,7 @@ public class SendAdminNoticeScheduler {
 
         subscribes.stream()
                 .filter(it -> distributedSupport.isMine(it.id()))
-                .map(it -> new MailMessage(it.email(), adminNotice.getTitle(), adminNotice.getContent(), "notice"))
+                .map(it -> new SimpleMailMessage(it.email(), adminNotice.getTitle(), adminNotice.getContent(), "notice"))
                 .forEach(mailSender::sendMail);
     }
 }

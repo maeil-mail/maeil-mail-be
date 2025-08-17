@@ -15,6 +15,7 @@ import java.util.List;
 import maeilmail.admin.domain.AdminNotice;
 import maeilmail.admin.domain.AdminNoticeRepository;
 import maeilmail.mail.MailMessage;
+import maeilmail.mail.SimpleMailMessage;
 import maeilmail.question.QuestionCategory;
 import maeilmail.subscribe.command.domain.Subscribe;
 import maeilmail.subscribe.command.domain.SubscribeFrequency;
@@ -90,7 +91,7 @@ class SendAdminNoticeSchedulerTest extends IntegrationTestSupport {
         sendAdminNoticeScheduler.sendMail();
 
         // then
-        ArgumentCaptor<MailMessage> captor = ArgumentCaptor.forClass(MailMessage.class);
+        ArgumentCaptor<SimpleMailMessage> captor = ArgumentCaptor.forClass(SimpleMailMessage.class);
         verify(mailSender).sendMail(captor.capture());
         assertThat(captor.getValue().subject()).isEqualTo(title);
     }
