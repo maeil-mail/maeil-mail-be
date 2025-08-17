@@ -1,5 +1,7 @@
 package maeilmail.subscribe.command.domain;
 
+import static maeilmail.subscribe.command.domain.SubscribeFrequency.DAILY;
+import static maeilmail.subscribe.command.domain.SubscribeFrequency.WEEKLY;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -29,9 +31,9 @@ class SubscribeRepositoryTest extends IntegrationTestSupport {
     void increaseNextQuestionSequence() {
         LocalDateTime baseDateTime = LocalDateTime.of(2024, 11, 7, 7, 0);
         LocalDateTime expectedChangeTime = baseDateTime.minusSeconds(1);
-        createSubscribe("test1@test.com", expectedChangeTime, SubscribeFrequency.DAILY);
-        createSubscribe("test2@test.com", expectedChangeTime, SubscribeFrequency.DAILY);
-        createSubscribe("test3@test.com", baseDateTime, SubscribeFrequency.DAILY);
+        createSubscribe("test1@test.com", expectedChangeTime, DAILY);
+        createSubscribe("test2@test.com", expectedChangeTime, DAILY);
+        createSubscribe("test3@test.com", baseDateTime, DAILY);
         setJpaAuditingTime(LocalDateTime.now());
         for (Subscribe subscribe : subscribeRepository.findAll()) {
             createSubscribeQuestion(subscribe, createQuestion(subscribe.getCategory()));
@@ -52,9 +54,9 @@ class SubscribeRepositoryTest extends IntegrationTestSupport {
     void increaseNextQuestionSequenceWithOffset() {
         LocalDateTime baseDateTime = LocalDateTime.of(2024, 11, 7, 7, 0);
         LocalDateTime expectedChangeTime = baseDateTime.minusSeconds(1);
-        createSubscribe("test1@test.com", expectedChangeTime, SubscribeFrequency.WEEKLY);
-        createSubscribe("test2@test.com", expectedChangeTime, SubscribeFrequency.DAILY);
-        createSubscribe("test3@test.com", baseDateTime, SubscribeFrequency.DAILY);
+        createSubscribe("test1@test.com", expectedChangeTime, WEEKLY);
+        createSubscribe("test2@test.com", expectedChangeTime, DAILY);
+        createSubscribe("test3@test.com", baseDateTime, DAILY);
 
         /**
          * 1. 주간 메일을 받은 케이스
@@ -63,7 +65,7 @@ class SubscribeRepositoryTest extends IntegrationTestSupport {
          */
         setJpaAuditingTime(LocalDateTime.now());
         for (Subscribe subscribe : subscribeRepository.findAll()) {
-            if (subscribe.getFrequency() == SubscribeFrequency.DAILY) {
+            if (subscribe.getFrequency() == DAILY) {
                 createSubscribeQuestion(subscribe, createQuestion(subscribe.getCategory()));
             } else {
                 createSubscribeQuestion(subscribe, createQuestion(subscribe.getCategory()));
@@ -83,6 +85,76 @@ class SubscribeRepositoryTest extends IntegrationTestSupport {
         assertAll(
                 () -> assertThat(subscribe1.getNextQuestionSequence()).isEqualTo(5L),
                 () -> assertThat(subscribe2.getNextQuestionSequence()).isEqualTo(1L),
+                () -> assertThat(subscribe3.getNextQuestionSequence()).isEqualTo(0L)
+        );
+    }
+
+    @Test
+    @DisplayName("금일 데일리 주기로 질문을 받은 구독자만 시퀀스를 1 증가 시킨다.")
+    void increaseDailyNextQuestion() {
+        LocalDateTime baseDateTime = LocalDateTime.of(2024, 11, 7, 7, 0);
+        LocalDateTime expectedChangeTime = baseDateTime.minusSeconds(1);
+        createSubscribe("test1@test.com", expectedChangeTime, WEEKLY);
+        createSubscribe("test2@test.com", expectedChangeTime, DAILY);
+        createSubscribe("test3@test.com", baseDateTime, DAILY);
+
+        setJpaAuditingTime(LocalDateTime.now());
+        for (Subscribe subscribe : subscribeRepository.findAll()) {
+            if (subscribe.getFrequency() == DAILY) {
+                createSubscribeQuestion(subscribe, createQuestion(subscribe.getCategory()));
+            } else {
+                createSubscribeQuestion(subscribe, createQuestion(subscribe.getCategory()));
+                createSubscribeQuestion(subscribe, createQuestion(subscribe.getCategory()));
+                createSubscribeQuestion(subscribe, createQuestion(subscribe.getCategory()));
+                createSubscribeQuestion(subscribe, createQuestion(subscribe.getCategory()));
+                createSubscribeQuestion(subscribe, createQuestion(subscribe.getCategory()));
+            }
+        }
+
+        subscribeRepository.increasePartialNextQuestionSequence(baseDateTime, DAILY.getSendCount());
+
+        List<Subscribe> subscribes = subscribeRepository.findAll();
+        Subscribe subscribe1 = subscribes.get(0); // 주간 메일을 받은 케이스
+        Subscribe subscribe2 = subscribes.get(1); // 일간 메일을 받은 케이스
+        Subscribe subscribe3 = subscribes.get(2); // 메일을 받지 못한 케이스
+        assertAll(
+                () -> assertThat(subscribe1.getNextQuestionSequence()).isEqualTo(0L),
+                () -> assertThat(subscribe2.getNextQuestionSequence()).isEqualTo(1L),
+                () -> assertThat(subscribe3.getNextQuestionSequence()).isEqualTo(0L)
+        );
+    }
+
+    @Test
+    @DisplayName("금일 위클리 주기로 질문을 받은 구독자만 시퀀스를 5 증가 시킨다.")
+    void increaseWeeklyNextQuestion() {
+        LocalDateTime baseDateTime = LocalDateTime.of(2024, 11, 7, 7, 0);
+        LocalDateTime expectedChangeTime = baseDateTime.minusSeconds(1);
+        createSubscribe("test1@test.com", expectedChangeTime, WEEKLY);
+        createSubscribe("test2@test.com", expectedChangeTime, DAILY);
+        createSubscribe("test3@test.com", baseDateTime, DAILY);
+
+        setJpaAuditingTime(LocalDateTime.now());
+        for (Subscribe subscribe : subscribeRepository.findAll()) {
+            if (subscribe.getFrequency() == DAILY) {
+                createSubscribeQuestion(subscribe, createQuestion(subscribe.getCategory()));
+            } else {
+                createSubscribeQuestion(subscribe, createQuestion(subscribe.getCategory()));
+                createSubscribeQuestion(subscribe, createQuestion(subscribe.getCategory()));
+                createSubscribeQuestion(subscribe, createQuestion(subscribe.getCategory()));
+                createSubscribeQuestion(subscribe, createQuestion(subscribe.getCategory()));
+                createSubscribeQuestion(subscribe, createQuestion(subscribe.getCategory()));
+            }
+        }
+
+        subscribeRepository.increasePartialNextQuestionSequence(baseDateTime, WEEKLY.getSendCount());
+
+        List<Subscribe> subscribes = subscribeRepository.findAll();
+        Subscribe subscribe1 = subscribes.get(0); // 주간 메일을 받은 케이스
+        Subscribe subscribe2 = subscribes.get(1); // 일간 메일을 받은 케이스
+        Subscribe subscribe3 = subscribes.get(2); // 메일을 받지 못한 케이스
+        assertAll(
+                () -> assertThat(subscribe1.getNextQuestionSequence()).isEqualTo(5L),
+                () -> assertThat(subscribe2.getNextQuestionSequence()).isEqualTo(0L),
                 () -> assertThat(subscribe3.getNextQuestionSequence()).isEqualTo(0L)
         );
     }
