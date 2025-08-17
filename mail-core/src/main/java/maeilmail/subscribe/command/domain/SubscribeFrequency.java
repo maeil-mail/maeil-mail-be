@@ -5,7 +5,13 @@ import java.util.NoSuchElementException;
 
 public enum SubscribeFrequency {
 
-    DAILY, WEEKLY;
+    DAILY(1), WEEKLY(5);
+
+    private final int sendCount;
+
+    SubscribeFrequency(int sendCount) {
+        this.sendCount = sendCount;
+    }
 
     public static SubscribeFrequency from(String frequency) {
         return Arrays.stream(SubscribeFrequency.values())
@@ -16,5 +22,9 @@ public enum SubscribeFrequency {
 
     public String toLowerCase() {
         return this.name().toLowerCase();
+    }
+
+    public int getSendCount() {
+        return sendCount;
     }
 }
