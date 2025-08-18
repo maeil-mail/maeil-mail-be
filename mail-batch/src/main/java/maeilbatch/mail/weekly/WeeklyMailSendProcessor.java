@@ -10,8 +10,6 @@ import java.util.stream.IntStream;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import maeilmail.bulksend.sender.ChoiceQuestionPolicy;
-import maeilmail.bulksend.sender.WeeklySubscribeQuestionMessage;
-import maeilmail.bulksend.view.WeeklySubscribeQuestionView;
 import maeilmail.mail.MailMessage;
 import maeilmail.question.Question;
 import maeilmail.question.QuestionSummary;
@@ -29,18 +27,18 @@ import org.springframework.stereotype.Component;
 class WeeklyMailSendProcessor implements ItemProcessor<Subscribe, MailMessage> {
 
     private final ChoiceQuestionPolicy choiceQuestionPolicy;
-    private final WeeklySubscribeQuestionView weeklySubscribeQuestionView;
+    private final WeeklyMailView weeklyMailView;
 
     @Value("#{jobParameters['datetime']}")
     private LocalDateTime dateTime;
 
     @Override
-    public WeeklySubscribeQuestionMessage process(Subscribe subscribe) {
+    public WeeklyMailMessage process(Subscribe subscribe) {
         try {
             if (isNotSendDate()) {
                 return null;
             }
-            return createWeeklySubscribeMessage(subscribe);
+            return createWeeklyMailMessage(subscribe);
         } catch (Exception e) {
             log.error("주간 면접 질문 선택 실패. 구독자 id = {}", subscribe.getId(), e);
             return null;
@@ -51,12 +49,12 @@ class WeeklyMailSendProcessor implements ItemProcessor<Subscribe, MailMessage> {
         return !DateUtils.isMonday(dateTime.toLocalDate());
     }
 
-    private WeeklySubscribeQuestionMessage createWeeklySubscribeMessage(Subscribe subscribe) {
+    private WeeklyMailMessage createWeeklyMailMessage(Subscribe subscribe) {
         List<QuestionSummary> questions = choiceWeeklyQuestions(subscribe);
         String subject = createSubject();
         String text = createText(subscribe, questions);
 
-        return createWeeklySubscribeQuestionMessage(subscribe, questions, subject, text);
+        return createWeeklyMailMessage(subscribe, questions, subject, text);
     }
 
     private List<QuestionSummary> choiceWeeklyQuestions(Subscribe subscribe) {
@@ -83,10 +81,10 @@ class WeeklyMailSendProcessor implements ItemProcessor<Subscribe, MailMessage> {
         attribute.put("month", today.getMonthValue());
         attribute.put("week", weekOfMonth);
 
-        return weeklySubscribeQuestionView.render(attribute);
+        return weeklyMailView.render(attribute);
     }
 
-    public WeeklySubscribeQuestionMessage createWeeklySubscribeQuestionMessage(
+    public WeeklyMailMessage createWeeklyMailMessage(
             Subscribe subscribe,
             List<QuestionSummary> summaries,
             String subject,
@@ -96,6 +94,6 @@ class WeeklyMailSendProcessor implements ItemProcessor<Subscribe, MailMessage> {
                 .map(QuestionSummary::toQuestion)
                 .toList();
 
-        return new WeeklySubscribeQuestionMessage(subscribe, questions, subject, text);
+        return new WeeklyMailMessage(subscribe, questions, subject, text);
     }
 }

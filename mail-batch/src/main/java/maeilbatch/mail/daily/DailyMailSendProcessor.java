@@ -4,8 +4,6 @@ import java.util.HashMap;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import maeilmail.bulksend.sender.ChoiceQuestionPolicy;
-import maeilmail.bulksend.sender.SubscribeQuestionMessage;
-import maeilmail.bulksend.view.SubscribeQuestionView;
 import maeilmail.mail.MailMessage;
 import maeilmail.question.QuestionSummary;
 import maeilmail.subscribe.command.domain.Subscribe;
@@ -18,24 +16,24 @@ import org.springframework.stereotype.Component;
 public class DailyMailSendProcessor implements ItemProcessor<Subscribe, MailMessage> {
 
     private final ChoiceQuestionPolicy choiceQuestionPolicy;
-    private final SubscribeQuestionView subscribeQuestionView;
+    private final DailyMailView dailyMailView;
 
     @Override
-    public SubscribeQuestionMessage process(Subscribe subscribe) {
+    public DailyMailMessage process(Subscribe subscribe) {
         try {
-            return createSubscribeMessage(subscribe);
+            return createDailyMailMessage(subscribe);
         } catch (Exception e) {
             log.error("일간 면접 질문 선택 실패. 구독자 id = {}", subscribe.getId(), e);
             return null;
         }
     }
 
-    private SubscribeQuestionMessage createSubscribeMessage(Subscribe subscribe) {
+    private DailyMailMessage createDailyMailMessage(Subscribe subscribe) {
         QuestionSummary questionSummary = choiceQuestionPolicy.choice(subscribe);
         String subject = createSubject(questionSummary);
         String text = createText(subscribe, questionSummary);
 
-        return new SubscribeQuestionMessage(subscribe, questionSummary.toQuestion(), subject, text);
+        return new DailyMailMessage(subscribe, questionSummary.toQuestion(), subject, text);
     }
 
     private String createSubject(QuestionSummary question) {
@@ -49,6 +47,6 @@ public class DailyMailSendProcessor implements ItemProcessor<Subscribe, MailMess
         attribute.put("email", subscribe.getEmail());
         attribute.put("token", subscribe.getToken());
 
-        return subscribeQuestionView.render(attribute);
+        return dailyMailView.render(attribute);
     }
 }
