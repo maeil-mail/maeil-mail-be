@@ -14,7 +14,6 @@ import java.util.List;
 
 import maeilmail.admin.domain.AdminNotice;
 import maeilmail.admin.domain.AdminNoticeRepository;
-import maeilmail.mail.MailMessage;
 import maeilmail.mail.SimpleMailMessage;
 import maeilmail.question.QuestionCategory;
 import maeilmail.subscribe.command.domain.Subscribe;
