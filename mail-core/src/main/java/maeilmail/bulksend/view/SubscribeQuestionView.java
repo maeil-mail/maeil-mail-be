@@ -1,20 +1,28 @@
 package maeilmail.bulksend.view;
 
-import java.util.Map;
-import lombok.RequiredArgsConstructor;
+import java.util.HashMap;
+import lombok.Builder;
 import maeilmail.mail.MailView;
 import maeilmail.mail.MailViewRenderer;
-import org.springframework.stereotype.Component;
+import maeilmail.question.Question;
+import maeilmail.subscribe.command.domain.Subscribe;
 
-@Component
-@RequiredArgsConstructor
+@Builder
 public class SubscribeQuestionView implements MailView {
 
-    private final MailViewRenderer mailViewRenderer;
+    private final MailViewRenderer renderer;
+    private final Subscribe subscribe;
+    private final Question question;
 
     @Override
-    public String render(Map<Object, Object> attribute) {
-        return mailViewRenderer.render(attribute, "question-v4");
+    public String render() {
+        HashMap<Object, Object> attributes = new HashMap<>();
+        attributes.put("questionId", question.getId());
+        attributes.put("question", question.getTitle());
+        attributes.put("email", subscribe.getEmail());
+        attributes.put("token", subscribe.getToken());
+
+        return renderer.render(attributes, "question-v4");
     }
 
     @Override

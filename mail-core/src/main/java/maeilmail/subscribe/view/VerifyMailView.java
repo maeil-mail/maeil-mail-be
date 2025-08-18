@@ -1,20 +1,19 @@
 package maeilmail.subscribe.view;
 
 import java.util.Map;
-import lombok.RequiredArgsConstructor;
+import lombok.Builder;
 import maeilmail.mail.MailView;
 import maeilmail.mail.MailViewRenderer;
-import org.springframework.stereotype.Component;
 
-@Component
-@RequiredArgsConstructor
+@Builder
 public class VerifyMailView implements MailView {
 
-    private final MailViewRenderer mailViewRenderer;
+    private final MailViewRenderer renderer;
+    private final String verifyCode;
 
     @Override
-    public String render(Map<Object, Object> attribute) {
-        return mailViewRenderer.render(attribute, "verify-email-v2");
+    public String render() {
+        return renderer.render(Map.of("code", verifyCode), "verify-email-v2");
     }
 
     @Override

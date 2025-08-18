@@ -6,7 +6,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.IntStream;
@@ -16,11 +15,12 @@ import maeilmail.bulksend.sender.ChoiceQuestionPolicy;
 import maeilmail.bulksend.sender.WeeklyQuestionSender;
 import maeilmail.bulksend.sender.WeeklySubscribeQuestionMessage;
 import maeilmail.bulksend.view.WeeklySubscribeQuestionView;
+import maeilmail.mail.MailView;
+import maeilmail.mail.MailViewRenderer;
 import maeilmail.question.Question;
 import maeilmail.question.QuestionSummary;
 import maeilmail.subscribe.command.domain.Subscribe;
 import maeilmail.subscribe.command.domain.SubscribeRepository;
-import maeilmail.utils.DateUtils;
 import maeilmail.utils.DistributedSupport;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -34,9 +34,9 @@ public class SendWeeklyQuestionScheduler {
 
     private final ChoiceQuestionPolicy choiceQuestionPolicy;
     private final WeeklyQuestionSender weeklyQuestionSender;
-    private final WeeklySubscribeQuestionView weeklySubscribeQuestionView;
     private final SubscribeRepository subscribeRepository;
     private final DistributedSupport distributedSupport;
+    private final MailViewRenderer mailViewRenderer;
 
     @Scheduled(cron = "0 0 7 * * MON", zone = "Asia/Seoul")
     public void sendMail() {
@@ -80,20 +80,16 @@ public class SendWeeklyQuestionScheduler {
     }
 
     public String createText(Subscribe subscribe, List<QuestionSummary> questions) {
-        LocalDate today = LocalDate.now();
-        HashMap<Object, Object> attribute = new HashMap<>();
-        String category = subscribe.getCategory().getDescription();
-        int weekOfMonth = DateUtils.getWeekOfMonth(today);
-        attribute.put("questions", questions);
-        attribute.put("category", subscribe.getCategory().toLowerCase());
-        attribute.put("email", subscribe.getEmail());
-        attribute.put("token", subscribe.getToken());
-        attribute.put("weekLabel", category + " " + today.getMonthValue() + "월 " + weekOfMonth + "주차 질문");
-        attribute.put("year", today.getYear());
-        attribute.put("month", today.getMonthValue());
-        attribute.put("week", weekOfMonth);
+        LocalDate date = LocalDate.now();
+        MailView view = WeeklySubscribeQuestionView.builder()
+                .renderer(mailViewRenderer)
+                .date(date)
+                .questionSummaries(questions)
+                .subscribe(subscribe)
+                .build();
 
-        return weeklySubscribeQuestionView.render(attribute);
+
+        return view.render();
     }
 
     public WeeklySubscribeQuestionMessage createWeeklySubscribeQuestionMessage(
