@@ -10,14 +10,14 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class DailyMailSendWriter implements ItemWriter<SubscribeQuestionMessage> {
+public class DailyMailSendWriter implements ItemWriter<MailMessage> {
 
     private final QuestionSender questionSender;
 
     @Override
-    public void write(Chunk<? extends SubscribeQuestionMessage> chunk) {
-        for (SubscribeQuestionMessage message : chunk) {
-            questionSender.sendMail(message);
+    public void write(Chunk<? extends MailMessage> chunk) {
+        for (Object message : chunk) {
+            questionSender.sendMailSync((SubscribeQuestionMessage) message);
         }
     }
 }

@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import maeilmail.bulksend.sender.ChoiceQuestionPolicy;
 import maeilmail.bulksend.sender.SubscribeQuestionMessage;
 import maeilmail.bulksend.view.SubscribeQuestionView;
+import maeilmail.mail.MailMessage;
 import maeilmail.question.QuestionSummary;
 import maeilmail.subscribe.command.domain.Subscribe;
 import org.springframework.batch.item.ItemProcessor;
@@ -14,7 +15,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class DailyMailSendProcessor implements ItemProcessor<Subscribe, SubscribeQuestionMessage> {
+public class DailyMailSendProcessor implements ItemProcessor<Subscribe, MailMessage> {
 
     private final ChoiceQuestionPolicy choiceQuestionPolicy;
     private final SubscribeQuestionView subscribeQuestionView;
