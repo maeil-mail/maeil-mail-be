@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import maeilmail.admin.view.AdminReportView;
 import maeilmail.mail.MailSender;
 import maeilmail.mail.SimpleMailMessage;
 import maeilmail.statistics.DailySendReport;
@@ -27,7 +26,7 @@ public class MailSendJobReportListener implements JobExecutionListener {
     private static final String REPORT_SUBJECT = "관리자 전용 메일 전송 결과를 알려드립니다.";
 
     private final MailSender mailSender;
-    private final AdminReportView adminReportView;
+    private final MailSendJobReportView mailSendJobReportView;
     private final StatisticsService statisticsService;
 
     @Value("#{jobParameters['datetime']}")
@@ -45,7 +44,7 @@ public class MailSendJobReportListener implements JobExecutionListener {
     private SimpleMailMessage createMessage(DailySendReport report) {
         String text = createText(report);
 
-        return new SimpleMailMessage(REPORT_TARGET, REPORT_SUBJECT, text, adminReportView.getType());
+        return new SimpleMailMessage(REPORT_TARGET, REPORT_SUBJECT, text, mailSendJobReportView.getType());
     }
 
     private String createText(DailySendReport report) {
@@ -57,6 +56,6 @@ public class MailSendJobReportListener implements JobExecutionListener {
                 report.fail()
         );
 
-        return adminReportView.render(Map.of("report", reportText));
+        return mailSendJobReportView.render(Map.of("report", reportText));
     }
 }

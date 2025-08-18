@@ -1,7 +1,7 @@
 package maeilbatch.mail;
 
 import lombok.RequiredArgsConstructor;
-import maeilmail.bulksend.sender.SubscribeQuestionMessage;
+import maeilbatch.mail.daily.DailyMailMessage;
 import maeilmail.mail.MailMessage;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.classify.Classifier;
@@ -16,7 +16,7 @@ public class MailSendWriterClassifier implements Classifier<MailMessage, ItemWri
 
     @Override
     public ItemWriter<? super MailMessage> classify(MailMessage classifiable) {
-        if (classifiable instanceof SubscribeQuestionMessage) {
+        if (classifiable instanceof DailyMailMessage) {
             return dailyMailSendWriter;
         }
 
