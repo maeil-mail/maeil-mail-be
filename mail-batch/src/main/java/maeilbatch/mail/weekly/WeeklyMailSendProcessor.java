@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import maeilmail.bulksend.sender.ChoiceQuestionPolicy;
 import maeilmail.bulksend.sender.WeeklySubscribeQuestionMessage;
 import maeilmail.bulksend.view.WeeklySubscribeQuestionView;
+import maeilmail.mail.MailMessage;
 import maeilmail.question.Question;
 import maeilmail.question.QuestionSummary;
 import maeilmail.subscribe.command.domain.Subscribe;
@@ -25,7 +26,7 @@ import org.springframework.stereotype.Component;
 @StepScope
 @Component
 @RequiredArgsConstructor
-class WeeklyMailSendProcessor implements ItemProcessor<Subscribe, WeeklySubscribeQuestionMessage> {
+class WeeklyMailSendProcessor implements ItemProcessor<Subscribe, MailMessage> {
 
     private final ChoiceQuestionPolicy choiceQuestionPolicy;
     private final WeeklySubscribeQuestionView weeklySubscribeQuestionView;
