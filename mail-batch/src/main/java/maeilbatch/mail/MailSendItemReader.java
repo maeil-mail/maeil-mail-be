@@ -24,7 +24,7 @@ public class MailSendItemReader {
                            from Subscribe s
                            where
                                s.createdAt <= :createdAt and
-                               s.deletedAt is null and
+                               s.deletedAt is null
                            order by s.id ASC
                         """)
                 .parameterValues(Map.of("createdAt", datetime))
