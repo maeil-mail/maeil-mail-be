@@ -1,11 +1,11 @@
 package maeilmail.subscribe.command.application;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import maeilmail.mail.MailSender;
+import maeilmail.mail.MailView;
+import maeilmail.mail.MailViewRenderer;
 import maeilmail.mail.SimpleMailMessage;
 import maeilmail.question.QuestionCategory;
 import maeilmail.subscribe.command.application.request.SubscribeRequest;
@@ -24,8 +24,8 @@ public class SubscribeService {
 
     private final SubscribeRepository subscribeRepository;
     private final VerifySubscribeService verifySubscribeService;
-    private final SubscribeWelcomeView welcomeView;
     private final MailSender mailSender;
+    private final MailViewRenderer mailViewRenderer;
 
     @Transactional
     public void subscribe(SubscribeRequest request) {
@@ -76,14 +76,15 @@ public class SubscribeService {
 
     private void sendSubscribeWelcomeMail(String email) {
         String subject = "앞으로 면접 질문을 보내드릴게요.";
-        String text = createText();
-        SimpleMailMessage mailMessage = new SimpleMailMessage(email, subject, text, welcomeView.getType());
+        MailView view = createView();
+        String text = view.render();
+        SimpleMailMessage mailMessage = new SimpleMailMessage(email, subject, text, view.getType());
         mailSender.sendMail(mailMessage);
     }
 
-    private String createText() {
-        Map<Object, Object> attribute = new HashMap<>();
-
-        return welcomeView.render(attribute);
+    private MailView createView() {
+        return SubscribeWelcomeView.builder()
+                .renderer(mailViewRenderer)
+                .build();
     }
 }

@@ -3,7 +3,6 @@ package maeilmail.bulksend.schedule;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +11,7 @@ import maeilmail.bulksend.sender.ChoiceQuestionPolicy;
 import maeilmail.bulksend.sender.QuestionSender;
 import maeilmail.bulksend.sender.SubscribeQuestionMessage;
 import maeilmail.bulksend.view.SubscribeQuestionView;
+import maeilmail.mail.MailViewRenderer;
 import maeilmail.question.QuestionCategory;
 import maeilmail.question.QuestionQueryService;
 import maeilmail.question.QuestionSummary;
@@ -31,10 +31,10 @@ class SendQuestionScheduler {
 
     private final QuestionSender questionSender;
     private final ChoiceQuestionPolicy choiceQuestionPolicy;
-    private final SubscribeQuestionView subscribeQuestionView;
     private final SubscribeRepository subscribeRepository;
     private final DistributedSupport distributedSupport;
     private final QuestionQueryService questionQueryService;
+    private final MailViewRenderer mailViewRenderer;
 
     @Scheduled(cron = "0 55 6 * * MON-FRI", zone = "Asia/Seoul")
     public void cacheWarmUp() {
@@ -78,12 +78,12 @@ class SendQuestionScheduler {
     }
 
     private String createText(Subscribe subscribe, QuestionSummary question) {
-        HashMap<Object, Object> attribute = new HashMap<>();
-        attribute.put("questionId", question.id());
-        attribute.put("question", question.title());
-        attribute.put("email", subscribe.getEmail());
-        attribute.put("token", subscribe.getToken());
+        SubscribeQuestionView view = SubscribeQuestionView.builder()
+                .renderer(mailViewRenderer)
+                .subscribe(subscribe)
+                .question(question.toQuestion())
+                .build();
 
-        return subscribeQuestionView.render(attribute);
+        return view.render();
     }
 }

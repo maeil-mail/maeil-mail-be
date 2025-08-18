@@ -1,20 +1,28 @@
 package maeilbatch.mail.daily;
 
-import java.util.Map;
-import lombok.RequiredArgsConstructor;
+import java.util.HashMap;
+import lombok.Builder;
 import maeilmail.mail.MailView;
 import maeilmail.mail.MailViewRenderer;
-import org.springframework.stereotype.Component;
+import maeilmail.question.Question;
+import maeilmail.subscribe.command.domain.Subscribe;
 
-@Component
-@RequiredArgsConstructor
+@Builder
 public class DailyMailView implements MailView {
 
-    private final MailViewRenderer mailViewRenderer;
+    private final MailViewRenderer renderer;
+    private final Subscribe subscribe;
+    private final Question question;
 
     @Override
-    public String render(Map<Object, Object> attribute) {
-        return mailViewRenderer.render(attribute, "question-v4");
+    public String render() {
+        HashMap<Object, Object> attribute = new HashMap<>();
+        attribute.put("questionId", question.getId());
+        attribute.put("question", question.getTitle());
+        attribute.put("email", subscribe.getEmail());
+        attribute.put("token", subscribe.getToken());
+
+        return renderer.render(attribute, "question-v4");
     }
 
     @Override

@@ -1,10 +1,11 @@
 package maeilbatch.mail.daily;
 
-import java.util.HashMap;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import maeilmail.bulksend.sender.ChoiceQuestionPolicy;
 import maeilmail.mail.MailMessage;
+import maeilmail.mail.MailView;
+import maeilmail.mail.MailViewRenderer;
 import maeilmail.question.QuestionSummary;
 import maeilmail.subscribe.command.domain.Subscribe;
 import org.springframework.batch.item.ItemProcessor;
@@ -16,7 +17,7 @@ import org.springframework.stereotype.Component;
 public class DailyMailSendProcessor implements ItemProcessor<Subscribe, MailMessage> {
 
     private final ChoiceQuestionPolicy choiceQuestionPolicy;
-    private final DailyMailView dailyMailView;
+    private final MailViewRenderer mailViewRenderer;
 
     @Override
     public DailyMailMessage process(Subscribe subscribe) {
@@ -30,23 +31,18 @@ public class DailyMailSendProcessor implements ItemProcessor<Subscribe, MailMess
 
     private DailyMailMessage createDailyMailMessage(Subscribe subscribe) {
         QuestionSummary questionSummary = choiceQuestionPolicy.choice(subscribe);
-        String subject = createSubject(questionSummary);
-        String text = createText(subscribe, questionSummary);
+        MailView view = createView(subscribe, questionSummary);
+        String subject = questionSummary.title();
+        String text = view.render();
 
         return new DailyMailMessage(subscribe, questionSummary.toQuestion(), subject, text);
     }
 
-    private String createSubject(QuestionSummary question) {
-        return question.title();
-    }
-
-    private String createText(Subscribe subscribe, QuestionSummary question) {
-        HashMap<Object, Object> attribute = new HashMap<>();
-        attribute.put("questionId", question.id());
-        attribute.put("question", question.title());
-        attribute.put("email", subscribe.getEmail());
-        attribute.put("token", subscribe.getToken());
-
-        return dailyMailView.render(attribute);
+    private DailyMailView createView(Subscribe subscribe, QuestionSummary question) {
+        return DailyMailView.builder()
+                .renderer(mailViewRenderer)
+                .subscribe(subscribe)
+                .question(question.toQuestion())
+                .build();
     }
 }

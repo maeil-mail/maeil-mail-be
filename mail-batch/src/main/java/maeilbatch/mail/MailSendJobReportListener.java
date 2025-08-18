@@ -2,10 +2,10 @@ package maeilbatch.mail;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import maeilmail.mail.MailSender;
+import maeilmail.mail.MailView;
 import maeilmail.mail.SimpleMailMessage;
 import maeilmail.statistics.DailySendReport;
 import maeilmail.statistics.StatisticsService;
@@ -21,12 +21,10 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class MailSendJobReportListener implements JobExecutionListener {
 
-    private static final String REPORT_FORMAT = "질문 전송 카운트(전송 대상 건수/실제 전송 대상 건수/성공/실패) : %d/%d/%d/%d";
     private static final String REPORT_TARGET = "team.maeilmail@gamil.com";
     private static final String REPORT_SUBJECT = "관리자 전용 메일 전송 결과를 알려드립니다.";
 
     private final MailSender mailSender;
-    private final MailSendJobReportView mailSendJobReportView;
     private final StatisticsService statisticsService;
 
     @Value("#{jobParameters['datetime']}")
@@ -42,20 +40,15 @@ public class MailSendJobReportListener implements JobExecutionListener {
     }
 
     private SimpleMailMessage createMessage(DailySendReport report) {
-        String text = createText(report);
+        MailView view = createView(report);
+        String text = view.render();
 
-        return new SimpleMailMessage(REPORT_TARGET, REPORT_SUBJECT, text, mailSendJobReportView.getType());
+        return new SimpleMailMessage(REPORT_TARGET, REPORT_SUBJECT, text, view.getType());
     }
 
-    private String createText(DailySendReport report) {
-        String reportText = String.format(
-                REPORT_FORMAT,
-                report.expectedSendingCount(),
-                report.actualSendingCount(),
-                report.success(),
-                report.fail()
-        );
-
-        return mailSendJobReportView.render(Map.of("report", reportText));
+    private MailSendJobReportView createView(DailySendReport report) {
+        return MailSendJobReportView.builder()
+                .dailySendReport(report)
+                .build();
     }
 }

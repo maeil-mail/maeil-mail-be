@@ -1,23 +1,32 @@
 package maeilbatch.mail;
 
 import java.util.Map;
-import lombok.RequiredArgsConstructor;
+import lombok.Builder;
 import maeilmail.mail.MailView;
 import maeilmail.mail.MailViewRenderer;
-import org.springframework.stereotype.Component;
+import maeilmail.statistics.DailySendReport;
 
-@Component
-@RequiredArgsConstructor
+@Builder
 public class MailSendJobReportView implements MailView {
 
-    private final MailViewRenderer mailViewRenderer;
+    private static final String REPORT_FORMAT = "질문 전송 카운트(전송 대상 건수/실제 전송 대상 건수/성공/실패) : %d/%d/%d/%d";
+
+    private final MailViewRenderer renderer;
+    private final DailySendReport dailySendReport;
 
     @Override
-    public String render(Map<Object, Object> attribute) {
-        return mailViewRenderer.render(attribute, "report");
+    public String render() {
+        String reportText = String.format(
+                REPORT_FORMAT,
+                dailySendReport.expectedSendingCount(),
+                dailySendReport.actualSendingCount(),
+                dailySendReport.success(),
+                dailySendReport.fail()
+        );
+
+        return renderer.render(Map.of("report", reportText), "report");
     }
 
-    @Override
     public String getType() {
         return "report";
     }

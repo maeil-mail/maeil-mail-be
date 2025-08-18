@@ -2,15 +2,14 @@ package maeilbatch.mail.weekly;
 
 import static maeilmail.subscribe.command.domain.SubscribeFrequency.WEEKLY;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
 import java.util.stream.IntStream;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import maeilmail.bulksend.sender.ChoiceQuestionPolicy;
 import maeilmail.mail.MailMessage;
+import maeilmail.mail.MailView;
 import maeilmail.question.Question;
 import maeilmail.question.QuestionSummary;
 import maeilmail.subscribe.command.domain.Subscribe;
@@ -26,8 +25,9 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 class WeeklyMailSendProcessor implements ItemProcessor<Subscribe, MailMessage> {
 
+    private static final String WEEKLY_MAIL_SUBJECT = "이번주 면접 질문을 보내드려요.";
+
     private final ChoiceQuestionPolicy choiceQuestionPolicy;
-    private final WeeklyMailView weeklyMailView;
 
     @Value("#{jobParameters['datetime']}")
     private LocalDateTime dateTime;
@@ -51,37 +51,24 @@ class WeeklyMailSendProcessor implements ItemProcessor<Subscribe, MailMessage> {
 
     private WeeklyMailMessage createWeeklyMailMessage(Subscribe subscribe) {
         List<QuestionSummary> questions = choiceWeeklyQuestions(subscribe);
-        String subject = createSubject();
-        String text = createText(subscribe, questions);
+        MailView view = createView(subscribe, questions);
+        String text = view.render();
 
-        return createWeeklyMailMessage(subscribe, questions, subject, text);
+        return createWeeklyMailMessage(subscribe, questions, WEEKLY_MAIL_SUBJECT, text);
+    }
+
+    private MailView createView(Subscribe subscribe, List<QuestionSummary> questionSummaries) {
+        return WeeklyMailView.builder()
+                .date(dateTime.toLocalDate())
+                .subscribe(subscribe)
+                .questionSummaries(questionSummaries)
+                .build();
     }
 
     private List<QuestionSummary> choiceWeeklyQuestions(Subscribe subscribe) {
         return IntStream.range(0, WEEKLY.getSendCount())
                 .mapToObj(round -> choiceQuestionPolicy.choiceByRound(subscribe, round))
                 .toList();
-    }
-
-    private String createSubject() {
-        return "이번주 면접 질문을 보내드려요.";
-    }
-
-    public String createText(Subscribe subscribe, List<QuestionSummary> questions) {
-        LocalDate today = LocalDate.now();
-        HashMap<Object, Object> attribute = new HashMap<>();
-        String category = subscribe.getCategory().getDescription();
-        int weekOfMonth = DateUtils.getWeekOfMonth(today);
-        attribute.put("questions", questions);
-        attribute.put("category", subscribe.getCategory().toLowerCase());
-        attribute.put("email", subscribe.getEmail());
-        attribute.put("token", subscribe.getToken());
-        attribute.put("weekLabel", category + " " + today.getMonthValue() + "월 " + weekOfMonth + "주차 질문");
-        attribute.put("year", today.getYear());
-        attribute.put("month", today.getMonthValue());
-        attribute.put("week", weekOfMonth);
-
-        return weeklyMailView.render(attribute);
     }
 
     public WeeklyMailMessage createWeeklyMailMessage(

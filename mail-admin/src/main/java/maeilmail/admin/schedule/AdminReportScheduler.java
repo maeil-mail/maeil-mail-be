@@ -1,13 +1,14 @@
 package maeilmail.admin.schedule;
 
 import java.time.LocalDate;
-import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import maeilmail.admin.domain.Admin;
 import maeilmail.admin.domain.AdminRepository;
 import maeilmail.admin.view.AdminReportView;
 import maeilmail.mail.MailSender;
+import maeilmail.mail.MailView;
+import maeilmail.mail.MailViewRenderer;
 import maeilmail.mail.SimpleMailMessage;
 import maeilmail.statistics.DailySendReport;
 import maeilmail.statistics.StatisticsService;
@@ -20,13 +21,11 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 class AdminReportScheduler {
 
-    private static final String REPORT_FORMAT = "질문 전송 카운트(전송 대상 건수/실제 전송 대상 건수/성공/실패) : %d/%d/%d/%d";
-
     private final MailSender mailSender;
     private final AdminRepository adminRepository;
-    private final AdminReportView adminReportView;
     private final DistributedSupport distributedSupport;
     private final StatisticsService statisticsService;
+    private final MailViewRenderer mailViewRenderer;
 
     @Scheduled(cron = "0 40 7 * * MON-FRI", zone = "Asia/Seoul")
     public void sendReport() {
@@ -34,28 +33,24 @@ class AdminReportScheduler {
         log.info("관리자 결과 전송, date = {}", today);
         DailySendReport dailySendReport = statisticsService.generateDailySendReport(today);
 
-        String text = createText(dailySendReport);
+        MailView view = createView(dailySendReport);
         String subject = "관리자 전용 메일 전송 결과를 알려드립니다.";
+        String text = view.render();
 
         adminRepository.findAll().stream()
                 .filter(it -> distributedSupport.isMine(it.getId()))
-                .map(it -> createMessage(it, subject, text))
+                .map(it -> createMessage(it, subject, text, view))
                 .forEach(mailSender::sendMail);
     }
 
-    private String createText(DailySendReport report) {
-        String reportText = String.format(
-                REPORT_FORMAT,
-                report.expectedSendingCount(),
-                report.actualSendingCount(),
-                report.success(),
-                report.fail()
-        );
-
-        return adminReportView.render(Map.of("report", reportText));
+    private MailView createView(DailySendReport report) {
+        return AdminReportView.builder()
+                .renderer(mailViewRenderer)
+                .dailySendReport(report)
+                .build();
     }
 
-    private SimpleMailMessage createMessage(Admin admin, String subject, String text) {
-        return new SimpleMailMessage(admin.getEmail(), subject, text, adminReportView.getType());
+    private SimpleMailMessage createMessage(Admin admin, String subject, String text, MailView view) {
+        return new SimpleMailMessage(admin.getEmail(), subject, text, view.getType());
     }
 }
