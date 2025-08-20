@@ -1,6 +1,7 @@
 package maeilbatch.mail;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import maeilmail.mail.MailMessage;
@@ -15,6 +16,7 @@ import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.item.database.JpaCursorItemReader;
 import org.springframework.batch.item.support.ClassifierCompositeItemProcessor;
 import org.springframework.batch.item.support.ClassifierCompositeItemWriter;
+import org.springframework.batch.item.support.CompositeItemProcessor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -46,7 +48,7 @@ class MailSendJobConfig {
     @Bean
     public Step mailSendStep(
             JpaCursorItemReader<Subscribe> subscribeReader,
-            ClassifierCompositeItemProcessor<Subscribe, MailMessage> mailSendProcessor,
+            CompositeItemProcessor<Subscribe, MailMessage> mailSendProcessor,
             ClassifierCompositeItemWriter<MailMessage> mailSendWriter
     ) {
         return new StepBuilder("mailSendStep", jobRepository)
@@ -67,7 +69,20 @@ class MailSendJobConfig {
     }
 
     @Bean
-    public ClassifierCompositeItemProcessor<Subscribe, MailMessage> mailSendProcessor(MailSendProcessorClassifier classifier) {
+    public CompositeItemProcessor<Subscribe, MailMessage> mailSendProcessor(
+            FilterSubscribeProcessor filterSubscribeProcessor,
+            ClassifierCompositeItemProcessor<Subscribe, MailMessage> mailMessageProcessor
+    ) {
+        CompositeItemProcessor<Subscribe, MailMessage> mailSendProcessor = new CompositeItemProcessor<>();
+        mailSendProcessor.setDelegates(List.of(filterSubscribeProcessor, mailMessageProcessor));
+
+        return mailSendProcessor;
+    }
+
+    @Bean
+    public ClassifierCompositeItemProcessor<Subscribe, MailMessage> mailMessageProcessor(
+            MailSendProcessorClassifier classifier
+    ) {
         ClassifierCompositeItemProcessor<Subscribe, MailMessage> processor = new ClassifierCompositeItemProcessor<>();
         processor.setClassifier(classifier);
 
