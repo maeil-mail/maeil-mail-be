@@ -1,5 +1,6 @@
 package maeilmail.subscribe.command.application;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import maeilmail.subscribe.command.domain.TemporalSubscribe;
@@ -16,20 +17,37 @@ public class TemporalSubscribeManager {
     private final TemporalSubscribeRepository temporalSubscribeRepository;
 
     public void add(String email, String verifyCode) {
-        temporalSubscribeRepository.findByEmail(email).ifPresent(temporalSubscribeRepository::delete);
+        List<TemporalSubscribe> temporalSubscribes = temporalSubscribeRepository.findAllByEmail(email);
+        removeDataIfPresent(temporalSubscribes);
+
         TemporalSubscribe temporalSubscribe = new TemporalSubscribe(email, verifyCode);
         temporalSubscribeRepository.save(temporalSubscribe);
     }
 
-    public void verify(String email, String verifyCode) {
-        TemporalSubscribe temporalSubscribe = temporalSubscribeRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException(INVALID_EMAIL_MESSAGE));
+    private void removeDataIfPresent(List<TemporalSubscribe> temporalSubscribes) {
+        if (!temporalSubscribes.isEmpty()) {
+            List<Long> ids = temporalSubscribes.stream()
+                    .map(TemporalSubscribe::getId)
+                    .toList();
 
+            temporalSubscribeRepository.removeAllByIdIn(ids);
+        }
+    }
+
+    public void verify(String email, String verifyCode) {
+        List<TemporalSubscribe> temporalSubscribes = temporalSubscribeRepository.findAllByEmail(email);
+        temporalSubscribes.stream()
+                .filter(it -> isVerifiable(verifyCode, it))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException(INVALID_EMAIL_MESSAGE));
+    }
+
+    private boolean isVerifiable(String verifyCode, TemporalSubscribe temporalSubscribe) {
         try {
             temporalSubscribe.verify(verifyCode);
+            return true;
         } catch (Exception e) {
-            log.info("메일 인증 실패 email = {} message = {}", email, e.getMessage());
-            throw new IllegalArgumentException(INVALID_EMAIL_MESSAGE, e);
+            return false;
         }
     }
 }
