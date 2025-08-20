@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import maeilmail.mail.MailSender;
 import maeilmail.mail.MailView;
+import maeilmail.mail.MailViewRenderer;
 import maeilmail.mail.SimpleMailMessage;
 import maeilmail.statistics.DailySendReport;
 import maeilmail.statistics.StatisticsService;
@@ -26,6 +27,7 @@ public class MailSendJobReportListener implements JobExecutionListener {
 
     private final MailSender mailSender;
     private final StatisticsService statisticsService;
+    private final MailViewRenderer mailViewRenderer;
 
     @Value("#{jobParameters['datetime']}")
     private LocalDateTime dateTime;
@@ -48,6 +50,7 @@ public class MailSendJobReportListener implements JobExecutionListener {
 
     private MailSendJobReportView createView(DailySendReport report) {
         return MailSendJobReportView.builder()
+                .renderer(mailViewRenderer)
                 .dailySendReport(report)
                 .build();
     }
