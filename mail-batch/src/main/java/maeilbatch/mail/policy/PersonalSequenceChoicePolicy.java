@@ -2,7 +2,7 @@ package maeilbatch.mail.policy;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import maeilmail.bulksend.sender.ChoiceQuestionPolicy;
+import maeilbatch.mail.ChoiceQuestionPolicy;
 import maeilmail.question.QuestionQueryService;
 import maeilmail.question.QuestionSummary;
 import maeilmail.subscribe.command.domain.Subscribe;

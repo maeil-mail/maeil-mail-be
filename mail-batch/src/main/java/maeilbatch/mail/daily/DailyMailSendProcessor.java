@@ -2,7 +2,7 @@ package maeilbatch.mail.daily;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import maeilmail.bulksend.sender.ChoiceQuestionPolicy;
+import maeilbatch.mail.ChoiceQuestionPolicy;
 import maeilmail.mail.MailMessage;
 import maeilmail.mail.MailView;
 import maeilmail.mail.MailViewRenderer;
