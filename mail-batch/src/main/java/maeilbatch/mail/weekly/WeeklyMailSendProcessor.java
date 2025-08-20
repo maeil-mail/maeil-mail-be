@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import maeilbatch.mail.ChoiceQuestionPolicy;
 import maeilmail.mail.MailMessage;
 import maeilmail.mail.MailView;
+import maeilmail.mail.MailViewRenderer;
 import maeilmail.question.Question;
 import maeilmail.question.QuestionSummary;
 import maeilmail.subscribe.command.domain.Subscribe;
@@ -28,6 +29,7 @@ class WeeklyMailSendProcessor implements ItemProcessor<Subscribe, MailMessage> {
     private static final String WEEKLY_MAIL_SUBJECT = "이번주 면접 질문을 보내드려요.";
 
     private final ChoiceQuestionPolicy choiceQuestionPolicy;
+    private final MailViewRenderer mailViewRenderer;
 
     @Value("#{jobParameters['datetime']}")
     private LocalDateTime dateTime;
@@ -59,6 +61,7 @@ class WeeklyMailSendProcessor implements ItemProcessor<Subscribe, MailMessage> {
 
     private MailView createView(Subscribe subscribe, List<QuestionSummary> questionSummaries) {
         return WeeklyMailView.builder()
+                .renderer(mailViewRenderer)
                 .date(dateTime.toLocalDate())
                 .subscribe(subscribe)
                 .questionSummaries(questionSummaries)
