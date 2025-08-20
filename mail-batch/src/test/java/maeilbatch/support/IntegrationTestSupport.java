@@ -1,4 +1,4 @@
-package maeilmail.support;
+package maeilbatch.support;
 
 import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.Mockito.any;
@@ -13,11 +13,9 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import maeilmail.mail.MailSender;
 import maeilmail.subscribe.command.application.VerifySubscribeService;
-import org.hibernate.cfg.AvailableSettings;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.orm.jpa.HibernatePropertiesCustomizer;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.cache.Cache;
@@ -92,20 +90,7 @@ public abstract class IntegrationTestSupport {
             return verifySubscribeService;
         }
 
-        @Bean
-        public QueryCountTester queryCountTester() {
-            return new QueryCountTester();
-        }
-
-        @Bean
-        public HibernatePropertiesCustomizer hibernatePropertiesCustomizer() {
-            QueryCountInspector queryCountInspector = new QueryCountInspector(queryCountTester());
-
-            return hibernateProperties ->
-                    hibernateProperties.put(AvailableSettings.STATEMENT_INSPECTOR, queryCountInspector);
-        }
-
-        @Bean(name = "mailCoreIntegrationTestJpaQueryFactory")
+        @Bean(name = "mailBatchIntegrationTestJpaQueryFactory")
         public JPAQueryFactory jpaQueryFactory(EntityManager entityManager) {
             return new JPAQueryFactory(JPQLTemplates.DEFAULT, entityManager);
         }
