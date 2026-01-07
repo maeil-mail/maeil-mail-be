@@ -5,12 +5,14 @@ import java.util.NoSuchElementException;
 
 public enum QuestionCategory {
 
-    FRONTEND("FE"), BACKEND("BE");
+    FRONTEND("FE", 0L), BACKEND("BE", 15L);
 
     private final String description;
+    private final Long initialSequence;
 
-    QuestionCategory(String description) {
+    QuestionCategory(String description, Long initialSequence) {
         this.description = description;
+        this.initialSequence = initialSequence;
     }
 
     public static QuestionCategory from(String category) {
@@ -26,5 +28,9 @@ public enum QuestionCategory {
 
     public String getDescription() {
         return description;
+    }
+
+    public Long getInitialSequence() {
+        return initialSequence;
     }
 }

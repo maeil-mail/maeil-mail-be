@@ -49,18 +49,10 @@ public class Subscribe extends BaseEntity {
     public Subscribe(String email, QuestionCategory category, SubscribeFrequency frequency) {
         this.email = email;
         this.category = category;
-        this.nextQuestionSequence = determineSequenceByCategory(category);
+        this.nextQuestionSequence = category.getInitialSequence();
         this.token = UUID.randomUUID().toString();
         this.frequency = frequency;
         this.deletedAt = null;
-    }
-
-    private long determineSequenceByCategory(QuestionCategory category) {
-        if (category == QuestionCategory.BACKEND) {
-            return 15L;
-        }
-
-        return 0L;
     }
 
     public void unsubscribe() {
