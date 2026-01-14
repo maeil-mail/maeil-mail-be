@@ -1,5 +1,6 @@
 package maeilwiki.api;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import maeilwiki.auth.MemberIdentityCookieHelper;
 import maeilwiki.member.application.MemberIdentity;
@@ -28,7 +29,7 @@ class MemberApi {
     }
 
     @PostMapping("/member")
-    public ResponseEntity<Void> createMember(@RequestBody MemberRequest request) {
+    public ResponseEntity<Void> createMember(@Valid @RequestBody MemberRequest request) {
         MemberTokenResponse response = memberService.apply(request);
 
         return generateTokenCookieIncludeResponse(response);
