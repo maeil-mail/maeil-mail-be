@@ -1,4 +1,7 @@
 package maeilwiki.member.application;
 
-public record MemberRequest(String oauthAccessToken) {
+import jakarta.validation.constraints.NotBlank;
+
+public record MemberRequest(
+        String oauthAccessToken) {
 }
