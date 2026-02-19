@@ -11,6 +11,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
+
 import maeilmail.admin.domain.AdminNotice;
 import maeilmail.admin.domain.AdminNoticeRepository;
 import maeilmail.mail.MailMessage;
@@ -120,7 +121,7 @@ class SendAdminNoticeSchedulerTest extends IntegrationTestSupport {
     }
 
     private Subscribe createSubscribe(String email) {
-        Subscribe subscribe = new Subscribe(email, QuestionCategory.BACKEND, SubscribeFrequency.DAILY);
+        Subscribe subscribe = new Subscribe(email, QuestionCategory.BACKEND, SubscribeFrequency.DAILY, 0L);
         return subscribeRepository.save(subscribe);
     }
 
