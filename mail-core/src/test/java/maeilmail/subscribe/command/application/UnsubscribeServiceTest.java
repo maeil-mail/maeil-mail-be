@@ -44,7 +44,7 @@ class UnsubscribeServiceTest extends IntegrationTestSupport {
     }
 
     private Subscribe createSubscribe() {
-        Subscribe subscribe = new Subscribe("email@test.com", QuestionCategory.BACKEND, SubscribeFrequency.DAILY);
+        Subscribe subscribe = new Subscribe("email@test.com", QuestionCategory.BACKEND, SubscribeFrequency.DAILY, 0L);
 
         return subscribeRepository.save(subscribe);
     }

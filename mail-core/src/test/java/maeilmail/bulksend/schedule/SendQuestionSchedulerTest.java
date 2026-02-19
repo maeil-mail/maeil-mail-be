@@ -83,7 +83,7 @@ class SendQuestionSchedulerTest extends IntegrationTestSupport {
     }
 
     private Subscribe createSubscribe(QuestionCategory category) {
-        Subscribe subscribe = new Subscribe("email@test.com", category, SubscribeFrequency.DAILY);
+        Subscribe subscribe = new Subscribe("email@test.com", category, SubscribeFrequency.DAILY, 0L);
 
         return subscribeRepository.save(subscribe);
     }

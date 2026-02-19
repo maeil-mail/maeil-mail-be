@@ -40,6 +40,6 @@ class SubscribeQueryServiceTest extends IntegrationTestSupport {
     }
 
     private Subscribe createSubscribe(String email) {
-        return subscribeRepository.save(new Subscribe(email, QuestionCategory.BACKEND, SubscribeFrequency.WEEKLY));
+        return subscribeRepository.save(new Subscribe(email, QuestionCategory.BACKEND, SubscribeFrequency.WEEKLY, 0L));
     }
 }

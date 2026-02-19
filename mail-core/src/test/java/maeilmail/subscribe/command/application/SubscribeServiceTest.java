@@ -3,12 +3,14 @@ package maeilmail.subscribe.command.application;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
-import maeilmail.question.QuestionCategory;
+
+import maeilmail.question.*;
 import maeilmail.subscribe.command.application.request.SubscribeRequest;
 import maeilmail.subscribe.command.domain.Subscribe;
 import maeilmail.subscribe.command.domain.SubscribeFrequency;
 import maeilmail.subscribe.command.domain.SubscribeRepository;
 import maeilmail.support.IntegrationTestSupport;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,23 @@ class SubscribeServiceTest extends IntegrationTestSupport {
 
     @Autowired
     private SubscribeRepository subscribeRepository;
+
+    @Autowired
+    private QuestionRepository questionRepository;
+
+    @Autowired
+    private CategoryPolicyRepository categoryPolicyRepository;
+
+    @BeforeEach
+    void setUp() {
+        Question backendQuestion = new Question("백엔드 시작 질문", "내용", QuestionCategory.BACKEND);
+        Question frontendQuestion = new Question("프론트엔드 시작 질문", "내용", QuestionCategory.FRONTEND);
+        questionRepository.saveAll(List.of(backendQuestion, frontendQuestion));
+
+        CategoryPolicy backendPolicy = new CategoryPolicy(QuestionCategory.BACKEND, backendQuestion);
+        CategoryPolicy frontendPolicy = new CategoryPolicy(QuestionCategory.FRONTEND, frontendQuestion);
+        categoryPolicyRepository.saveAll(List.of(backendPolicy, frontendPolicy));
+    }
 
     @Test
     @DisplayName("신규 구독자를 생성한다.")
