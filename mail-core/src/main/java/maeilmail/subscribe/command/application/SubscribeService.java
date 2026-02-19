@@ -7,7 +7,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import maeilmail.mail.MailMessage;
 import maeilmail.mail.MailSender;
+import maeilmail.question.CategoryPolicy;
+import maeilmail.question.CategoryPolicyRepository;
 import maeilmail.question.QuestionCategory;
+import maeilmail.question.QuestionRepository;
 import maeilmail.subscribe.command.application.request.SubscribeRequest;
 import maeilmail.subscribe.command.application.request.VerifyEmailRequest;
 import maeilmail.subscribe.command.domain.Subscribe;
@@ -26,6 +29,9 @@ public class SubscribeService {
     private final VerifySubscribeService verifySubscribeService;
     private final SubscribeWelcomeView welcomeView;
     private final MailSender mailSender;
+
+    private final CategoryPolicyRepository categoryPolicyRepository;
+    private final QuestionRepository questionRepository;
 
     @Transactional
     public void subscribe(SubscribeRequest request) {
@@ -61,7 +67,14 @@ public class SubscribeService {
 
     private void subscribe(QuestionCategory category, SubscribeRequest request) {
         SubscribeFrequency frequency = SubscribeFrequency.from(request.frequency());
-        Subscribe subscribe = new Subscribe(request.email(), category, frequency);
+
+        CategoryPolicy policy = categoryPolicyRepository.findByCategory(category)
+                .orElseThrow(() -> new IllegalArgumentException("해당 카테고리의 초기 정책이 설정되어 있지 않습니다."));
+
+        Long startQuestionId = policy.getStartQuestion().getId();
+        long nextSequence = questionRepository.countByCategoryAndIdLessThan(category, startQuestionId);
+
+        Subscribe subscribe = new Subscribe(request.email(), category, frequency, nextSequence);
         subscribeRepository.save(subscribe);
     }
 

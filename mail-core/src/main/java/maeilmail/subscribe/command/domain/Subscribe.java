@@ -46,10 +46,10 @@ public class Subscribe extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private SubscribeFrequency frequency;
 
-    public Subscribe(String email, QuestionCategory category, SubscribeFrequency frequency) {
+    public Subscribe(String email, QuestionCategory category, SubscribeFrequency frequency, Long nextQuestionSequence) {
         this.email = email;
         this.category = category;
-        this.nextQuestionSequence = category.getInitialSequence();
+        this.nextQuestionSequence = nextQuestionSequence;
         this.token = UUID.randomUUID().toString();
         this.frequency = frequency;
         this.deletedAt = null;
