@@ -1,21 +1,19 @@
 package maeilmail.subscribe.command.application;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import maeilmail.mail.MailMessage;
-import maeilmail.mail.MailSender;
 import maeilmail.question.QuestionCategory;
 import maeilmail.subscribe.command.application.request.SubscribeRequest;
 import maeilmail.subscribe.command.application.request.VerifyEmailRequest;
 import maeilmail.subscribe.command.domain.Subscribe;
+import maeilmail.subscribe.command.domain.SubscribeCreatedEvent;
 import maeilmail.subscribe.command.domain.SubscribeFrequency;
 import maeilmail.subscribe.command.domain.SubscribeRepository;
-import maeilmail.subscribe.view.SubscribeWelcomeView;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Slf4j
 @Service
@@ -24,14 +22,14 @@ public class SubscribeService {
 
     private final SubscribeRepository subscribeRepository;
     private final VerifySubscribeService verifySubscribeService;
-    private final SubscribeWelcomeView welcomeView;
-    private final MailSender mailSender;
+    private final ApplicationEventPublisher eventPublisher;
+
 
     @Transactional
     public void subscribe(SubscribeRequest request) {
         log.info("이메일 구독 요청, 이메일 = {}", request.email());
         trySubscribe(request);
-        sendSubscribeWelcomeMail(request.email());
+        eventPublisher.publishEvent(new SubscribeCreatedEvent(request.email()));
         log.info("이메일 구독 성공, 이메일 = {}", request.email());
     }
 
@@ -72,18 +70,5 @@ public class SubscribeService {
 
     public void sendCodeIncludedMail(VerifyEmailRequest request) {
         verifySubscribeService.sendCodeIncludedMail(request);
-    }
-
-    private void sendSubscribeWelcomeMail(String email) {
-        String subject = "앞으로 면접 질문을 보내드릴게요.";
-        String text = createText();
-        MailMessage mailMessage = new MailMessage(email, subject, text, welcomeView.getType());
-        mailSender.sendMail(mailMessage);
-    }
-
-    private String createText() {
-        Map<Object, Object> attribute = new HashMap<>();
-
-        return welcomeView.render(attribute);
     }
 }
