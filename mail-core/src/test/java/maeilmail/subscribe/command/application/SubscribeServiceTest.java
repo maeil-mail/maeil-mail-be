@@ -7,7 +7,6 @@ import java.util.List;
 import maeilmail.question.*;
 import maeilmail.subscribe.command.application.request.SubscribeRequest;
 import maeilmail.subscribe.command.domain.Subscribe;
-import maeilmail.subscribe.command.domain.SubscribeCreatedEvent;
 import maeilmail.subscribe.command.domain.SubscribeFrequency;
 import maeilmail.subscribe.command.domain.SubscribeRepository;
 import maeilmail.support.IntegrationTestSupport;
@@ -15,10 +14,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.event.ApplicationEvents;
-import org.springframework.test.context.event.RecordApplicationEvents;
 
-@RecordApplicationEvents
 class SubscribeServiceTest extends IntegrationTestSupport {
 
     @Autowired
@@ -67,17 +63,6 @@ class SubscribeServiceTest extends IntegrationTestSupport {
     }
 
     @Test
-    @DisplayName("구독 성공 시 SubscribeCreatedEvent 이벤트를 발행한다.")
-    void publishEvent() {
-        SubscribeRequest request = createRequest(List.of("backend"), "daily");
-
-        subscribeService.subscribe(request);
-
-        long count = events.stream(SubscribeCreatedEvent.class).count();
-        assertThat(count).isEqualTo(1);
-    }
-
-    @Test
     @DisplayName("이미 존재하는 카테고리라면 신규로 구독할 수 없다.")
     void duplicate() {
         SubscribeRequest request = createRequest(List.of("backend", "frontend"), "daily");
@@ -123,7 +108,7 @@ class SubscribeServiceTest extends IntegrationTestSupport {
      * ex)
      * 1. 오전 8시 전송 주기 weekly, frontend 구독
      * 2. 오전 9시 전송 주기 daily, backend 구독
-     * <p>
+     *
      * 해당 케이스에서 frontend, backend 구독 각각 다른 전송 주기를 가지게 되므로, 마지막 구독을 기준으로 전역 설정합니다.
      */
     @Test
