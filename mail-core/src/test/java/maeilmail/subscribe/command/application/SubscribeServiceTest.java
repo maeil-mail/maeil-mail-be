@@ -43,7 +43,6 @@ class SubscribeServiceTest extends IntegrationTestSupport {
         CategoryPolicy frontendPolicy = new CategoryPolicy(QuestionCategory.FRONTEND, frontendQuestion);
         categoryPolicyRepository.saveAll(List.of(backendPolicy, frontendPolicy));
     }
-    private ApplicationEvents events;
 
     @Test
     @DisplayName("신규 구독자를 생성한다.")
