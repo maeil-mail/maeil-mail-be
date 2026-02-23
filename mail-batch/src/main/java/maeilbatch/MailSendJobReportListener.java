@@ -22,7 +22,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class MailSendJobReportListener implements JobExecutionListener {
 
-    private static final String REPORT_TARGET = "team.maeilmail@gamil.com";
+    private static final String REPORT_TARGET = "team.maeilmail@gmail.com";
     private static final String REPORT_SUBJECT = "관리자 전용 메일 전송 결과를 알려드립니다.";
 
     private final MailSender mailSender;
