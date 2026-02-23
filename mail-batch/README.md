@@ -1,3 +1,53 @@
+## flow
+
+job name : mailSendJob
+
+스텝 구성 :
+- mailGenerateStep
+- mailSendStep
+- changeSequenceStep
+
+리스너 : 
+- mailSendJobReportListener
+  - afterJob 행위로 메일 전송 결과 리포트를 관리자에게 전송한다.
+
+**mailGenerateStep** : subscribe의 유형에 맞춰서 메일 메시지를 생성하고, forward 데이터를 저장한닥.
+- 이 과정에서 중복 발송은 없고, 청크 트랜잭션 단위로 관리되므로 실패 지점부터 정확히 재실행할 수 있다.
+- reader : `JpaCursorItemReader` 
+- processor : `CompositeItemProcessor<Subscribe, MailMessage> mailSendProcessor`
+  - CompositeItemProcessor는 여러 위임 대상 ItemProcessor를 순차적으로 실행한다.
+  - 실행 프로세서는 filterSubscribeProcessor, mailMessageProcessor
+  - 이때 mailMessageProcessor는 ClassifierCompositeProcessor를 사용한다.
+    - 이는 Spring Classifier를 사용해서 아이템을 처리할 ItemProcessor로 라우팅함
+    - MailSendProcessorClassifier를 사용해서 subscribe의 frequency를 조회하여 daily, weekly 중 하나를 선택함
+  - 요약 : 두가지 processor를 순차적으로 실행(filter, mailMessageProcessor(분류해서 조건부 실행))한다. 
+- writer : `ClassifierCompositeItemWriter<MailMessage> mailSendWriter` -> forwardLog 저장
+    - processor와 동일
+- 해당 스텝에서 고려 지점은 다음과 같음
+  - `청크 사이즈`
+  - `subscribe_question 데이터 관련 네트워크 io 최적화`
+  - `reader 선택 관련 근거`
+
+**mailSendStep** : 메일을 전송한다.
+
+- reader : `JpaCursorItemReader`
+- processor : `ForwardProcessor`
+  - forwordLog가 processing인 경우, 필터링한다.
+- writer : `ForwardWriter`
+  - statusBatchChanger.chageState는 트랜잭션 전파 옵션이 Propagation.REQUIRES_NEW이다.
+  - 청크 아이템 단위로 새로운 트랜잭션을 열어서 아이템의 상태를 processing으로 변경한다. (호출 불확정 상태 생략이후 재시도)
+  - forwardSender를 사용해서 동기 방식으로 전달하는데, 비동기인 경우, 예외 전파가 안돼서 동기로 바꿨음.
+  - 이 부분은 promise.all 어쩌구처럼 전체 청크를 동시에 시작한 이후, 하나라도 에러가 발생하면 청크 트랜잭션 자체를 롤백 시키는 방향을 사용하면 될듯
+- 해당 스텝에서 고려 지점은 다음과 같음
+  - `reader 선택 근거`
+  - `청크 사이즈`
+  - `sendMailSync 개선`
+  - `processing 변환 트랜잭션이 청크 트랜잭션과 분리되는지 테스팅`
+- 중요 : processing에 대한 재처리는 추가적인 인프라 비용이 필요하기 때문에 생략하는 것으로 결정
+
+**changeSequenceStep** :
+- subscribeRepository.increaseNextQuestionSequence를 여전히 사용하는데, 이 쿼리 오래걸리는데 개선해야함
+
 ## memo
 
 - 일간 메일 발송
