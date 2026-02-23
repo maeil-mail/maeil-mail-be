@@ -59,6 +59,12 @@ class WeeklyMailSendProcessor implements ItemProcessor<Subscribe, MailMessage> {
         return createWeeklyMailMessage(subscribe, questions, WEEKLY_MAIL_SUBJECT, text);
     }
 
+    private List<QuestionSummary> choiceWeeklyQuestions(Subscribe subscribe) {
+        return IntStream.range(0, WEEKLY.getSendCount())
+                .mapToObj(round -> choiceQuestionPolicy.choiceByRound(subscribe, round))
+                .toList();
+    }
+
     private MailView createView(Subscribe subscribe, List<QuestionSummary> questionSummaries) {
         return WeeklyMailView.builder()
                 .renderer(mailViewRenderer)
@@ -66,12 +72,6 @@ class WeeklyMailSendProcessor implements ItemProcessor<Subscribe, MailMessage> {
                 .subscribe(subscribe)
                 .questionSummaries(questionSummaries)
                 .build();
-    }
-
-    private List<QuestionSummary> choiceWeeklyQuestions(Subscribe subscribe) {
-        return IntStream.range(0, WEEKLY.getSendCount())
-                .mapToObj(round -> choiceQuestionPolicy.choiceByRound(subscribe, round))
-                .toList();
     }
 
     public WeeklyMailMessage createWeeklyMailMessage(
