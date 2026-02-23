@@ -1,4 +1,4 @@
-package maeilbatch.mail;
+package maeilbatch;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

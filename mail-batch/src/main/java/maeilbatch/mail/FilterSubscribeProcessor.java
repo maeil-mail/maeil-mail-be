@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-class FilterSubscribeProcessor implements ItemProcessor<Subscribe, Subscribe> {
+public class FilterSubscribeProcessor implements ItemProcessor<Subscribe, Subscribe> {
 
     @Override
     public Subscribe process(Subscribe subscribe) {

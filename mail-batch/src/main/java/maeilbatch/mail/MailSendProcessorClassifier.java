@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-class MailSendProcessorClassifier implements Classifier<Subscribe, ItemProcessor<?, ? extends MailMessage>> {
+public class MailSendProcessorClassifier implements Classifier<Subscribe, ItemProcessor<?, ? extends MailMessage>> {
 
     private final ItemProcessor<Subscribe, MailMessage> dailyMailSendProcessor;
     private final ItemProcessor<Subscribe, MailMessage> weeklyMailSendProcessor;

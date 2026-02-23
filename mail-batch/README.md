@@ -25,3 +25,88 @@
     - (흠.. 이건 뭘까) 메일을 발송한다.
     - (tasklet) 일간 구독자의 시퀀스를 1씩 증가시킨다.
     - (tasklet) 관리자에게 발송 내역을 전송한다.
+
+## Forwad 로그가 필요한 근거
+
+- 그 관점에서 subscribe_question을 사용해서 호출 불확정을 식별하려면 pending, processing과 같은 상태가 필요하다.
+  - send가 호출되고 fail, success같은 경우에는 실제로 메일이 발송을 시도한 케이스다. 따라서, 이는 호출 불확정 상태가 아닐것이다.
+  - pending이 있어야하는 이유는 subscribe_question이 메일을 발송한 뒤에 생성되기 떄문이다.
+    - 만약에 특정 청크를 재시도한다고 했을 때, 해당 item에 대한 subscribe_question이 존재하지 않을 것이다. -> 청크 트랜잭션이 롤백되거나 아니면 개별 트랜잭션이 실패했을 때.
+    - 그럼 재시도를 할때 시도는 한건지 아니면 뭐 호출 불확정인지 알 수가 없음~ 
+  
+## 내결함
+
+### 문제 정의
+
+- AbstractMailSender가 mail을 전송하고 성공 실패 여부에 따라서 각 sender 구현체에 정의된 방식으로 subscribe_question을 저장한다.
+- reader, processor, writer에서 청크를 재소비할 수 있다. 예를 들어, 배치 프로세스가 의도치않게 종료된 경우 reader에서는 읽은 지점부터 다시 읽기도 하며, 내결함 기능을 쓸때는 재시도 정책에 따라서 청크를 다시 읽을 수 있다.
+- 따라서, 호출 불확정 상태가 발생할 수 있다. (기존에도 이 문제가 있었다.)
+
+### 아이디어 1
+
+- 처음에는 아래처럼 AbstractMailSender에 동기 + 트랜잭션 분리 방식의 메서드를 하나 추가했다. 
+```
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void sendMailSync(T message) {
+        sendMail(message);
+    }
+```
+- 이 방식을 쓰면 writer에서 item 별로 개별 트랜잭션을 적용하므로 각 sendMail 작업은 청크 트랜잭션에 영향을 안준다고 생각했다.
+- processor는 멱등하게 구현이 되어 있긴 하다.
+- 이후에는 별도의 대사 스텝을 추가해서 전송 건수가 실발송 건수와 다르다면 대사 스텝을 실패처리하고 ->  recovery 스텝을 하나 추가할 생각이었다.
+  - 스프링 배치의 내결함 기능을 안쓰는 방식
+- recovery 스텝이나 대사 스텝을 생각하기 이전에 사실 이 방식은 문제가 있다고 판단했다.
+  - 만약에 이 스프링 배치 프로세스가 모종의 이유로 다운된다면? -> 어디서부터 재시도를 할건가? -> 멱등과 관련된 복잡한 문제가 발생한다. 뿐만 아니라 item별 db, netwrok io가 발생한다는 점에서 성능의 저하가 있다.
+
+### 아이디어 2 - 호출 불확정 식별을 위함
+
+- 만약 mailsendstep이 실패를 했다면.. 청크가 재소비될 수 있지?
+- 그럼 writer에서 subscribe_question이 없는 애들만 실행하면 되지 않을까?라는 생각을 했음
+  - 하지만, 이게 녹록치가 않음.. item이 100개라고 가정했을때 58번째를 전송하고 해당 subscribe_question을 저장하기 이전에 배치 프로세스가 중단됐다.
+  - 그러면 57번째까지는 시도 1 방식에 근거하면 데이터가 있을거다.
+  - 하지만 58번째가 데이터가 없음 -> 이 친구는 호출 불확정이니까 무시를 해
+  - 그러면, 58번째는 그냥 무시하고 59번째 할려고하는데.. 얘도 없어.. 얘는 호출 불확정이 아닌데. 호출 불확정을 식별하는 기준이 subscribe_question이 없기 때문이야.
+    - 음.. 그러면 이전 item이 실패했다... 이전 item이 subscribe_question이 없는 첫번째 데이터니까 얘만 무시하기 위해서 뭔가...step execution context를 이용할 수 있지 않을까?
+  - (한계) 그러면.. 첫 시도에는 어떻게해? 얘는 항상 모든 item이 subscribe_question이 없을텐데.. 첫번째 item은 발송이 안될거 같은데?
+
+### 아이디어 3 - 호출 불확정 식별과 db io 횟수를 줄이기 위함 - 상태 추가
+
+- db io를 최대한 횟수를 줄이면서, 호출 불확정을 식별하기 위해서 '상태'를 추가하자
+- subscribe_question에 NEW 상태를 추가하자.
+- 메일 발송 writer를 다음과 같은 책임만 가지도록 한다.
+  - 메일 발송을 위한 subscribe_question 생성
+  - 이렇게 하면 subscribe_question은 청크 트랜잭션을 쓸 수 있어서 multi value insert 라던가 db 왕복 횟수를 줄일 수 있을 것이라는 가설 -> outbox 느낌이야.
+- 추가로 메일 send step을 별도로 둔다.
+  - 여기서 subscribe_question의 new인 애들을 reading하고
+  - 이 친구들을 전송한다.
+- 다만, 이 경우에도 똑같이 아이디어 2번의 문제가 발생한다. 
+  - subscribe_question의 특정 청크를 재시도하는데, 전부다 NEW 잖아.. 알 수가 없음.. 결국 아이디어 1처럼 item 별 트랜잭션을 열어서 성공 실패를 변경해줘야하는데.. ;;
+  - 57번까지는 실패 성공 처리인데.. 58번이 new면 안돼... 1번 아이템은 항상 new 잖아...
+  - 뿐만아니라 subscribe_question을 outbox 느낌의 레코드로 추가하면..
+  - 이거는 다른 곳에서도 쓰이는 엔티티이며. 추가로 주간 전송인 경우에는 5개 생겨.. 100개 아이템의 청크가 99번째에 주간 발송 subscribe_question이면.. 어쩌려고?
+-> 결국 db io는 오히려 추가될거고... subscribe_question이 2가지 책임이 있어서 변경에 취약하고 확장이 어려운 데이터 설계라고 생각함. 그리고... new 상태로만은 호출 불확정을 알 수 없음
+
+### 아이디어 4 - pending, processing 추가
+
+- 별도의 forwardlog 테이블을 만들고 전송 데이터를 저장한다. 기존 mailSendwriter에서는 subscribe_question을 저장하고, forwardlog도 추가한다.
+- 최초에는 pending으로 저장해준다.
+```
+--- 청크 트랜잭션 (pending log 만들기) ---
+items.forEach(this::saveSubscribeQuestion);
+items.forEach(this::savePendingForwardLog);
+```
+
+```
+--- 별도 트랜잭션 (pending log 일괄 업데이트)
+forwardlogs.forEach(it -> it.setStatus(PROCESSING) // 처리 중 상태로 마킹
+
+--- 청크 트랜잭션 (메일 발송 시도) ---
+messages = forwardlogs.map(this::mapToMessage) // 메시지로 변경
+mailSender.send(messages); // 발송
+    - mailSender 내부에서 log 업데이트를 수행
+```
+
+- 재시도할때는 pending이나 fail만 재시도하면 된다!
+- PROCESSING인 경우에는 호출 불확정이라서 다시 보내지 않게 구현할 수 있을거 같다.
+- 다만.. 호출 불확정인 데이터가 청크 단위 연대 책임이다.
+  - 이건 트레이드오프해야하는데.. 개별 트랜잭션을 열어서 마킹 처리를 하고 save 시도를 하게 된다면.. io 횟수가 늘어날 것이다.

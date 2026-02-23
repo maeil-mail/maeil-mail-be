@@ -1,9 +1,17 @@
-package maeilbatch.mail;
+package maeilbatch;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import maeilbatch.forward.ForwardLog;
+import maeilbatch.forward.ForwardProcessor;
+import maeilbatch.forward.ForwardReader;
+import maeilbatch.forward.ForwardWriter;
+import maeilbatch.mail.FilterSubscribeProcessor;
+import maeilbatch.mail.MailSendItemReader;
+import maeilbatch.mail.MailSendProcessorClassifier;
+import maeilbatch.mail.MailSendWriterClassifier;
 import maeilmail.mail.MailMessage;
 import maeilmail.subscribe.command.domain.Subscribe;
 import org.springframework.batch.core.Job;
@@ -34,24 +42,26 @@ class MailSendJobConfig {
 
     @Bean
     public Job mailSendJob(
+            Step mailGenerateStep,
             Step mailSendStep,
             Step changeSequenceStep,
             JobExecutionListener mailSendJobReportListener
     ) {
         return new JobBuilder("mailSendJob", jobRepository)
-                .start(mailSendStep)
+                .start(mailGenerateStep)
+                .next(mailSendStep)
                 .next(changeSequenceStep)
                 .listener(mailSendJobReportListener)
                 .build();
     }
 
     @Bean
-    public Step mailSendStep(
+    public Step mailGenerateStep(
             JpaCursorItemReader<Subscribe> subscribeReader,
             CompositeItemProcessor<Subscribe, MailMessage> mailSendProcessor,
             ClassifierCompositeItemWriter<MailMessage> mailSendWriter
     ) {
-        return new StepBuilder("mailSendStep", jobRepository)
+        return new StepBuilder("mailGenerateStep", jobRepository)
                 .<Subscribe, MailMessage>chunk(CHUNK_SIZE, transactionManager)
                 .reader(subscribeReader)
                 .processor(mailSendProcessor)
@@ -67,6 +77,7 @@ class MailSendJobConfig {
     ) {
         return mailSendItemReader.generate(dateTime);
     }
+
 
     @Bean
     public CompositeItemProcessor<Subscribe, MailMessage> mailSendProcessor(
@@ -95,6 +106,29 @@ class MailSendJobConfig {
         writer.setClassifier(classifier);
 
         return writer;
+    }
+
+    @Bean
+    public Step mailSendStep(
+            JpaCursorItemReader<ForwardLog> mailSendReader,
+            ForwardProcessor forwardProcessor,
+            ForwardWriter forwardWriter
+    ) {
+        return new StepBuilder("mailSendStep", jobRepository)
+                .<ForwardLog, ForwardLog>chunk(CHUNK_SIZE, transactionManager)
+                .reader(mailSendReader)
+                .processor(forwardProcessor)
+                .writer(forwardWriter)
+                .build();
+    }
+
+    @Bean
+    @StepScope
+    public JpaCursorItemReader<ForwardLog> mailSendReader(
+            @Value("#{jobParameters['datetime']}") LocalDateTime dateTime,
+            ForwardReader forwardReader
+    ) {
+        return forwardReader.generate(dateTime, dateTime.plusDays(1));
     }
 
     @Bean

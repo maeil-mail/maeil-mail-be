@@ -1,4 +1,4 @@
-package maeilbatch.mail;
+package maeilbatch;
 
 import java.util.Map;
 import lombok.Builder;
