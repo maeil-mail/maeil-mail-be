@@ -1,8 +1,9 @@
 ## Paging Reader 선택 이유
 
 
-### Cursor는 별로인듯
-CursorItemReader 기본 내용 :
+### Cursor 기반 Reader
+
+기본 내용 :
 
 - 커서 기반 처리 방식은 데이터베이스와 끊김 없는 연결을 유지하면서, 데이터를 ResultSet을 통해 순차적으로 가져오는 방식
 - CursorItemReader가 초기화(open)될 때 빌더를 통해 지정된 SQL 쿼리를 실행하고, 그 결과를 가리키는 커서를 생성한다. 이후 read()가 호출될 때마다 ResultSet.next()를 실행하며
@@ -24,7 +25,6 @@ CursorItemReader 기본 내용 :
     - MySQL에서는 언두 로그(트랜잭션과 격리 수준을 보장하기 위해 백업해둔 변경 전의 데이터)를 관리한다.
 
 언두 로그에 대한 추가 내용 :
-
 - 언두 로그의 역할은 트랜잭션 보장, 격리 수준 보장이다.
 - 커밋 여부와 무관하게 실제 데이터와 버퍼풀의 내용을 변경하고, 언두 영역에 변경 전의 값을 백업한다.
     - 커밋되면 현상태를 유지하고, 롤백되면 백업 데이터로 북구한다.
@@ -49,7 +49,9 @@ CursorItemReader 기본 내용 :
             - API, 배치 각각의 커넥션 풀을 사용하기 때문이다.
     - `ThreadSafe하지 않음: 현 단계에서 고려 요소가 아님`
 
-### JpaPagingItemReader는 사용하기 어려움
+### JpaPagingItemReader
+
+> JdbcPagingItemReader는 keㅛset pagination 방식을 사용하기 때문에 JdbcPagingItemReader를 사용하기로 결정
 
 기본 내용 :
 
