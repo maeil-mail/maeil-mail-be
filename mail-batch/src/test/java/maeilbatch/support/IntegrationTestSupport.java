@@ -8,13 +8,12 @@ import static org.mockito.Mockito.when;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import com.querydsl.jpa.JPQLTemplates;
-import com.querydsl.jpa.impl.JPAQueryFactory;
-import jakarta.persistence.EntityManager;
 import maeilmail.mail.MailSender;
 import maeilmail.subscribe.command.application.VerifySubscribeService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.springframework.batch.core.configuration.support.DefaultBatchConfiguration;
+import org.springframework.batch.test.context.SpringBatchTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
@@ -31,6 +30,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
+@SpringBatchTest
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @Import(IntegrationTestSupport.TestConfig.class)
 public abstract class IntegrationTestSupport {
@@ -63,7 +63,7 @@ public abstract class IntegrationTestSupport {
     @EnableCaching
     @EnableJpaAuditing
     @TestConfiguration
-    public static class TestConfig {
+    public static class TestConfig extends DefaultBatchConfiguration {
 
         @Bean
         public DateTimeProvider dateTimeProvider() {
@@ -88,11 +88,6 @@ public abstract class IntegrationTestSupport {
                     .verify(any(), any());
 
             return verifySubscribeService;
-        }
-
-        @Bean(name = "mailBatchIntegrationTestJpaQueryFactory")
-        public JPAQueryFactory jpaQueryFactory(EntityManager entityManager) {
-            return new JPAQueryFactory(JPQLTemplates.DEFAULT, entityManager);
         }
 
         @Bean
