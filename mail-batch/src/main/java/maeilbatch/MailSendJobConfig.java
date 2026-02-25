@@ -21,6 +21,7 @@ import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
+import org.springframework.batch.item.database.JdbcPagingItemReader;
 import org.springframework.batch.item.database.JpaCursorItemReader;
 import org.springframework.batch.item.support.ClassifierCompositeItemProcessor;
 import org.springframework.batch.item.support.ClassifierCompositeItemWriter;
@@ -78,7 +79,6 @@ class MailSendJobConfig {
         return mailSendItemReader.generate(dateTime);
     }
 
-
     @Bean
     public CompositeItemProcessor<Subscribe, MailMessage> mailSendProcessor(
             FilterSubscribeProcessor filterSubscribeProcessor,
@@ -110,7 +110,7 @@ class MailSendJobConfig {
 
     @Bean
     public Step mailSendStep(
-            JpaCursorItemReader<ForwardLog> mailSendReader,
+            JdbcPagingItemReader<ForwardLog> mailSendReader,
             ForwardProcessor forwardProcessor,
             ForwardWriter forwardWriter
     ) {
@@ -124,7 +124,7 @@ class MailSendJobConfig {
 
     @Bean
     @StepScope
-    public JpaCursorItemReader<ForwardLog> mailSendReader(
+    public JdbcPagingItemReader<ForwardLog> mailSendReader(
             @Value("#{jobParameters['datetime']}") LocalDateTime dateTime,
             ForwardReader forwardReader
     ) {

@@ -1,32 +1,40 @@
 package maeilbatch.forward;
 
+import javax.sql.DataSource;
 import java.time.LocalDateTime;
 import java.util.Map;
-import jakarta.persistence.EntityManagerFactory;
 import lombok.RequiredArgsConstructor;
-import org.springframework.batch.item.database.JpaCursorItemReader;
-import org.springframework.batch.item.database.builder.JpaCursorItemReaderBuilder;
+import org.springframework.batch.item.database.JdbcPagingItemReader;
+import org.springframework.batch.item.database.Order;
+import org.springframework.batch.item.database.builder.JdbcPagingItemReaderBuilder;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
 public class ForwardReader {
 
-    private final EntityManagerFactory entityManagerFactory;
+    private final DataSource dataSource;
 
-    public JpaCursorItemReader<ForwardLog> generate(LocalDateTime startDateTime, LocalDateTime endDateTime) {
-        return new JpaCursorItemReaderBuilder<ForwardLog>()
+    public JdbcPagingItemReader<ForwardLog> generate(LocalDateTime startDateTime, LocalDateTime endDateTime) {
+        return new JdbcPagingItemReaderBuilder<ForwardLog>()
                 .name("forwardLogReader")
-                .entityManagerFactory(entityManagerFactory)
-                .queryString("""
-                           select f
-                           from ForwardLog f
-                           where
-                               f.createdAt >= :startDateTime and f.createdAt < :endDateTime
-                           order by f.id ASC
-                        """)
-                .parameterValues(Map.of("startDateTime", startDateTime, "endDateTime", endDateTime))
-                .hintValues(Map.of("org.hibernate.fetchSize", 100))
+                .dataSource(dataSource)
+                .pageSize(100)
+                .selectClause("select id, target, subject, message, status")
+                .fromClause("from forward_log")
+                .whereClause("where created_at >= :startDateTime and created_at < :endDateTime")
+                .sortKeys(Map.of("id", Order.ASCENDING))
+                .parameterValues(Map.of(
+                        "startDateTime", startDateTime,
+                        "endDateTime", endDateTime
+                ))
+                .rowMapper((rs, rowNum) -> new ForwardLog(
+                        rs.getLong("id"),
+                        rs.getString("target"),
+                        rs.getString("subject"),
+                        rs.getString("message"),
+                        ForwardStatus.valueOf(rs.getString("status"))
+                ))
                 .build();
     }
 }
