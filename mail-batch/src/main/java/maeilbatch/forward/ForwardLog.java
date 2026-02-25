@@ -45,8 +45,16 @@ public class ForwardLog extends BaseEntity implements MailMessage {
         this.status = ForwardStatus.PENDING;
     }
 
-    public boolean isProcessing() {
-        return ForwardStatus.PROCESSING.equals(status);
+    ForwardLog(Long id, String target, String subject, String message, ForwardStatus status) {
+        this.id = id;
+        this.target = target;
+        this.subject = subject;
+        this.message = message;
+        this.status = status;
+    }
+
+    public boolean isRetryable() {
+        return ForwardStatus.FAILED.equals(status) || ForwardStatus.PENDING.equals(status);
     }
 
     @Override

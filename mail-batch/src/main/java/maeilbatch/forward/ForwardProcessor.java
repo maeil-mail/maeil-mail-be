@@ -8,7 +8,7 @@ public class ForwardProcessor implements ItemProcessor<ForwardLog, ForwardLog> {
 
     @Override
     public ForwardLog process(ForwardLog item) {
-        if (item.isProcessing()) {
+        if (!item.isRetryable()) {
             return null;
         }
 
