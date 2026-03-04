@@ -1,8 +1,8 @@
 create table question
 (
     id         bigint auto_increment,
-    content    text                        not null,
-    title      varchar(255)                not null,
+    content    text         not null,
+    title      varchar(255) not null,
     category   enum ('BACKEND','FRONTEND') not null,
     created_at timestamp(6),
     updated_at timestamp(6),
@@ -12,11 +12,11 @@ create table question
 create table subscribe
 (
     id                     bigint auto_increment,
-    email                  varchar(255)                not null,
+    email                  varchar(255) not null,
     category               enum ('BACKEND','FRONTEND') not null,
     frequency              enum ('DAILY','WEEKLY')     not null default 'DAILY',
-    next_question_sequence bigint                      not null default '0',
-    token                  varchar(255)                not null,
+    next_question_sequence bigint       not null default '0',
+    token                  varchar(255) not null,
     created_at             timestamp(6),
     updated_at             timestamp(6),
     deleted_at             timestamp(6),
@@ -145,8 +145,8 @@ create table multiple_choice_option
     content           varchar(255) not null,
     is_correct_answer boolean      not null,
     question_id       bigint       not null,
-    created_at        timestamp(6)  not null,
-    updated_at        timestamp(6)  not null,
+    created_at        timestamp(6) not null,
+    updated_at        timestamp(6) not null,
     primary key (id),
     constraint `fk_multiple_choice_option_question_id` foreign key (question_id) references multiple_choice_question (id)
 );
@@ -157,8 +157,8 @@ create table multiple_choice_question
     title                      varchar(255) not null,
     correct_answer_explanation text,
     workbook_id                bigint       not null,
-    created_at                 timestamp(6)  not null,
-    updated_at                 timestamp(6)  not null,
+    created_at                 timestamp(6) not null,
+    updated_at                 timestamp(6) not null,
     primary key (id),
     constraint `fk_multiple_choice_question_workbook_id` foreign key (workbook_id) references multiple_choice_workbook (id)
 );
@@ -173,8 +173,18 @@ create table multiple_choice_workbook
     time_limit       int,
     solved_count     int          not null,
     member_id        bigint       not null,
-    created_at       timestamp(6)  not null,
-    updated_at       timestamp(6)  not null,
+    created_at       timestamp(6) not null,
+    updated_at       timestamp(6) not null,
     primary key (id),
     constraint `fk_multiple_choice_workbook_member_id` foreign key (member_id) references member (id)
+);
+
+create table category_policy
+(
+    id                bigint auto_increment,
+    category          enum ('BACKEND','FRONTEND') not null,
+    start_question_id bigint not null,
+    primary key (id),
+    unique key `category_policy_category_unique` (category),
+    constraint `fk_category_policy_start_question_id` foreign key (`start_question_id`) references `question` (`id`)
 )
