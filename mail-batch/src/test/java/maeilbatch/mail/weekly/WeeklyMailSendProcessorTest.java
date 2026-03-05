@@ -19,7 +19,6 @@ import maeilmail.subscribe.command.domain.Subscribe;
 import maeilmail.subscribe.command.domain.SubscribeFrequency;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.test.util.ReflectionTestUtils;
 
 class WeeklyMailSendProcessorTest {

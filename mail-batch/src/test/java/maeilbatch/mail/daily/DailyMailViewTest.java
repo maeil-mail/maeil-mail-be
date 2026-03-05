@@ -17,7 +17,6 @@ import maeilmail.subscribe.command.domain.SubscribeFrequency;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Mockito;
 
 class DailyMailViewTest {
 
