@@ -22,7 +22,7 @@ class ForwardSenderTest extends IntegrationTestSupport {
     @Test
     @DisplayName("전송 성공 시 상태를 DONE으로 변경하고 트랜잭션 flush 시 반영된다.")
     void handleSuccess() {
-        ForwardLog forwardLog = forwardRepository.save(new ForwardLog("success@test.com", "subject", "message"));
+        ForwardLog forwardLog = createForwardLog("success@test.com");
 
         forwardSender.handleSuccess(forwardLog);
         entityManager.flush();
@@ -35,7 +35,7 @@ class ForwardSenderTest extends IntegrationTestSupport {
     @Test
     @DisplayName("전송 실패 시 상태를 FAILED로 변경하고 트랜잭션 flush 시 반영된다.")
     void handleFailure() {
-        ForwardLog forwardLog = forwardRepository.save(new ForwardLog("fail@test.com", "subject", "message"));
+        ForwardLog forwardLog = createForwardLog("fail@test.com");
 
         forwardSender.handleFailure(forwardLog);
         entityManager.flush();
@@ -43,5 +43,9 @@ class ForwardSenderTest extends IntegrationTestSupport {
 
         ForwardLog result = forwardRepository.findById(forwardLog.getId()).orElseThrow();
         assertThat(result.getStatus()).isEqualTo(ForwardStatus.FAILED);
+    }
+
+    private ForwardLog createForwardLog(String target) {
+        return forwardRepository.save(new ForwardLog(target, "subject", "message"));
     }
 }

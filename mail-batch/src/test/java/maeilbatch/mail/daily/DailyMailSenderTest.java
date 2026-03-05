@@ -23,6 +23,9 @@ import org.springframework.mail.javamail.JavaMailSender;
 
 class DailyMailSenderTest extends IntegrationTestSupport {
 
+    private static final String SUBSCRIBE_EMAIL = "test@test.com";
+    private static final String QUESTION_TITLE = "test1";
+
     @Autowired
     private SubscribeQuestionRepository subscribeQuestionRepository;
 
@@ -56,8 +59,7 @@ class DailyMailSenderTest extends IntegrationTestSupport {
         DailyMailSender dailyMailSender = createDailyMailSender();
         Subscribe subscribe = createSubscribe();
         Question question = createQuestion();
-        SubscribeQuestion alreadySendSubscribeQuestion = SubscribeQuestion.success(subscribe, question);
-        subscribeQuestionRepository.save(alreadySendSubscribeQuestion);
+        createSentHistory(subscribe, question);
         LocalDateTime newCreatedAt = LocalDateTime.of(2025, 5, 2, 7, 0, 0);
         setJpaAuditingTime(newCreatedAt);
 
@@ -79,15 +81,19 @@ class DailyMailSenderTest extends IntegrationTestSupport {
     }
 
     private Subscribe createSubscribe() {
-        Subscribe subscribe = new Subscribe("test@test.com", QuestionCategory.BACKEND, SubscribeFrequency.DAILY, 0L);
+        Subscribe subscribe = new Subscribe(SUBSCRIBE_EMAIL, QuestionCategory.BACKEND, SubscribeFrequency.DAILY);
 
         return subscribeRepository.save(subscribe);
     }
 
     private Question createQuestion() {
-        Question question = new Question("test1", "content", QuestionCategory.BACKEND);
+        Question question = new Question(QUESTION_TITLE, "content", QuestionCategory.BACKEND);
 
         return questionRepository.save(question);
+    }
+
+    private void createSentHistory(Subscribe subscribe, Question question) {
+        subscribeQuestionRepository.save(SubscribeQuestion.success(subscribe, question));
     }
 
     private DailyMailMessage createMessage(Subscribe subscribe, Question question) {

@@ -12,13 +12,10 @@ class ForwardProcessorTest {
     @DisplayName("현재 진행 중이거나 완료된 전송 기록은 생략해야 한다.")
     void filtering() {
         ForwardProcessor forwardProcessor = new ForwardProcessor();
-        ForwardLog pendingLog = new ForwardLog("pending@kakao.com", "subject", "message");
-        ForwardLog failedLog = new ForwardLog("failed@kakao.com", "subject", "message");
-        failedLog.setStatus(ForwardStatus.FAILED);
-        ForwardLog processingLog = new ForwardLog("processing@kakao.com", "subject", "message");
-        processingLog.setStatus(ForwardStatus.PROCESSING);
-        ForwardLog doneLog = new ForwardLog("done@kakao.com", "subject", "message");
-        doneLog.setStatus(ForwardStatus.DONE);
+        ForwardLog pendingLog = createForwardLog("pending@kakao.com");
+        ForwardLog failedLog = createForwardLog("failed@kakao.com", ForwardStatus.FAILED);
+        ForwardLog processingLog = createForwardLog("processing@kakao.com", ForwardStatus.PROCESSING);
+        ForwardLog doneLog = createForwardLog("done@kakao.com", ForwardStatus.DONE);
 
         ForwardLog pendingResult = forwardProcessor.process(pendingLog);
         ForwardLog failedResult = forwardProcessor.process(failedLog);
@@ -31,5 +28,16 @@ class ForwardProcessorTest {
                 () -> assertThat(processingResult).isNull(),
                 () -> assertThat(doneResult).isNull()
         );
+    }
+
+    private ForwardLog createForwardLog(String target) {
+        return new ForwardLog(target, "subject", "message");
+    }
+
+    private ForwardLog createForwardLog(String target, ForwardStatus status) {
+        ForwardLog forwardLog = createForwardLog(target);
+        forwardLog.setStatus(status);
+
+        return forwardLog;
     }
 }

@@ -46,10 +46,7 @@ class ForwardWriterTest extends IntegrationTestSupport {
         ForwardSender forwardSender = Mockito.mock(ForwardSender.class);
         ForwardWriter forwardWriter = new ForwardWriter(statusBatchChanger, forwardSender, entityManager);
         TransactionTemplate tx = new TransactionTemplate(transactionManager);
-        List<ForwardLog> logs = tx.execute(status -> forwardRepository.saveAll(List.of(
-                new ForwardLog("one@test.com", "subject1", "message1"),
-                new ForwardLog("two@test.com", "subject2", "message2")
-        )));
+        List<ForwardLog> logs = tx.execute(status -> createForwardLogs());
         Chunk<ForwardLog> chunk = new Chunk<>(logs);
 
         tx.executeWithoutResult(status -> forwardWriter.write(chunk));
@@ -65,5 +62,12 @@ class ForwardWriterTest extends IntegrationTestSupport {
                 () -> assertThat(statuses).containsExactlyInAnyOrder(ForwardStatus.PROCESSING, ForwardStatus.PROCESSING),
                 () -> verify(forwardSender, times(2)).sendMailSync(any(ForwardLog.class))
         );
+    }
+
+    private List<ForwardLog> createForwardLogs() {
+        return forwardRepository.saveAll(List.of(
+                new ForwardLog("one@test.com", "subject1", "message1"),
+                new ForwardLog("two@test.com", "subject2", "message2")
+        ));
     }
 }

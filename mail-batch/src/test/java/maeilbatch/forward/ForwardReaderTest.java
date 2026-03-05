@@ -25,20 +25,18 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(propagation = Propagation.NOT_SUPPORTED)
 class ForwardReaderTest extends IntegrationTestSupport {
 
-    private final ForwardRepository forwardRepository;
-    private final ForwardReader forwardReader;
-    private final JdbcTemplate jdbcTemplate;
+    private static final String EMAIL_FORMAT = "test%s@test.com";
+    private static final String SUBJECT_FORMAT = "subject-%s";
+    private static final String MESSAGE_FORMAT = "message-%s";
 
     @Autowired
-    ForwardReaderTest(
-            ForwardRepository forwardRepository,
-            ForwardReader forwardReader,
-            JdbcTemplate jdbcTemplate
-    ) {
-        this.forwardRepository = forwardRepository;
-        this.forwardReader = forwardReader;
-        this.jdbcTemplate = jdbcTemplate;
-    }
+    private ForwardRepository forwardRepository;
+
+    @Autowired
+    private ForwardReader forwardReader;
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     @AfterEach
     void tearDownForwardLogs() {
@@ -197,12 +195,21 @@ class ForwardReaderTest extends IntegrationTestSupport {
         List<ForwardLog> logs = new ArrayList<>();
 
         for (int i = 0; i < size; i++) {
-            ForwardLog log = new ForwardLog("test" + i + "@test.com", "subject-" + i, "message-" + i);
-            log.setStatus(status);
-            logs.add(log);
+            logs.add(createForwardLog(i, status));
         }
 
         return forwardRepository.saveAll(logs);
+    }
+
+    private ForwardLog createForwardLog(int index, ForwardStatus status) {
+        ForwardLog forwardLog = new ForwardLog(
+                EMAIL_FORMAT.formatted(index),
+                SUBJECT_FORMAT.formatted(index),
+                MESSAGE_FORMAT.formatted(index)
+        );
+        forwardLog.setStatus(status);
+
+        return forwardLog;
     }
 
     private void insertFrontRow(LocalDateTime createdAt) {

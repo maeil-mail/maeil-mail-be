@@ -11,13 +11,10 @@ class ForwardLogTest {
     @Test
     @DisplayName("재처리가 가능한 상태인지 확인할 수 있다.")
     void isRetryable() {
-        ForwardLog pendingLog = new ForwardLog("pending@kakao.com", "subject", "message");
-        ForwardLog failedLog = new ForwardLog("failed@kakao.com", "subject", "message");
-        failedLog.setStatus(ForwardStatus.FAILED);
-        ForwardLog processingLog = new ForwardLog("processing@kakao.com", "subject", "message");
-        processingLog.setStatus(ForwardStatus.PROCESSING);
-        ForwardLog doneLog = new ForwardLog("done@kakao.com", "subject", "message");
-        doneLog.setStatus(ForwardStatus.DONE);
+        ForwardLog pendingLog = createForwardLog("pending@kakao.com");
+        ForwardLog failedLog = createForwardLog("failed@kakao.com", ForwardStatus.FAILED);
+        ForwardLog processingLog = createForwardLog("processing@kakao.com", ForwardStatus.PROCESSING);
+        ForwardLog doneLog = createForwardLog("done@kakao.com", ForwardStatus.DONE);
 
         assertAll(
                 () -> assertThat(pendingLog.isRetryable()).isTrue(),
@@ -25,5 +22,16 @@ class ForwardLogTest {
                 () -> assertThat(processingLog.isRetryable()).isFalse(),
                 () -> assertThat(doneLog.isRetryable()).isFalse()
         );
+    }
+
+    private ForwardLog createForwardLog(String target) {
+        return new ForwardLog(target, "subject", "message");
+    }
+
+    private ForwardLog createForwardLog(String target, ForwardStatus status) {
+        ForwardLog forwardLog = createForwardLog(target);
+        forwardLog.setStatus(status);
+
+        return forwardLog;
     }
 }

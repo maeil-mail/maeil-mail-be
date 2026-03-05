@@ -27,6 +27,11 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(propagation = Propagation.NOT_SUPPORTED)
 class DailyMailSendWriterTest extends IntegrationTestSupport {
 
+    private static final String SUBSCRIBE_EMAIL = "daily@test.com";
+    private static final String QUESTION_TITLE = "title";
+    private static final String MESSAGE_SUBJECT = "subject";
+    private static final String MESSAGE_TEXT = "text";
+
     @Autowired
     private DailyMailSendWriter writer;
 
@@ -53,12 +58,10 @@ class DailyMailSendWriterTest extends IntegrationTestSupport {
     @Test
     @DisplayName("daily writer는 전송 이력을 롤링 저장하고 forward 로그를 만든다.")
     void write() {
-        Subscribe subscribe = subscribeRepository.save(
-                new Subscribe("daily@test.com", QuestionCategory.BACKEND, SubscribeFrequency.DAILY)
-        );
-        Question question = questionRepository.save(new Question("title", "content", QuestionCategory.BACKEND));
-        subscribeQuestionRepository.save(SubscribeQuestion.success(subscribe, question));
-        DailyMailMessage message = new DailyMailMessage(subscribe, question, "subject", "text");
+        Subscribe subscribe = createSubscribe();
+        Question question = createQuestion();
+        createSubscribeQuestion(subscribe, question);
+        DailyMailMessage message = createMessage(subscribe, question);
 
         writer.write(new Chunk<>(List.of(message)));
 
@@ -69,10 +72,28 @@ class DailyMailSendWriterTest extends IntegrationTestSupport {
                 () -> assertThat(questions).hasSize(1),
                 () -> assertThat(questions.get(0).isSuccess()).isTrue(),
                 () -> assertThat(forwardLogs).hasSize(1),
-                () -> assertThat(forwardLogs.get(0).getTo()).isEqualTo("daily@test.com"),
-                () -> assertThat(forwardLogs.get(0).getSubject()).isEqualTo("subject"),
-                () -> assertThat(forwardLogs.get(0).getText()).isEqualTo("text"),
+                () -> assertThat(forwardLogs.get(0).getTo()).isEqualTo(SUBSCRIBE_EMAIL),
+                () -> assertThat(forwardLogs.get(0).getSubject()).isEqualTo(MESSAGE_SUBJECT),
+                () -> assertThat(forwardLogs.get(0).getText()).isEqualTo(MESSAGE_TEXT),
                 () -> assertThat(forwardLogs.get(0).getStatus()).isEqualTo(ForwardStatus.PENDING)
         );
+    }
+
+    private Subscribe createSubscribe() {
+        return subscribeRepository.save(
+                new Subscribe(SUBSCRIBE_EMAIL, QuestionCategory.BACKEND, SubscribeFrequency.DAILY)
+        );
+    }
+
+    private Question createQuestion() {
+        return questionRepository.save(new Question(QUESTION_TITLE, "content", QuestionCategory.BACKEND));
+    }
+
+    private void createSubscribeQuestion(Subscribe subscribe, Question question) {
+        subscribeQuestionRepository.save(SubscribeQuestion.success(subscribe, question));
+    }
+
+    private DailyMailMessage createMessage(Subscribe subscribe, Question question) {
+        return new DailyMailMessage(subscribe, question, MESSAGE_SUBJECT, MESSAGE_TEXT);
     }
 }

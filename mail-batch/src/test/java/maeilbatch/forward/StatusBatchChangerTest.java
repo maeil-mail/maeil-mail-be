@@ -29,10 +29,7 @@ class StatusBatchChangerTest extends IntegrationTestSupport {
     @Test
     @DisplayName("전달한 로그 목록을 상태와 id 기준으로 일괄 업데이트한다.")
     void changeStateBatch() {
-        ForwardLog log1 = new ForwardLog("one@test.com", "subject1", "message1");
-        ForwardLog log2 = new ForwardLog("two@test.com", "subject2", "message2");
-        log2.setStatus(ForwardStatus.FAILED);
-        List<ForwardLog> logs = forwardRepository.saveAll(List.of(log1, log2));
+        List<ForwardLog> logs = createForwardLogs();
 
         statusBatchChanger.changeState(logs, ForwardStatus.PROCESSING);
 
@@ -47,5 +44,13 @@ class StatusBatchChangerTest extends IntegrationTestSupport {
                 () -> assertThat(logs).allMatch(it -> it.getStatus() == ForwardStatus.PROCESSING),
                 () -> assertThat(statuses).containsExactlyInAnyOrder(ForwardStatus.PROCESSING, ForwardStatus.PROCESSING)
         );
+    }
+
+    private List<ForwardLog> createForwardLogs() {
+        ForwardLog pendingLog = new ForwardLog("one@test.com", "subject1", "message1");
+        ForwardLog failedLog = new ForwardLog("two@test.com", "subject2", "message2");
+        failedLog.setStatus(ForwardStatus.FAILED);
+
+        return forwardRepository.saveAll(List.of(pendingLog, failedLog));
     }
 }

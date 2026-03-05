@@ -1,8 +1,10 @@
 package maeilbatch.mail.daily;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -19,12 +21,16 @@ import org.mockito.Mockito;
 
 class DailyMailViewTest {
 
+    private static final Long QUESTION_ID = 1L;
+    private static final String QUESTION_TITLE = "question-title";
+    private static final String SUBSCRIBE_EMAIL = "daily@test.com";
+
     @Test
     @DisplayName("질문/구독자 정보를 템플릿 속성으로 렌더러에 전달한다.")
     void render() {
-        MailViewRenderer renderer = Mockito.mock(MailViewRenderer.class);
-        Subscribe subscribe = new Subscribe("daily@test.com", QuestionCategory.BACKEND, SubscribeFrequency.DAILY);
-        Question question = new Question(1L, "question-title", "question-content", QuestionCategory.BACKEND);
+        MailViewRenderer renderer = mock(MailViewRenderer.class);
+        Subscribe subscribe = createSubscribe();
+        Question question = createQuestion();
         DailyMailView view = DailyMailView.builder()
                 .renderer(renderer)
                 .subscribe(subscribe)
@@ -37,11 +43,21 @@ class DailyMailViewTest {
 
         verify(renderer).render(mapCaptor.capture(), eq("question-v4"));
         Map<Object, Object> attributes = mapCaptor.getValue();
-        assertThat(result).isEqualTo("rendered");
-        assertThat(attributes.get("questionId")).isEqualTo(1L);
-        assertThat(attributes.get("question")).isEqualTo("question-title");
-        assertThat(attributes.get("email")).isEqualTo("daily@test.com");
-        assertThat(attributes.get("token")).isEqualTo(subscribe.getToken());
-        assertThat(view.getType()).isEqualTo("question");
+        assertAll(
+                () -> assertThat(result).isEqualTo("rendered"),
+                () -> assertThat(attributes.get("questionId")).isEqualTo(QUESTION_ID),
+                () -> assertThat(attributes.get("question")).isEqualTo(QUESTION_TITLE),
+                () -> assertThat(attributes.get("email")).isEqualTo(SUBSCRIBE_EMAIL),
+                () -> assertThat(attributes.get("token")).isEqualTo(subscribe.getToken()),
+                () -> assertThat(view.getType()).isEqualTo("question")
+        );
+    }
+
+    private Subscribe createSubscribe() {
+        return new Subscribe(SUBSCRIBE_EMAIL, QuestionCategory.BACKEND, SubscribeFrequency.DAILY);
+    }
+
+    private Question createQuestion() {
+        return new Question(QUESTION_ID, QUESTION_TITLE, "question-content", QuestionCategory.BACKEND);
     }
 }
