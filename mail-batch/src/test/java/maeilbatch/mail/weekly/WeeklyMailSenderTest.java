@@ -24,6 +24,10 @@ import org.springframework.mail.javamail.JavaMailSender;
 
 class WeeklyMailSenderTest extends IntegrationTestSupport {
 
+    private static final String SUBSCRIBE_EMAIL = "test@test.com";
+    private static final String QUESTION_TITLE_FORMAT = "test%s";
+    private static final int WEEKLY_SEND_COUNT = SubscribeFrequency.WEEKLY.getSendCount();
+
     @Autowired
     private SubscribeQuestionRepository subscribeQuestionRepository;
 
@@ -36,17 +40,16 @@ class WeeklyMailSenderTest extends IntegrationTestSupport {
     @Test
     @DisplayName("메일 전송에 성공하면 내역을 생성한다.")
     void handleSuccess() {
-        int expectedQuestionsSize = 5;
         LocalDateTime createdAt = LocalDateTime.of(2025, 5, 1, 7, 0, 0);
         setJpaAuditingTime(createdAt);
         WeeklyMailSender weeklyMailSender = createWeeklyMailSender();
-        WeeklyMailMessage message = createMessage(createSubscribe(), createQuestions(expectedQuestionsSize));
+        WeeklyMailMessage message = createMessage(createSubscribe(), createQuestions(WEEKLY_SEND_COUNT));
 
         weeklyMailSender.handleSuccess(message);
 
         List<SubscribeQuestion> result = subscribeQuestionRepository.findAll();
         assertAll(
-                () -> assertThat(result).hasSize(expectedQuestionsSize),
+                () -> assertThat(result).hasSize(WEEKLY_SEND_COUNT),
                 () -> assertThat(result.get(0).getCreatedAt()).isEqualTo(createdAt)
         );
     }
@@ -54,13 +57,11 @@ class WeeklyMailSenderTest extends IntegrationTestSupport {
     @Test
     @DisplayName("이미 전송된 질문지라면, 기존 내역을 제거하고 신규 내역을 생성한다.")
     void handleSuccessAlreadySend() {
-        int expectedQuestionsSize = 5;
         setJpaAuditingTime(LocalDateTime.of(2025, 5, 1, 7, 0, 0));
         WeeklyMailSender weeklyMailSender = createWeeklyMailSender();
         Subscribe subscribe = createSubscribe();
-        List<Question> questions = createQuestions(expectedQuestionsSize);
-        SubscribeQuestion alreadySendSubscribeQuestion = SubscribeQuestion.success(subscribe, questions.get(0));
-        subscribeQuestionRepository.save(alreadySendSubscribeQuestion);
+        List<Question> questions = createQuestions(WEEKLY_SEND_COUNT);
+        createSentHistory(subscribe, questions.get(0));
         LocalDateTime newCreatedAt = LocalDateTime.of(2025, 5, 2, 7, 0, 0);
         setJpaAuditingTime(newCreatedAt);
 
@@ -69,7 +70,7 @@ class WeeklyMailSenderTest extends IntegrationTestSupport {
 
         List<SubscribeQuestion> result = subscribeQuestionRepository.findAll();
         assertAll(
-                () -> assertThat(result).hasSize(expectedQuestionsSize),
+                () -> assertThat(result).hasSize(WEEKLY_SEND_COUNT),
                 () -> assertThat(result)
                         .map(SubscribeQuestion::getCreatedAt)
                         .allMatch(it -> it.equals(newCreatedAt))
@@ -84,7 +85,7 @@ class WeeklyMailSenderTest extends IntegrationTestSupport {
     }
 
     private Subscribe createSubscribe() {
-        Subscribe subscribe = new Subscribe("test@test.com", QuestionCategory.BACKEND, SubscribeFrequency.DAILY, 0L);
+        Subscribe subscribe = new Subscribe(SUBSCRIBE_EMAIL, QuestionCategory.BACKEND, SubscribeFrequency.WEEKLY);
 
         return subscribeRepository.save(subscribe);
     }
@@ -93,11 +94,15 @@ class WeeklyMailSenderTest extends IntegrationTestSupport {
         List<Question> questions = new ArrayList<>();
 
         for (int i = 0; i < size; i++) {
-            Question question = new Question("test" + i, "content", QuestionCategory.BACKEND);
+            Question question = new Question(QUESTION_TITLE_FORMAT.formatted(i), "content", QuestionCategory.BACKEND);
             questions.add(question);
         }
 
         return questionRepository.saveAll(questions);
+    }
+
+    private void createSentHistory(Subscribe subscribe, Question question) {
+        subscribeQuestionRepository.save(SubscribeQuestion.success(subscribe, question));
     }
 
     private WeeklyMailMessage createMessage(Subscribe subscribe, List<Question> questions) {
