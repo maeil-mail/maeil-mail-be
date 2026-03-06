@@ -78,9 +78,9 @@ class ForwardReaderTest extends IntegrationTestSupport {
     void noDuplicateWhenInsertAtFrontBetweenPages() throws Exception {
         LocalDateTime baseDateTime = LocalDateTime.of(LocalDate.now(), LocalTime.of(7, 0));
         List<ForwardLog> initialLogs = saveForwardLogs(200, baseDateTime.plusMinutes(1), ForwardStatus.PENDING);
-        Set<Long> initialIds = initialLogs.stream()
+        List<Long> initialIds = initialLogs.stream()
                 .map(ForwardLog::getId)
-                .collect(HashSet::new, Set::add, Set::addAll);
+                .toList();
 
         JdbcPagingItemReader<ForwardLog> reader = openReader(baseDateTime, baseDateTime.plusDays(1), new ExecutionContext());
         try {
@@ -90,15 +90,18 @@ class ForwardReaderTest extends IntegrationTestSupport {
             insertFrontRow(baseDateTime.plusMinutes(1));
             List<ForwardLog> remaining = readAll(reader);
 
-            Set<Long> allReadIds = new HashSet<>();
+            List<Long> allReadIds = new ArrayList<>();
             firstPage.forEach(it -> allReadIds.add(it.getId()));
             remaining.forEach(it -> allReadIds.add(it.getId()));
+            long distinctCount = allReadIds.stream().distinct().count();
 
             assertAll(
                     () -> assertThat(remaining)
                             .extracting(ForwardLog::getId)
                             .doesNotContain(lastIdOfFirstPage),
-                    () -> assertThat(allReadIds).isEqualTo(initialIds)
+                    () -> assertThat(allReadIds).hasSize(initialIds.size()),
+                    () -> assertThat(distinctCount).isEqualTo(initialIds.size()),
+                    () -> assertThat(allReadIds).containsExactlyInAnyOrderElementsOf(initialIds)
             );
         } finally {
             reader.close();
@@ -110,9 +113,9 @@ class ForwardReaderTest extends IntegrationTestSupport {
     void noMissingWhenDeleteAtFrontBetweenPages() throws Exception {
         LocalDateTime baseDateTime = LocalDateTime.of(LocalDate.now(), LocalTime.of(7, 0));
         List<ForwardLog> initialLogs = saveForwardLogs(200, baseDateTime.plusMinutes(1), ForwardStatus.PENDING);
-        Set<Long> initialIds = initialLogs.stream()
+        List<Long> initialIds = initialLogs.stream()
                 .map(ForwardLog::getId)
-                .collect(HashSet::new, Set::add, Set::addAll);
+                .toList();
 
         JdbcPagingItemReader<ForwardLog> reader = openReader(baseDateTime, baseDateTime.plusDays(1), new ExecutionContext());
         try {
@@ -121,18 +124,23 @@ class ForwardReaderTest extends IntegrationTestSupport {
             forwardRepository.deleteById(deleteTargetId);
 
             List<ForwardLog> remaining = readAll(reader);
-            Set<Long> allReadIds = new HashSet<>();
+            List<Long> allReadIds = new ArrayList<>();
             firstPage.forEach(it -> allReadIds.add(it.getId()));
             remaining.forEach(it -> allReadIds.add(it.getId()));
+            long distinctCount = allReadIds.stream().distinct().count();
 
-            assertThat(allReadIds).isEqualTo(initialIds);
+            assertAll(
+                    () -> assertThat(allReadIds).hasSize(initialIds.size()),
+                    () -> assertThat(distinctCount).isEqualTo(initialIds.size()),
+                    () -> assertThat(allReadIds).containsExactlyInAnyOrderElementsOf(initialIds)
+            );
         } finally {
             reader.close();
         }
     }
 
     @Test
-    @DisplayName("where 범위 조건(created_at >= start and created_at < end)이 올바르게 동작한다.")
+    @DisplayName("주어진 날짜 조건에 해당되는 로그를 조회한다.")
     void rangeWhereClauseWorks() throws Exception {
         LocalDateTime baseDateTime = LocalDateTime.of(LocalDate.now(), LocalTime.of(7, 0));
         saveForwardLogs(2, baseDateTime.minusSeconds(1), ForwardStatus.PENDING);
@@ -140,8 +148,12 @@ class ForwardReaderTest extends IntegrationTestSupport {
         saveForwardLogs(2, baseDateTime.plusDays(1), ForwardStatus.PENDING);
 
         List<ForwardLog> result = readAll(baseDateTime, baseDateTime.plusDays(1));
-        Set<Long> expected = inRange.stream().map(ForwardLog::getId).collect(HashSet::new, Set::add, Set::addAll);
-        Set<Long> actual = result.stream().map(ForwardLog::getId).collect(HashSet::new, Set::add, Set::addAll);
+        Set<Long> expected = inRange.stream()
+                .map(ForwardLog::getId)
+                .collect(HashSet::new, Set::add, Set::addAll);
+        Set<Long> actual = result.stream()
+                .map(ForwardLog::getId)
+                .collect(HashSet::new, Set::add, Set::addAll);
 
         assertThat(actual).isEqualTo(expected);
     }
