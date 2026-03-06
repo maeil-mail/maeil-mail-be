@@ -3,6 +3,7 @@ package maeilbatch.mail.weekly;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import maeilbatch.forward.ForwardLog;
@@ -57,26 +58,44 @@ class WeeklyMailSendWriterTest extends IntegrationTestSupport {
     }
 
     @Test
-    @DisplayName("weekly writer는 전송 이력을 롤링 저장하고 forward 로그를 만든다.")
+    @DisplayName("전송 이력을 저장하고 forward 로그를 만든다.")
     void write() {
         Subscribe subscribe = createSubscribe();
         List<Question> questions = createQuestions(WEEKLY_SEND_COUNT);
-        createSentHistory(subscribe, questions.get(0));
         WeeklyMailMessage message = createMessage(subscribe, questions);
 
         writer.write(new Chunk<>(List.of(message)));
 
-        List<SubscribeQuestion> subscribeQuestions = subscribeQuestionRepository.findAll();
         List<ForwardLog> forwardLogs = forwardRepository.findAll();
 
         assertAll(
-                () -> assertThat(subscribeQuestions).hasSize(WEEKLY_SEND_COUNT),
-                () -> assertThat(subscribeQuestions).allMatch(SubscribeQuestion::isSuccess),
                 () -> assertThat(forwardLogs).hasSize(1),
                 () -> assertThat(forwardLogs.get(0).getTo()).isEqualTo(SUBSCRIBE_EMAIL),
                 () -> assertThat(forwardLogs.get(0).getSubject()).isEqualTo(MESSAGE_SUBJECT),
                 () -> assertThat(forwardLogs.get(0).getText()).isEqualTo(MESSAGE_TEXT),
                 () -> assertThat(forwardLogs.get(0).getStatus()).isEqualTo(ForwardStatus.PENDING)
+        );
+    }
+
+    @Test
+    @DisplayName("이미 전송된 질문지가 일부 있어도 기존 이력을 지우고 최신 성공 이력으로 교체한다.")
+    void writeReplaceAlreadySentHistory() {
+        Subscribe subscribe = createSubscribe();
+        List<Question> questions = createQuestions(WEEKLY_SEND_COUNT);
+        setJpaAuditingTime(LocalDateTime.of(2025, 5, 1, 7, 0));
+        createSentHistory(subscribe, questions.get(0));
+        setJpaAuditingTime(LocalDateTime.of(2025, 5, 2, 7, 0));
+        WeeklyMailMessage message = createMessage(subscribe, questions);
+
+        writer.write(new Chunk<>(List.of(message)));
+
+        List<SubscribeQuestion> subscribeQuestions = subscribeQuestionRepository.findAll();
+        assertAll(
+                () -> assertThat(subscribeQuestions).hasSize(WEEKLY_SEND_COUNT),
+                () -> assertThat(subscribeQuestions).allMatch(SubscribeQuestion::isSuccess),
+                () -> assertThat(subscribeQuestions)
+                        .extracting(SubscribeQuestion::getCreatedAt)
+                        .allMatch(it -> it.equals(LocalDateTime.of(2025, 5, 2, 7, 0)))
         );
     }
 
