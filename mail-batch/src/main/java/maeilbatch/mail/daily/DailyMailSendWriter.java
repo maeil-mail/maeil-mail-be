@@ -2,9 +2,8 @@ package maeilbatch.mail.daily;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import maeilbatch.forward.ForwardLog;
 import maeilbatch.forward.ForwardRepository;
-import maeilmail.mail.MailMessage;
+import maeilbatch.mail.AbstractMailPayload;
 import maeilmail.subscribe.command.domain.SubscribeQuestion;
 import maeilmail.subscribe.command.domain.SubscribeQuestionRepository;
 import org.springframework.batch.item.Chunk;
@@ -13,29 +12,31 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class DailyMailSendWriter implements ItemWriter<MailMessage> {
+public class DailyMailSendWriter implements ItemWriter<AbstractMailPayload> {
 
     private final SubscribeQuestionRepository subscribeQuestionRepository;
     private final ForwardRepository forwardRepository;
 
     @Override
-    public void write(Chunk<? extends MailMessage> chunk) {
-        List<? extends MailMessage> items = chunk.getItems();
+    public void write(Chunk<? extends AbstractMailPayload> chunk) {
+        List<? extends AbstractMailPayload> items = chunk.getItems();
         items.forEach(this::rollingHistory);
         items.forEach(this::saveSendLog);
     }
 
-    private void rollingHistory(MailMessage message) {
-        DailyMailMessage dailyMailMessage = (DailyMailMessage) message;
+    private void rollingHistory(AbstractMailPayload payload) {
+        DailyMailPayload dailyMailPayload = (DailyMailPayload) payload;
         subscribeQuestionRepository
-                .findBySubscribeAndQuestion(dailyMailMessage.subscribe(), dailyMailMessage.question())
+                .findBySubscribeAndQuestion(dailyMailPayload.getSubscribe(), dailyMailPayload.getQuestion())
                 .ifPresent(subscribeQuestionRepository::delete);
 
-        subscribeQuestionRepository.save(SubscribeQuestion.success(dailyMailMessage.subscribe(), dailyMailMessage.question()));
+        subscribeQuestionRepository.save(SubscribeQuestion.success(
+                dailyMailPayload.getSubscribe(),
+                dailyMailPayload.getQuestion()
+        ));
     }
 
-    private void saveSendLog(MailMessage message) {
-        ForwardLog forwardLog = new ForwardLog(message.getTo(), message.getSubject(), message.getText());
-        forwardRepository.save(forwardLog);
+    private void saveSendLog(AbstractMailPayload payload) {
+        forwardRepository.save(payload.toForwardLog());
     }
 }

@@ -28,7 +28,7 @@ class WeeklyMailSendProcessorTest {
     private static final int WEEKLY_SEND_COUNT = SubscribeFrequency.WEEKLY.getSendCount();
 
     @Test
-    @DisplayName("월요일에는 주간 질문지를 선택/렌더링하여 WeeklyMailMessage를 생성한다.")
+    @DisplayName("월요일에는 주간 질문지를 선택/렌더링하여 WeeklyMailPayload를 생성한다.")
     void processSuccess() {
         ChoiceQuestionPolicy policy = mock(ChoiceQuestionPolicy.class);
         MailViewRenderer renderer = mock(MailViewRenderer.class);
@@ -38,14 +38,14 @@ class WeeklyMailSendProcessorTest {
                 .thenAnswer(invocation -> createQuestionSummary(invocation.getArgument(1)));
         when(renderer.render(anyMap(), eq("weekly-question"))).thenReturn("rendered-text");
 
-        WeeklyMailMessage result = processor.process(subscribe);
+        WeeklyMailPayload result = processor.process(subscribe);
 
         assertAll(
                 () -> assertThat(result).isNotNull(),
-                () -> assertThat(result.getTo()).isEqualTo(SUBSCRIBE_EMAIL),
+                () -> assertThat(result.getSubscribe().getEmail()).isEqualTo(SUBSCRIBE_EMAIL),
                 () -> assertThat(result.getSubject()).isEqualTo(WEEKLY_SUBJECT),
                 () -> assertThat(result.getText()).isEqualTo("rendered-text"),
-                () -> assertThat(result.questions()).hasSize(WEEKLY_SEND_COUNT)
+                () -> assertThat(result.getQuestions()).hasSize(WEEKLY_SEND_COUNT)
         );
         verify(policy, times(WEEKLY_SEND_COUNT)).choiceByRound(eq(subscribe), org.mockito.ArgumentMatchers.anyInt());
     }
@@ -58,7 +58,7 @@ class WeeklyMailSendProcessorTest {
         WeeklyMailSendProcessor processor = createProcessor(policy, renderer, LocalDateTime.of(2025, 5, 6, 7, 0));
         Subscribe subscribe = createSubscribe();
 
-        WeeklyMailMessage result = processor.process(subscribe);
+        WeeklyMailPayload result = processor.process(subscribe);
 
         assertThat(result).isNull();
         verifyNoInteractions(policy, renderer);
@@ -74,7 +74,7 @@ class WeeklyMailSendProcessorTest {
         when(policy.choiceByRound(eq(subscribe), org.mockito.ArgumentMatchers.anyInt()))
                 .thenThrow(new IllegalStateException("fail"));
 
-        WeeklyMailMessage result = processor.process(subscribe);
+        WeeklyMailPayload result = processor.process(subscribe);
 
         assertThat(result).isNull();
     }

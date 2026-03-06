@@ -62,7 +62,7 @@ class WeeklyMailSendWriterTest extends IntegrationTestSupport {
     void write() {
         Subscribe subscribe = createSubscribe();
         List<Question> questions = createQuestions(WEEKLY_SEND_COUNT);
-        WeeklyMailMessage message = createMessage(subscribe, questions);
+        WeeklyMailPayload message = createMessage(subscribe, questions);
 
         writer.write(new Chunk<>(List.of(message)));
 
@@ -85,7 +85,7 @@ class WeeklyMailSendWriterTest extends IntegrationTestSupport {
         setJpaAuditingTime(LocalDateTime.of(2025, 5, 1, 7, 0));
         createSentHistory(subscribe, questions.get(0));
         setJpaAuditingTime(LocalDateTime.of(2025, 5, 2, 7, 0));
-        WeeklyMailMessage message = createMessage(subscribe, questions);
+        WeeklyMailPayload message = createMessage(subscribe, questions);
 
         writer.write(new Chunk<>(List.of(message)));
 
@@ -118,7 +118,7 @@ class WeeklyMailSendWriterTest extends IntegrationTestSupport {
         subscribeQuestionRepository.save(SubscribeQuestion.success(subscribe, question));
     }
 
-    private WeeklyMailMessage createMessage(Subscribe subscribe, List<Question> questions) {
-        return new WeeklyMailMessage(subscribe, questions, MESSAGE_SUBJECT, MESSAGE_TEXT);
+    private WeeklyMailPayload createMessage(Subscribe subscribe, List<Question> questions) {
+        return new WeeklyMailPayload(subscribe, questions, MESSAGE_SUBJECT, MESSAGE_TEXT);
     }
 }

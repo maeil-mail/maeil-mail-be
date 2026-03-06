@@ -61,7 +61,7 @@ class DailyMailSendWriterTest extends IntegrationTestSupport {
     void write() {
         Subscribe subscribe = createSubscribe();
         Question question = createQuestion();
-        DailyMailMessage message = createMessage(subscribe, question);
+        DailyMailPayload message = createMessage(subscribe, question);
 
         writer.write(new Chunk<>(List.of(message)));
 
@@ -84,7 +84,7 @@ class DailyMailSendWriterTest extends IntegrationTestSupport {
         setJpaAuditingTime(LocalDateTime.of(2025, 5, 1, 7, 0));
         createSubscribeQuestion(subscribe, question);
         setJpaAuditingTime(LocalDateTime.of(2025, 5, 2, 7, 0));
-        DailyMailMessage message = createMessage(subscribe, question);
+        DailyMailPayload message = createMessage(subscribe, question);
 
         writer.write(new Chunk<>(List.of(message)));
 
@@ -111,7 +111,7 @@ class DailyMailSendWriterTest extends IntegrationTestSupport {
         subscribeQuestionRepository.save(SubscribeQuestion.success(subscribe, question));
     }
 
-    private DailyMailMessage createMessage(Subscribe subscribe, Question question) {
-        return new DailyMailMessage(subscribe, question, MESSAGE_SUBJECT, MESSAGE_TEXT);
+    private DailyMailPayload createMessage(Subscribe subscribe, Question question) {
+        return new DailyMailPayload(subscribe, question, MESSAGE_SUBJECT, MESSAGE_TEXT);
     }
 }

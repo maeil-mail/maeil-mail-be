@@ -25,7 +25,7 @@ class DailyMailSendProcessorTest {
     private static final String QUESTION_TITLE = "subject-title";
 
     @Test
-    @DisplayName("질문 선택/뷰 렌더링에 성공하면 DailyMailMessage를 생성한다.")
+    @DisplayName("질문 선택/뷰 렌더링에 성공하면 DailyMailPayload를 생성한다.")
     void processSuccess() {
         ChoiceQuestionPolicy policy = Mockito.mock(ChoiceQuestionPolicy.class);
         MailViewRenderer renderer = mock(MailViewRenderer.class);
@@ -35,14 +35,14 @@ class DailyMailSendProcessorTest {
         when(policy.choice(subscribe)).thenReturn(questionSummary);
         when(renderer.render(anyMap(), eq("question-v4"))).thenReturn("rendered-text");
 
-        DailyMailMessage result = processor.process(subscribe);
+        DailyMailPayload result = processor.process(subscribe);
 
         assertAll(
                 () -> assertThat(result).isNotNull(),
-                () -> assertThat(result.getTo()).isEqualTo(SUBSCRIBE_EMAIL),
+                () -> assertThat(result.getSubscribe().getEmail()).isEqualTo(SUBSCRIBE_EMAIL),
                 () -> assertThat(result.getSubject()).isEqualTo(QUESTION_TITLE),
                 () -> assertThat(result.getText()).isEqualTo("rendered-text"),
-                () -> assertThat(result.question().getId()).isEqualTo(QUESTION_ID)
+                () -> assertThat(result.getQuestion().getId()).isEqualTo(QUESTION_ID)
         );
     }
 
@@ -54,7 +54,7 @@ class DailyMailSendProcessorTest {
         Subscribe subscribe = createSubscribe();
         when(policy.choice(subscribe)).thenThrow(new IllegalStateException("fail"));
 
-        DailyMailMessage result = processor.process(subscribe);
+        DailyMailPayload result = processor.process(subscribe);
 
         assertThat(result).isNull();
     }

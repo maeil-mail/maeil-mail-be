@@ -8,11 +8,11 @@ import maeilbatch.forward.ForwardLog;
 import maeilbatch.forward.ForwardProcessor;
 import maeilbatch.forward.ForwardReader;
 import maeilbatch.forward.ForwardWriter;
+import maeilbatch.mail.AbstractMailPayload;
 import maeilbatch.mail.FilterSubscribeProcessor;
 import maeilbatch.mail.MailSendItemReader;
 import maeilbatch.mail.MailSendProcessorClassifier;
 import maeilbatch.mail.MailSendWriterClassifier;
-import maeilmail.mail.MailMessage;
 import maeilmail.subscribe.command.domain.Subscribe;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecutionListener;
@@ -22,7 +22,6 @@ import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.item.database.JdbcPagingItemReader;
-import org.springframework.batch.item.database.JpaCursorItemReader;
 import org.springframework.batch.item.support.ClassifierCompositeItemProcessor;
 import org.springframework.batch.item.support.ClassifierCompositeItemWriter;
 import org.springframework.batch.item.support.CompositeItemProcessor;
@@ -58,12 +57,12 @@ class MailSendJobConfig {
 
     @Bean
     public Step mailGenerateStep(
-            JpaCursorItemReader<Subscribe> subscribeReader,
-            CompositeItemProcessor<Subscribe, MailMessage> mailSendProcessor,
-            ClassifierCompositeItemWriter<MailMessage> mailSendWriter
+            JdbcPagingItemReader<Subscribe> subscribeReader,
+            CompositeItemProcessor<Subscribe, AbstractMailPayload> mailSendProcessor,
+            ClassifierCompositeItemWriter<AbstractMailPayload> mailSendWriter
     ) {
         return new StepBuilder("mailGenerateStep", jobRepository)
-                .<Subscribe, MailMessage>chunk(CHUNK_SIZE, transactionManager)
+                .<Subscribe, AbstractMailPayload>chunk(CHUNK_SIZE, transactionManager)
                 .reader(subscribeReader)
                 .processor(mailSendProcessor)
                 .writer(mailSendWriter)
@@ -72,7 +71,7 @@ class MailSendJobConfig {
 
     @Bean
     @StepScope
-    public JpaCursorItemReader<Subscribe> subscribeReader(
+    public JdbcPagingItemReader<Subscribe> subscribeReader(
             @Value("#{jobParameters['datetime']}") LocalDateTime dateTime,
             MailSendItemReader mailSendItemReader
     ) {
@@ -80,29 +79,29 @@ class MailSendJobConfig {
     }
 
     @Bean
-    public CompositeItemProcessor<Subscribe, MailMessage> mailSendProcessor(
+    public CompositeItemProcessor<Subscribe, AbstractMailPayload> mailSendProcessor(
             FilterSubscribeProcessor filterSubscribeProcessor,
-            ClassifierCompositeItemProcessor<Subscribe, MailMessage> mailMessageProcessor
+            ClassifierCompositeItemProcessor<Subscribe, AbstractMailPayload> mailPayloadProcessor
     ) {
-        CompositeItemProcessor<Subscribe, MailMessage> mailSendProcessor = new CompositeItemProcessor<>();
-        mailSendProcessor.setDelegates(List.of(filterSubscribeProcessor, mailMessageProcessor));
+        CompositeItemProcessor<Subscribe, AbstractMailPayload> mailSendProcessor = new CompositeItemProcessor<>();
+        mailSendProcessor.setDelegates(List.of(filterSubscribeProcessor, mailPayloadProcessor));
 
         return mailSendProcessor;
     }
 
     @Bean
-    public ClassifierCompositeItemProcessor<Subscribe, MailMessage> mailMessageProcessor(
+    public ClassifierCompositeItemProcessor<Subscribe, AbstractMailPayload> mailPayloadProcessor(
             MailSendProcessorClassifier classifier
     ) {
-        ClassifierCompositeItemProcessor<Subscribe, MailMessage> processor = new ClassifierCompositeItemProcessor<>();
+        ClassifierCompositeItemProcessor<Subscribe, AbstractMailPayload> processor = new ClassifierCompositeItemProcessor<>();
         processor.setClassifier(classifier);
 
         return processor;
     }
 
     @Bean
-    public ClassifierCompositeItemWriter<MailMessage> mailSendWriter(MailSendWriterClassifier classifier) {
-        ClassifierCompositeItemWriter<MailMessage> writer = new ClassifierCompositeItemWriter<>();
+    public ClassifierCompositeItemWriter<AbstractMailPayload> mailSendWriter(MailSendWriterClassifier classifier) {
+        ClassifierCompositeItemWriter<AbstractMailPayload> writer = new ClassifierCompositeItemWriter<>();
         writer.setClassifier(classifier);
 
         return writer;

@@ -2,9 +2,8 @@ package maeilbatch.mail.weekly;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import maeilbatch.forward.ForwardLog;
 import maeilbatch.forward.ForwardRepository;
-import maeilmail.mail.MailMessage;
+import maeilbatch.mail.AbstractMailPayload;
 import maeilmail.question.Question;
 import maeilmail.subscribe.command.domain.Subscribe;
 import maeilmail.subscribe.command.domain.SubscribeQuestion;
@@ -15,25 +14,25 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class WeeklyMailSendWriter implements ItemWriter<MailMessage> {
+public class WeeklyMailSendWriter implements ItemWriter<AbstractMailPayload> {
 
     private final SubscribeQuestionRepository subscribeQuestionRepository;
     private final ForwardRepository forwardRepository;
 
     @Override
-    public void write(Chunk<? extends MailMessage> chunk) {
-        List<? extends MailMessage> items = chunk.getItems();
+    public void write(Chunk<? extends AbstractMailPayload> chunk) {
+        List<? extends AbstractMailPayload> items = chunk.getItems();
         items.forEach(this::rollingHistory);
         items.forEach(this::saveSendLog);
     }
 
-    private void rollingHistory(MailMessage message) {
-        WeeklyMailMessage weeklyMailMessage = (WeeklyMailMessage) message;
-        List<Question> questions = weeklyMailMessage.questions();
-        removeAlreadySaved(weeklyMailMessage.subscribe(), questions);
+    private void rollingHistory(AbstractMailPayload payload) {
+        WeeklyMailPayload weeklyMailPayload = (WeeklyMailPayload) payload;
+        List<Question> questions = weeklyMailPayload.getQuestions();
+        removeAlreadySaved(weeklyMailPayload.getSubscribe(), questions);
 
         List<SubscribeQuestion> subscribeQuestions = questions.stream()
-                .map(it -> SubscribeQuestion.success(weeklyMailMessage.subscribe(), it))
+                .map(it -> SubscribeQuestion.success(weeklyMailPayload.getSubscribe(), it))
                 .toList();
 
         subscribeQuestionRepository.saveAll(subscribeQuestions);
@@ -48,8 +47,7 @@ public class WeeklyMailSendWriter implements ItemWriter<MailMessage> {
         subscribeQuestionRepository.removeAllByIdIn(removeTargetIds);
     }
 
-    private void saveSendLog(MailMessage message) {
-        ForwardLog forwardLog = new ForwardLog(message.getTo(), message.getSubject(), message.getText());
-        forwardRepository.save(forwardLog);
+    private void saveSendLog(AbstractMailPayload payload) {
+        forwardRepository.save(payload.toForwardLog());
     }
 }
