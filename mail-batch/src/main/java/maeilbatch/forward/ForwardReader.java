@@ -28,13 +28,7 @@ public class ForwardReader {
                         "startDateTime", startDateTime,
                         "endDateTime", endDateTime
                 ))
-                .rowMapper((rs, rowNum) -> new ForwardLog(
-                        rs.getLong("id"),
-                        rs.getString("target"),
-                        rs.getString("subject"),
-                        rs.getString("message"),
-                        ForwardStatus.valueOf(rs.getString("status"))
-                ))
+                .dataRowMapper(ForwardLog.class)
                 .build();
     }
 }

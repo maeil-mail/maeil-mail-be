@@ -9,15 +9,18 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import maeilmail.BaseEntity;
 import maeilmail.mail.MailMessage;
 
-@Entity
 @Getter
+@Setter
+@Entity
 @Table(name = "forward_log")
+@AllArgsConstructor(access = AccessLevel.PACKAGE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ForwardLog extends BaseEntity implements MailMessage {
 
@@ -43,14 +46,6 @@ public class ForwardLog extends BaseEntity implements MailMessage {
         this.subject = subject;
         this.message = message;
         this.status = ForwardStatus.PENDING;
-    }
-
-    ForwardLog(Long id, String target, String subject, String message, ForwardStatus status) {
-        this.id = id;
-        this.target = target;
-        this.subject = subject;
-        this.message = message;
-        this.status = status;
     }
 
     public boolean isRetryable() {
