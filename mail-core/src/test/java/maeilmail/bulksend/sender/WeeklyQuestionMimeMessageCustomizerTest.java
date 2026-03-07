@@ -26,7 +26,7 @@ class WeeklyQuestionMimeMessageCustomizerTest {
         javaMailSender.setSession(Session.getDefaultInstance(new Properties()));
 
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
-        Subscribe subscribe = new Subscribe("test@test.com", QuestionCategory.BACKEND, SubscribeFrequency.WEEKLY);
+        Subscribe subscribe = new Subscribe("test@test.com", QuestionCategory.BACKEND, SubscribeFrequency.WEEKLY, 0L);
         WeeklySubscribeQuestionMessage message = new WeeklySubscribeQuestionMessage(subscribe, List.of(new Question("test1", "content", QuestionCategory.BACKEND)), "subject", "text");
 
         WeeklyQuestionMimeMessageCustomizer customizer = new WeeklyQuestionMimeMessageCustomizer();

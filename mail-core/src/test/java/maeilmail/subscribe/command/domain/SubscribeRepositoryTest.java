@@ -89,7 +89,7 @@ class SubscribeRepositoryTest extends IntegrationTestSupport {
 
     private void createSubscribe(String email, LocalDateTime createdAt, SubscribeFrequency frequency) {
         setJpaAuditingTime(createdAt);
-        Subscribe subscribe = new Subscribe(email, QuestionCategory.FRONTEND, frequency);
+        Subscribe subscribe = new Subscribe(email, QuestionCategory.FRONTEND, frequency, 0L);
 
         subscribeRepository.save(subscribe);
     }

@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
 import maeilmail.PaginationResponse;
 import maeilmail.question.Question;
 import maeilmail.question.QuestionCategory;
@@ -82,7 +83,7 @@ class SubscribeQuestionQueryServiceTest extends IntegrationTestSupport {
     @Test
     @DisplayName("주간 질문지를 조회한다.")
     void queryWeeklyQuestions() {
-        Subscribe subscribe = new Subscribe("atom@gmail.com", QuestionCategory.BACKEND, SubscribeFrequency.WEEKLY);
+        Subscribe subscribe = new Subscribe("atom@gmail.com", QuestionCategory.BACKEND, SubscribeFrequency.WEEKLY, 0L);
         subscribeRepository.save(subscribe);
         List<Question> questions = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
@@ -124,9 +125,9 @@ class SubscribeQuestionQueryServiceTest extends IntegrationTestSupport {
 
     private void createData() {
         // subscribers
-        Subscribe subscribe1 = new Subscribe("111@gmail.com", QuestionCategory.BACKEND, SubscribeFrequency.DAILY);
-        Subscribe subscribe2 = new Subscribe("222@gmail.com", QuestionCategory.BACKEND, SubscribeFrequency.DAILY);
-        Subscribe subscribe3 = new Subscribe("333@gmail.com", QuestionCategory.FRONTEND, SubscribeFrequency.DAILY);
+        Subscribe subscribe1 = new Subscribe("111@gmail.com", QuestionCategory.BACKEND, SubscribeFrequency.DAILY, 0L);
+        Subscribe subscribe2 = new Subscribe("222@gmail.com", QuestionCategory.BACKEND, SubscribeFrequency.DAILY, 0L);
+        Subscribe subscribe3 = new Subscribe("333@gmail.com", QuestionCategory.FRONTEND, SubscribeFrequency.DAILY, 0L);
         subscribeRepository.saveAll(List.of(subscribe1, subscribe2, subscribe3));
 
         // questions

@@ -25,7 +25,7 @@ class QuestionMimeMessageCustomizerTest {
         javaMailSender.setSession(Session.getDefaultInstance(new Properties()));
 
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
-        Subscribe subscribe = new Subscribe("test@test.com", QuestionCategory.BACKEND, SubscribeFrequency.DAILY);
+        Subscribe subscribe = new Subscribe("test@test.com", QuestionCategory.BACKEND, SubscribeFrequency.DAILY, 0L);
         Question question = new Question("test1", "content", QuestionCategory.BACKEND);
         SubscribeQuestionMessage message = new SubscribeQuestionMessage(subscribe, question, "subject", "text");
 

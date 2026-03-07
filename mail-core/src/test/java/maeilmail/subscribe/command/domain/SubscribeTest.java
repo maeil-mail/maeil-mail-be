@@ -31,6 +31,6 @@ class SubscribeTest {
     }
 
     private Subscribe createSubscribe() {
-        return new Subscribe("atom@test.com", QuestionCategory.BACKEND, SubscribeFrequency.DAILY);
+        return new Subscribe("atom@test.com", QuestionCategory.BACKEND, SubscribeFrequency.DAILY, 0L);
     }
 }

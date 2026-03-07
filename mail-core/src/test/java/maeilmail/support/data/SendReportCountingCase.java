@@ -95,7 +95,7 @@ public class SendReportCountingCase extends IntegrationTestSupport {
     }
 
     private Subscribe createSubscribe(SubscribeFrequency subscribeFrequency) {
-        Subscribe subscribe = new Subscribe("email@test.com", QuestionCategory.BACKEND, subscribeFrequency);
+        Subscribe subscribe = new Subscribe("email@test.com", QuestionCategory.BACKEND, subscribeFrequency, 0L);
 
         return subscribeRepository.save(subscribe);
     }
