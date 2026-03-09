@@ -3,6 +3,7 @@ package maeilbatch.forward;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -11,13 +12,11 @@ import maeilbatch.support.IntegrationTestSupport;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.batch.item.Chunk;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionTemplate;
 
 @Transactional(propagation = Propagation.NOT_SUPPORTED)
 class ForwardWriterTest extends IntegrationTestSupport {
@@ -39,13 +38,12 @@ class ForwardWriterTest extends IntegrationTestSupport {
     @Test
     @DisplayName("writer는 상태를 PROCESSING으로 변경하고 각 로그를 전송한다.")
     void write() {
-        ForwardSender forwardSender = Mockito.mock(ForwardSender.class);
+        ForwardSender forwardSender = mock(ForwardSender.class);
         ForwardWriter forwardWriter = new ForwardWriter(forwardDao, forwardSender);
-        TransactionTemplate tx = new TransactionTemplate(transactionManager);
-        List<ForwardLog> logs = tx.execute(status -> createForwardLogs());
+        List<ForwardLog> logs = createForwardLogs();
         Chunk<ForwardLog> chunk = new Chunk<>(logs);
 
-        tx.executeWithoutResult(status -> forwardWriter.write(chunk));
+        forwardWriter.write(chunk);
 
         List<Long> ids = logs.stream()
                 .map(ForwardLog::getId)
