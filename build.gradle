@@ -135,7 +135,7 @@ configureByTypeHaving(project, ['boot', 'data'] as String[]) {
 configureByTypeHaving(project, ['boot', 'mail'] as String[]) {
     configure(it) {
         dependencies {
-            implementation 'org.springframework.boot:spring-boot-starter-mail'
+            api 'org.springframework.boot:spring-boot-starter-mail'
             implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
             implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
         }

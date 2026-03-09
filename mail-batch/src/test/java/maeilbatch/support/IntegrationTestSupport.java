@@ -12,7 +12,6 @@ import maeilmail.mail.MailSender;
 import maeilmail.subscribe.command.application.VerifySubscribeService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.springframework.batch.core.configuration.support.DefaultBatchConfiguration;
 import org.springframework.batch.test.context.SpringBatchTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -27,6 +26,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.auditing.AuditingHandler;
 import org.springframework.data.auditing.DateTimeProvider;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
@@ -63,7 +63,7 @@ public abstract class IntegrationTestSupport {
     @EnableCaching
     @EnableJpaAuditing
     @TestConfiguration
-    public static class TestConfig extends DefaultBatchConfiguration {
+    public static class TestConfig {
 
         @Bean
         public DateTimeProvider dateTimeProvider() {
@@ -97,6 +97,11 @@ public abstract class IntegrationTestSupport {
             simpleCacheManager.setCaches(caches);
 
             return simpleCacheManager;
+        }
+
+        @Bean
+        public JavaMailSender javaMailSender() {
+            return mock(JavaMailSender.class);
         }
     }
 }
