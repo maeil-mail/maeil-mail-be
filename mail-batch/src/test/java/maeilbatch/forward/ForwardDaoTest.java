@@ -13,10 +13,10 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional(propagation = Propagation.NOT_SUPPORTED)
-class StatusBatchChangerTest extends IntegrationTestSupport {
+class ForwardDaoTest extends IntegrationTestSupport {
 
     @Autowired
-    private StatusBatchChanger statusBatchChanger;
+    private ForwardDao forwardDao;
 
     @Autowired
     private ForwardRepository forwardRepository;
@@ -31,7 +31,7 @@ class StatusBatchChangerTest extends IntegrationTestSupport {
     void changeStateBatch() {
         List<ForwardLog> logs = createForwardLogs();
 
-        statusBatchChanger.changeState(logs, ForwardStatus.PROCESSING);
+        forwardDao.changeState(logs, ForwardStatus.PROCESSING);
 
         List<Long> ids = logs.stream()
                 .map(ForwardLog::getId)
@@ -44,6 +44,17 @@ class StatusBatchChangerTest extends IntegrationTestSupport {
                 () -> assertThat(logs).allMatch(it -> it.getStatus() == ForwardStatus.PROCESSING),
                 () -> assertThat(statuses).containsExactlyInAnyOrder(ForwardStatus.PROCESSING, ForwardStatus.PROCESSING)
         );
+    }
+
+    @Test
+    @DisplayName("단건 상태 업데이트를 수행한다.")
+    void changeStateSingle() {
+        ForwardLog log = forwardRepository.save(new ForwardLog("one@test.com", "subject1", "message1"));
+
+        forwardDao.changeState(log.getId(), ForwardStatus.DONE);
+
+        ForwardLog result = forwardRepository.findById(log.getId()).orElseThrow();
+        assertThat(result.getStatus()).isEqualTo(ForwardStatus.DONE);
     }
 
     private List<ForwardLog> createForwardLogs() {

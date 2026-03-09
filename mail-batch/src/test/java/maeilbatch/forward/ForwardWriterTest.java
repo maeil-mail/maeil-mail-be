@@ -7,7 +7,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.util.List;
-import jakarta.persistence.EntityManager;
 import maeilbatch.support.IntegrationTestSupport;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
@@ -24,10 +23,7 @@ import org.springframework.transaction.support.TransactionTemplate;
 class ForwardWriterTest extends IntegrationTestSupport {
 
     @Autowired
-    private StatusBatchChanger statusBatchChanger;
-
-    @Autowired
-    private EntityManager entityManager;
+    private ForwardDao forwardDao;
 
     @Autowired
     private ForwardRepository forwardRepository;
@@ -44,7 +40,7 @@ class ForwardWriterTest extends IntegrationTestSupport {
     @DisplayName("writer는 상태를 PROCESSING으로 변경하고 각 로그를 전송한다.")
     void write() {
         ForwardSender forwardSender = Mockito.mock(ForwardSender.class);
-        ForwardWriter forwardWriter = new ForwardWriter(statusBatchChanger, forwardSender, entityManager);
+        ForwardWriter forwardWriter = new ForwardWriter(forwardDao, forwardSender);
         TransactionTemplate tx = new TransactionTemplate(transactionManager);
         List<ForwardLog> logs = tx.execute(status -> createForwardLogs());
         Chunk<ForwardLog> chunk = new Chunk<>(logs);

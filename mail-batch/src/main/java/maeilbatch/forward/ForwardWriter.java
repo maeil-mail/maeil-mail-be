@@ -1,6 +1,5 @@
 package maeilbatch.forward;
 
-import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.item.Chunk;
 import org.springframework.batch.item.ItemWriter;
@@ -19,14 +18,12 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class ForwardWriter implements ItemWriter<ForwardLog> {
 
-    private final StatusBatchChanger statusBatchChanger;
+    private final ForwardDao forwardDao;
     private final ForwardSender forwardSender;
-    private final EntityManager em;
 
     @Override
     public void write(Chunk<? extends ForwardLog> chunk) {
-        statusBatchChanger.changeState(chunk.getItems(), ForwardStatus.PROCESSING);
+        forwardDao.changeState(chunk.getItems(), ForwardStatus.PROCESSING);
         chunk.forEach(forwardSender::sendMailSync);
-        em.flush();
     }
 }
