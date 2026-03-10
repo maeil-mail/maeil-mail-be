@@ -29,11 +29,11 @@ class SubscribeRepositoryTest extends IntegrationTestSupport {
     @Test
     @DisplayName("구독자의 질문지 시퀀스를 증가시킨다.")
     void increaseNextQuestionSequence() {
-        LocalDateTime baseDateTime = LocalDateTime.of(2024, 11, 7, 7, 0);
-        LocalDateTime expectedChangeTime = baseDateTime.minusSeconds(1);
-        createSubscribe("test1@test.com", expectedChangeTime, DAILY);
-        createSubscribe("test2@test.com", expectedChangeTime, DAILY);
-        createSubscribe("test3@test.com", baseDateTime, DAILY);
+        LocalDateTime baseDateTime = LocalDateTime.of(2024, 11, 7, 7, 0, 0);
+        LocalDateTime noneChange = baseDateTime.plusSeconds(1);
+        createSubscribe("test1@test.com", baseDateTime, DAILY);
+        createSubscribe("test2@test.com", baseDateTime, DAILY);
+        createSubscribe("test3@test.com", noneChange, DAILY);
         setJpaAuditingTime(LocalDateTime.now());
         for (Subscribe subscribe : subscribeRepository.findAll()) {
             createSubscribeQuestion(subscribe, createQuestion(subscribe.getCategory()));
@@ -52,11 +52,11 @@ class SubscribeRepositoryTest extends IntegrationTestSupport {
     @Test
     @DisplayName("해당 구독자가 금일 받은 질문의 수만큼 시퀀스를 증가시킨다.")
     void increaseNextQuestionSequenceWithOffset() {
-        LocalDateTime baseDateTime = LocalDateTime.of(2024, 11, 7, 7, 0);
-        LocalDateTime expectedChangeTime = baseDateTime.minusSeconds(1);
-        createSubscribe("test1@test.com", expectedChangeTime, WEEKLY);
-        createSubscribe("test2@test.com", expectedChangeTime, DAILY);
-        createSubscribe("test3@test.com", baseDateTime, DAILY);
+        LocalDateTime baseDateTime = LocalDateTime.of(2024, 11, 7, 7, 0, 1);
+        LocalDateTime noneChange = baseDateTime.plusSeconds(1);
+        createSubscribe("test1@test.com", baseDateTime, WEEKLY);
+        createSubscribe("test2@test.com", baseDateTime, DAILY);
+        createSubscribe("test3@test.com", noneChange, DAILY);
 
         /**
          * 1. 주간 메일을 받은 케이스

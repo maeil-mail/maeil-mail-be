@@ -23,11 +23,11 @@ public interface SubscribeRepository extends JpaRepository<Subscribe, Long> {
                 from subscribe_question as sq
                 where
                     sq.subscribe_id = s.id and
-                    sq.created_at > curdate()
+                    sq.created_at >= :baseDateTime
             )
             where
                 s.deleted_at is null and
-                s.created_at < :baseDateTime
+                s.created_at <= :baseDateTime
             """, nativeQuery = true)
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     void increaseNextQuestionSequence(LocalDateTime baseDateTime);
