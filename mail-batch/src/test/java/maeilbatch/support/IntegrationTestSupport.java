@@ -2,6 +2,8 @@ package maeilbatch.support;
 
 import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyMap;
+import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -9,6 +11,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import maeilmail.mail.MailSender;
+import maeilmail.mail.MailViewRenderer;
 import maeilmail.subscribe.command.application.VerifySubscribeService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -102,6 +105,15 @@ public abstract class IntegrationTestSupport {
         @Bean
         public JavaMailSender javaMailSender() {
             return mock(JavaMailSender.class);
+        }
+
+        @Bean
+        public MailViewRenderer mailViewRenderer() {
+            MailViewRenderer mailViewRenderer = mock(MailViewRenderer.class);
+            when(mailViewRenderer.render(anyMap(), anyString()))
+                    .thenReturn("mock-rendered-text");
+
+            return mailViewRenderer;
         }
     }
 }
