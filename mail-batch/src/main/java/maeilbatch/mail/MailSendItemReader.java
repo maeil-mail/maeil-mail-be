@@ -13,6 +13,11 @@ import org.springframework.batch.item.database.builder.JdbcPagingItemReaderBuild
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
+/**
+ * 오전 7시 이후 구독자는 다음날 전송된다.
+ * 7시 이후 전송 과정 중에 빈도를 변경하거나, 구독해지한 사용자에 대해서는 조회 쿼리 발생 시점 데이터를 기준으로 삼는다.
+ * 메일을 받기 이전에 설정한 값이므로, 허용하는 것이 사용자 입장에서 자연스럽다고 판단했다. (+ 7시 당시 빈도 스냅샷을 저장하는 비용이 있다.)
+ */
 @Component
 @RequiredArgsConstructor
 public class MailSendItemReader {
