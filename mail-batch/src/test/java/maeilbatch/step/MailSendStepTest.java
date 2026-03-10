@@ -24,6 +24,7 @@ import maeilbatch.forward.ForwardRepository;
 import maeilbatch.forward.ForwardStatus;
 import maeilbatch.support.IntegrationTestSupport;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -55,9 +56,13 @@ class MailSendStepTest extends IntegrationTestSupport {
     @Autowired
     private JavaMailSender javaMailSender;
 
+    @BeforeEach
+    void setUp() {
+        reset(javaMailSender);
+    }
+
     @AfterEach
     void tearDown() {
-        reset(javaMailSender);
         forwardRepository.deleteAll();
         jobRepositoryTestUtils.removeJobExecutions();
     }

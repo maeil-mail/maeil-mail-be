@@ -10,7 +10,6 @@ import static org.mockito.Mockito.when;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import maeilmail.mail.MailSender;
 import maeilmail.mail.MailViewRenderer;
 import maeilmail.subscribe.command.application.VerifySubscribeService;
 import org.junit.jupiter.api.AfterEach;
@@ -71,16 +70,6 @@ public abstract class IntegrationTestSupport {
         @Bean
         public DateTimeProvider dateTimeProvider() {
             return mock(DateTimeProvider.class);
-        }
-
-        @Bean
-        public MailSender emailSender() {
-            MailSender mailSender = mock(MailSender.class);
-            willDoNothing()
-                    .given(mailSender)
-                    .sendMail(any());
-
-            return mailSender;
         }
 
         @Bean

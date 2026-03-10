@@ -12,6 +12,7 @@ import static org.mockito.Mockito.when;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Properties;
 import jakarta.mail.Session;
 import jakarta.mail.internet.MimeMessage;
@@ -19,7 +20,8 @@ import maeilbatch.forward.ForwardLog;
 import maeilbatch.forward.ForwardRepository;
 import maeilbatch.forward.ForwardStatus;
 import maeilbatch.support.IntegrationTestSupport;
-import maeilmail.mail.MailSender;
+import maeilmail.mail.MailEvent;
+import maeilmail.mail.MailEventRepository;
 import maeilmail.question.Question;
 import maeilmail.question.QuestionCategory;
 import maeilmail.question.QuestionRepository;
@@ -72,11 +74,11 @@ class MailSendJobTest extends IntegrationTestSupport {
     private JavaMailSender javaMailSender;
 
     @Autowired
-    private MailSender mailSender;
+    private MailEventRepository mailEventRepository;
 
     @BeforeEach
     void setUp() {
-        reset(javaMailSender, mailSender);
+        reset(javaMailSender);
         jobLauncherTestUtils.setJob(mailSendJob);
         configureMailSenderSuccess();
     }
@@ -104,20 +106,25 @@ class MailSendJobTest extends IntegrationTestSupport {
 
         JobExecution result = jobLauncherTestUtils.launchJob(toJobParameters(baseDateTime, 1L));
 
+
+        long subscribeQuestionCount = subscribeQuestionRepository.count();
+        Subscribe dailyAfter = subscribeRepository.findById(dailySubscribe.getId()).orElseThrow();
+        Subscribe weeklyAfter = subscribeRepository.findById(weeklySubscribe.getId()).orElseThrow();
         List<ForwardLog> logs = forwardRepository.findAll();
         long doneCount = logs.stream()
                 .filter(it -> it.getStatus() == ForwardStatus.DONE)
                 .count();
-        long subscribeQuestionCount = subscribeQuestionRepository.count();
-        Subscribe dailyAfter = subscribeRepository.findById(dailySubscribe.getId()).orElseThrow();
-        Subscribe weeklyAfter = subscribeRepository.findById(weeklySubscribe.getId()).orElseThrow();
+        List<MailEvent> mailEvents = mailEventRepository.findAll();
+        long reportCount = mailEvents.stream()
+                .filter(it -> Objects.equals(it.getType(), "report"))
+                .count();
 
         assertAll(
-                () -> verify(javaMailSender, times((int) doneCount)).send(any(MimeMessage.class)),
-                () -> verify(mailSender, times(1)).sendMail(any()),
+                () -> verify(javaMailSender, times((int) (doneCount + reportCount))).send(any(MimeMessage.class)),
                 () -> assertThat(result.getStatus()).isEqualTo(BatchStatus.COMPLETED),
                 () -> assertThat(logs).hasSize(2),
                 () -> assertThat(doneCount).isEqualTo(2L),
+                () -> assertThat(reportCount).isEqualTo(1L),
                 () -> assertThat(subscribeQuestionCount).isEqualTo(6L),
                 () -> assertThat(dailyAfter.getNextQuestionSequence()).isEqualTo(dailyBefore + 1),
                 () -> assertThat(weeklyAfter.getNextQuestionSequence()).isEqualTo(weeklyBefore + SubscribeFrequency.WEEKLY.getSendCount())
