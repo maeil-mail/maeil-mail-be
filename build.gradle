@@ -136,6 +136,7 @@ configureByTypeHaving(project, ['boot', 'mail'] as String[]) {
     configure(it) {
         dependencies {
             api 'org.springframework.boot:spring-boot-starter-mail'
+            api 'com.bucket4j:bucket4j-mysql:8.7.0'
             implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
             implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
         }

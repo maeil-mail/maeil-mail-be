@@ -4,6 +4,7 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import maeilmail.RateLimiter;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Async;
@@ -12,10 +13,9 @@ import org.springframework.scheduling.annotation.Async;
 @RequiredArgsConstructor
 public abstract class AbstractMailSender<T extends MailMessage> {
 
-    private static final int MAIL_SENDER_RATE_MILLISECONDS = 500;
-
     private final JavaMailSender javaMailSender;
     private final MimeMessageCustomizer mimeMessageCustomizer;
+    private final RateLimiter limiter;
 
     public void sendMailSync(T message) {
         sendMail(message);
@@ -24,6 +24,7 @@ public abstract class AbstractMailSender<T extends MailMessage> {
     @Async
     public void sendMail(T message) {
         try {
+            limiter.tryConsume();
             logSending(message);
             MimeMessage emptyMimeMessage = javaMailSender.createMimeMessage();
             MimeMessage targetMimeMessage = mimeMessageCustomizer.customize(emptyMimeMessage, message);
@@ -35,12 +36,6 @@ public abstract class AbstractMailSender<T extends MailMessage> {
         } catch (Exception e) {
             log.error("예기치 않은 오류 발생: {}", e.getMessage(), e);
             handleFailure(message);
-        } finally {
-            try {
-                Thread.sleep(MAIL_SENDER_RATE_MILLISECONDS);
-            } catch (InterruptedException ignored) {
-                Thread.currentThread().interrupt();
-            }
         }
     }
 

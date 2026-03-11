@@ -1,4 +1,4 @@
-package maeilbatch.common.config;
+package maeilbatch.config;
 
 import com.querydsl.jpa.JPQLTemplates;
 import com.querydsl.jpa.impl.JPAQueryFactory;

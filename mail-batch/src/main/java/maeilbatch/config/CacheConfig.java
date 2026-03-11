@@ -1,4 +1,4 @@
-package maeilbatch.common.config;
+package maeilbatch.config;
 
 import java.util.Arrays;
 import java.util.List;
