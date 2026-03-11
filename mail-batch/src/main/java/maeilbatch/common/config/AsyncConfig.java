@@ -1,4 +1,4 @@
-package maeilbatch.config;
+package maeilbatch.common.config;
 
 import java.util.concurrent.Executor;
 import org.springframework.context.annotation.Bean;
