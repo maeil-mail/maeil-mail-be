@@ -8,6 +8,9 @@ spring:
     job:
       enabled: false
 
+  datasource:
+    url: jdbc:h2:mem:testdb;MODE=MySQL
+
   jpa:
     hibernate:
       ddl-auto: create
@@ -16,6 +19,7 @@ spring:
         auto_quote_keyword: true
         format_sql: true
     show-sql: true
+
   sql:
     init:
       mode: never
@@ -37,3 +41,12 @@ distribute:
   server:
     count: 1
     index: 1
+
+mail:
+  ses:
+    rate-limit:
+      bucket-key: ses-batch-test
+      capacity: 90
+      refill-amount: 90
+      refill-seconds: 1
+      wait-timeout-millis: 2000
