@@ -27,11 +27,11 @@ public class RateLimiter {
 
     public RateLimiter(
             DataSource dataSource,
-            @Value("${mail.ses.rate-limit.bucket-key:ses-batch}") String bucketKey,
-            @Value("${mail.ses.rate-limit.capacity:90}") int capacity,
-            @Value("${mail.ses.rate-limit.refill-amount:90}") int refillAmount,
-            @Value("${mail.ses.rate-limit.refill-seconds:1}") long refillSeconds,
-            @Value("${mail.ses.rate-limit.wait-timeout-millis:2000}") long waitTimeoutMillis
+            @Value("${mail.ses.rate-limit.bucket-key}") String bucketKey,
+            @Value("${mail.ses.rate-limit.capacity}") int capacity,
+            @Value("${mail.ses.rate-limit.refill-amount}") int refillAmount,
+            @Value("${mail.ses.rate-limit.refill-seconds}") long refillSeconds,
+            @Value("${mail.ses.rate-limit.wait-timeout-millis}") long waitTimeoutMillis
     ) {
         this.bucketKey = bucketKey;
         this.waitTimeout = Duration.ofMillis(waitTimeoutMillis);
