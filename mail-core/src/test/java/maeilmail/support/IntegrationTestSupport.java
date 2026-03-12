@@ -30,11 +30,13 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.auditing.AuditingHandler;
 import org.springframework.data.auditing.DateTimeProvider;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @Import(IntegrationTestSupport.TestConfig.class)
+@Sql(scripts = "classpath:bucket4j.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_CLASS)
 public abstract class IntegrationTestSupport {
 
     @Autowired
@@ -120,3 +122,5 @@ public abstract class IntegrationTestSupport {
         }
     }
 }
+
+

@@ -14,6 +14,9 @@ spring:
     init:
       mode: never
 
+  datasource:
+    url: jdbc:h2:mem:testdb;MODE=MySQL
+
   mail:
     host: smtp.gmail.com
     port: 587
@@ -31,3 +34,12 @@ distribute:
   server:
     count: 1
     index: 1
+
+mail:
+  ses:
+    rate-limit:
+      bucket-key: ses-mail-core-test
+      capacity: 10
+      refill-amount: 10
+      refill-seconds: 1
+      wait-timeout-millis: 2000
