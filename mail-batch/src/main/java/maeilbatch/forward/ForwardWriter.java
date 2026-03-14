@@ -14,7 +14,7 @@ public class ForwardWriter implements ItemWriter<ForwardLog> {
 
     @Override
     public void write(Chunk<? extends ForwardLog> chunk) {
-        if(chunk.isEmpty()) return;
+        if (chunk.isEmpty()) return;
         forwardDao.changeState(chunk.getItems(), ForwardStatus.PROCESSING);
         chunk.forEach(forwardSender::sendMailSync);
     }
