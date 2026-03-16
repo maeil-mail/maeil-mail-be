@@ -28,6 +28,8 @@ import org.springframework.batch.item.support.CompositeItemProcessor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.task.TaskExecutor;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.transaction.PlatformTransactionManager;
 
 @Slf4j
@@ -36,6 +38,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 class MailSendJobConfig {
 
     private static final int CHUNK_SIZE = 100;
+    private static final int POOL_SIZE = 8;
 
     private final JobRepository jobRepository;
     private final PlatformTransactionManager transactionManager;
@@ -118,7 +121,20 @@ class MailSendJobConfig {
                 .reader(mailSendReader)
                 .processor(forwardProcessor)
                 .writer(forwardWriter)
+                .taskExecutor(taskExecutor())
+                .throttleLimit(POOL_SIZE)
                 .build();
+    }
+
+    @Bean
+    public TaskExecutor taskExecutor() {
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        executor.setCorePoolSize(POOL_SIZE);
+        executor.setMaxPoolSize(POOL_SIZE);
+        executor.setThreadNamePrefix("multi-thread-");
+        executor.setWaitForTasksToCompleteOnShutdown(Boolean.TRUE);
+        executor.initialize();
+        return executor;
     }
 
     @Bean
