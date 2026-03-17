@@ -291,7 +291,7 @@ class MailSendStepTest extends IntegrationTestSupport {
     }
 
     private List<ForwardLog> saveForwardLogs(int size, LocalDateTime createdAt, ForwardStatus status, String prefix) {
-        setJpaAuditingTime(createdAt);
+        setAuditingTime(createdAt);
         List<ForwardLog> logs = new ArrayList<>();
         for (int i = 0; i < size; i++) {
             ForwardLog log = new ForwardLog(prefix + "-" + i + "@test.com", "subject-" + i, "message-" + i);

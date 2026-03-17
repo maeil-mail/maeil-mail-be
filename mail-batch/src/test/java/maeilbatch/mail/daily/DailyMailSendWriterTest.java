@@ -81,9 +81,9 @@ class DailyMailSendWriterTest extends IntegrationTestSupport {
     void writeReplaceAlreadySentHistory() {
         Subscribe subscribe = createSubscribe();
         Question question = createQuestion();
-        setJpaAuditingTime(LocalDateTime.of(2025, 5, 1, 7, 0));
+        setAuditingTime(LocalDateTime.of(2025, 5, 1, 7, 0));
         createSubscribeQuestion(subscribe, question);
-        setJpaAuditingTime(LocalDateTime.of(2025, 5, 2, 7, 0));
+        setAuditingTime(LocalDateTime.of(2025, 5, 2, 7, 0));
         DailyMailPayload message = createMessage(subscribe, question);
 
         writer.write(new Chunk<>(List.of(message)));

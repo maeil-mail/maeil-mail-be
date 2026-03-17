@@ -203,7 +203,7 @@ class ForwardReaderTest extends IntegrationTestSupport {
     }
 
     private List<ForwardLog> saveForwardLogs(int size, LocalDateTime createdAt, ForwardStatus status) {
-        setJpaAuditingTime(createdAt);
+        setAuditingTime(createdAt);
         List<ForwardLog> logs = new ArrayList<>();
 
         for (int i = 0; i < size; i++) {

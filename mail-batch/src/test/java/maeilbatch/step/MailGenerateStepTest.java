@@ -81,7 +81,7 @@ class MailGenerateStepTest extends IntegrationTestSupport {
     @DisplayName("월요일에는 일간/주간 구독자의 전송 질문 이력과 메일 전송 내역을 생성한다.")
     void generateDailyAndWeeklyOnMonday() {
         LocalDateTime baseDateTime = LocalDateTime.of(2025, 5, 5, 7, 0); // Monday
-        setJpaAuditingTime(baseDateTime.minusHours(1));
+        setAuditingTime(baseDateTime.minusHours(1));
         Subscribe daily = createSubscribe("daily@test.com", SubscribeFrequency.DAILY);
         Subscribe weekly = createSubscribe("weekly@test.com", SubscribeFrequency.WEEKLY);
         List<Question> questions = createQuestions(10);
@@ -109,7 +109,7 @@ class MailGenerateStepTest extends IntegrationTestSupport {
     @DisplayName("주간 비발송일에는 일간 구독자만 처리한다.")
     void generateOnlyDailyWhenNotMonday() {
         LocalDateTime baseDateTime = LocalDateTime.of(2025, 5, 6, 7, 0); // Tuesday
-        setJpaAuditingTime(baseDateTime.minusHours(1));
+        setAuditingTime(baseDateTime.minusHours(1));
         Subscribe daily = createSubscribe("daily@test.com", SubscribeFrequency.DAILY);
         Subscribe weekly = createSubscribe("weekly@test.com", SubscribeFrequency.WEEKLY);
         List<Question> questions = createQuestions(10);
@@ -133,13 +133,13 @@ class MailGenerateStepTest extends IntegrationTestSupport {
     @DisplayName("해지 구독자와 기준 시각 이후 생성된 구독자는 생성 대상에서 제외된다.")
     void skipUnsubscribedAndFutureCreated() {
         LocalDateTime baseDateTime = LocalDateTime.of(2025, 5, 5, 7, 0); // Monday
-        setJpaAuditingTime(baseDateTime.minusHours(1));
+        setAuditingTime(baseDateTime.minusHours(1));
         createSubscribe("daily@test.com", SubscribeFrequency.DAILY);
         Subscribe unsubscribed = createSubscribe("unsubscribed@test.com", SubscribeFrequency.DAILY);
         unsubscribed.unsubscribe();
         subscribeRepository.save(unsubscribed);
 
-        setJpaAuditingTime(baseDateTime.plusHours(1));
+        setAuditingTime(baseDateTime.plusHours(1));
         createSubscribe("future@test.com", SubscribeFrequency.DAILY);
         createQuestions(10);
 
@@ -162,13 +162,13 @@ class MailGenerateStepTest extends IntegrationTestSupport {
     @DisplayName("기존 전송 이력이 있어도 중복 저장하지 않고 최신 이력으로 교체한다.")
     void replaceAlreadySentHistoryWithoutDuplicate() {
         LocalDateTime baseDateTime = LocalDateTime.of(2025, 5, 5, 7, 0); // Monday
-        setJpaAuditingTime(baseDateTime.minusHours(1));
+        setAuditingTime(baseDateTime.minusHours(1));
         Subscribe daily = createSubscribe("daily@test.com", SubscribeFrequency.DAILY);
         Subscribe weekly = createSubscribe("weekly@test.com", SubscribeFrequency.WEEKLY);
         List<Question> questions = createQuestions(10);
         createSentHistory(daily, questions.subList(0, 1), baseDateTime.minusMinutes(30));
         createSentHistory(weekly, questions.subList(0, 5), baseDateTime.minusMinutes(30));
-        setJpaAuditingTime(baseDateTime.plusMinutes(10));
+        setAuditingTime(baseDateTime.plusMinutes(10));
 
         JobExecution result = jobLauncherTestUtils.launchStep("mailGenerateStep", toJobParameters(baseDateTime));
 
@@ -200,7 +200,7 @@ class MailGenerateStepTest extends IntegrationTestSupport {
     @DisplayName("processor에서 예외가 발생한 구독자는 건너뛰고 나머지는 생성한다.")
     void skipWhenProcessorThrowsException() {
         LocalDateTime baseDateTime = LocalDateTime.of(2025, 5, 5, 7, 0); // Monday
-        setJpaAuditingTime(baseDateTime.minusHours(1));
+        setAuditingTime(baseDateTime.minusHours(1));
         // FRONTEND 질문만 준비해서 BACKEND 구독자는 질문 선택 실패를 유도한다.
         createSubscribe("valid-daily@test.com", SubscribeFrequency.DAILY);
         createSubscribe("invalid-weekly@test.com", SubscribeFrequency.WEEKLY, QuestionCategory.BACKEND);
@@ -225,9 +225,9 @@ class MailGenerateStepTest extends IntegrationTestSupport {
     @DisplayName("created_at이 기준 시각과 같으면 생성 대상에 포함된다.")
     void includeWhenCreatedAtEqualsDatetime() {
         LocalDateTime baseDateTime = LocalDateTime.of(2025, 5, 5, 7, 0); // Monday
-        setJpaAuditingTime(baseDateTime);
+        setAuditingTime(baseDateTime);
         createSubscribe("equal@test.com", SubscribeFrequency.DAILY);
-        setJpaAuditingTime(baseDateTime.plusSeconds(1));
+        setAuditingTime(baseDateTime.plusSeconds(1));
         createSubscribe("future@test.com", SubscribeFrequency.DAILY);
         createQuestions(10);
 
@@ -250,7 +250,7 @@ class MailGenerateStepTest extends IntegrationTestSupport {
     @DisplayName("실패 후 동일 파라미터로 재실행하면 실패 지점부터 이어서 처리하고 중복 저장하지 않는다.")
     void restartFromFailedPointWithoutDuplicate() {
         LocalDateTime baseDateTime = LocalDateTime.of(2025, 5, 5, 7, 0); // Monday
-        setJpaAuditingTime(baseDateTime.minusHours(1));
+        setAuditingTime(baseDateTime.minusHours(1));
         createSubscribes("daily", 120, SubscribeFrequency.DAILY);
         createQuestions(10);
         String failTargetEmail = "daily-105@test.com";
@@ -299,7 +299,7 @@ class MailGenerateStepTest extends IntegrationTestSupport {
     }
 
     private void createSentHistory(Subscribe subscribe, List<Question> questions, LocalDateTime createdAt) {
-        setJpaAuditingTime(createdAt);
+        setAuditingTime(createdAt);
         subscribeQuestionRepository.saveAll(
                 questions.stream()
                         .map(question -> SubscribeQuestion.success(subscribe, question))

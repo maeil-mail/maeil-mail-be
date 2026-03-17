@@ -82,9 +82,9 @@ class WeeklyMailSendWriterTest extends IntegrationTestSupport {
     void writeReplaceAlreadySentHistory() {
         Subscribe subscribe = createSubscribe();
         List<Question> questions = createQuestions(WEEKLY_SEND_COUNT);
-        setJpaAuditingTime(LocalDateTime.of(2025, 5, 1, 7, 0));
+        setAuditingTime(LocalDateTime.of(2025, 5, 1, 7, 0));
         createSentHistory(subscribe, questions.get(0));
-        setJpaAuditingTime(LocalDateTime.of(2025, 5, 2, 7, 0));
+        setAuditingTime(LocalDateTime.of(2025, 5, 2, 7, 0));
         WeeklyMailPayload message = createMessage(subscribe, questions);
 
         writer.write(new Chunk<>(List.of(message)));

@@ -31,7 +31,7 @@ class ForwardDaoTest extends IntegrationTestSupport {
     void changeStateBatch() {
         List<ForwardLog> logs = createForwardLogs();
 
-        forwardDao.changeState(logs, ForwardStatus.PROCESSING);
+        forwardDao.changeStateWithNewTx(logs, ForwardStatus.PROCESSING);
 
         List<Long> ids = logs.stream()
                 .map(ForwardLog::getId)

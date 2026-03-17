@@ -62,7 +62,7 @@ class ChangeSequenceStepTest extends IntegrationTestSupport {
                 .withMinute(0)
                 .withSecond(0)
                 .withNano(0);
-        setJpaAuditingTime(baseDateTime.minusHours(1));
+        setAuditingTime(baseDateTime.minusHours(1));
         Subscribe dailyActive = createSubscribe("daily-active@test.com", SubscribeFrequency.DAILY);
         Subscribe weeklyActive = createSubscribe("weekly-active@test.com", SubscribeFrequency.WEEKLY);
         Subscribe unsubscribed = createUnsubscribedSubscribe("daily-unsubscribed@test.com", SubscribeFrequency.DAILY);
@@ -110,7 +110,7 @@ class ChangeSequenceStepTest extends IntegrationTestSupport {
     }
 
     private void createTodaySentHistory(LocalDateTime baseDateTime, Subscribe subscribe, List<Question> questions) {
-        setJpaAuditingTime(baseDateTime.plusMinutes(10));
+        setAuditingTime(baseDateTime.plusMinutes(10));
         questions.forEach(question -> subscribeQuestionRepository.save(SubscribeQuestion.success(subscribe, question)));
     }
 

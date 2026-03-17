@@ -244,7 +244,7 @@ class MailSendItemReaderTest extends IntegrationTestSupport {
             SubscribeFrequency frequency,
             boolean deleted
     ) {
-        setJpaAuditingTime(createdAt);
+        setAuditingTime(createdAt);
         List<Subscribe> subscribes = new ArrayList<>();
 
         for (int i = 0; i < size; i++) {

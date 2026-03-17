@@ -1,41 +1,28 @@
 package maeilbatch.support;
 
-import static org.mockito.BDDMockito.willDoNothing;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.anyMap;
-import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.time.Clock;
 import java.time.LocalDateTime;
-import java.util.List;
+import java.time.ZoneId;
 import java.util.Optional;
 import maeilmail.mail.MailViewRenderer;
-import maeilmail.subscribe.command.application.VerifySubscribeService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.batch.test.context.SpringBatchTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
-import org.springframework.cache.annotation.EnableCaching;
-import org.springframework.cache.concurrent.ConcurrentMapCache;
-import org.springframework.cache.support.SimpleCacheManager;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Import;
 import org.springframework.data.auditing.AuditingHandler;
 import org.springframework.data.auditing.DateTimeProvider;
-import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
 @SpringBatchTest
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
-@Import(IntegrationTestSupport.TestConfig.class)
 @Sql(scripts = "classpath:bucket4j.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_CLASS)
 public abstract class IntegrationTestSupport {
 
@@ -45,12 +32,21 @@ public abstract class IntegrationTestSupport {
     @Autowired
     private AuditingHandler auditingHandler;
 
-    @Autowired
-    private DateTimeProvider dateTimeProvider;
+    @MockitoBean
+    protected DateTimeProvider dateTimeProvider;
+
+    @MockitoBean
+    protected Clock clock;
+
+    @MockitoBean
+    protected JavaMailSender javaMailSender;
+
+    @MockitoBean
+    protected MailViewRenderer mailViewRenderer;
 
     @BeforeEach
     void setUp() {
-        setJpaAuditingTime(LocalDateTime.now());
+        setAuditingTime(LocalDateTime.now());
         auditingHandler.setDateTimeProvider(dateTimeProvider);
     }
 
@@ -59,52 +55,13 @@ public abstract class IntegrationTestSupport {
         cacheManager.getCacheNames().forEach(name -> cacheManager.getCache(name).clear());
     }
 
-    protected void setJpaAuditingTime(LocalDateTime time) {
+    protected void setAuditingTime(LocalDateTime time) {
+        ZoneId zoneId = ZoneId.of("Asia/Seoul");
         when(dateTimeProvider.getNow())
                 .thenReturn(Optional.of(time));
-    }
-
-    @EnableCaching
-    @EnableJpaAuditing
-    @TestConfiguration
-    public static class TestConfig {
-
-        @Bean
-        public DateTimeProvider dateTimeProvider() {
-            return mock(DateTimeProvider.class);
-        }
-
-        @Bean
-        public VerifySubscribeService verifySubscribeService() {
-            VerifySubscribeService verifySubscribeService = mock(VerifySubscribeService.class);
-            willDoNothing()
-                    .given(verifySubscribeService)
-                    .verify(any(), any());
-
-            return verifySubscribeService;
-        }
-
-        @Bean
-        public CacheManager cacheManager() {
-            List<Cache> caches = List.of(new ConcurrentMapCache("question"));
-            SimpleCacheManager simpleCacheManager = new SimpleCacheManager();
-            simpleCacheManager.setCaches(caches);
-
-            return simpleCacheManager;
-        }
-
-        @Bean
-        public JavaMailSender javaMailSender() {
-            return mock(JavaMailSender.class);
-        }
-
-        @Bean
-        public MailViewRenderer mailViewRenderer() {
-            MailViewRenderer mailViewRenderer = mock(MailViewRenderer.class);
-            when(mailViewRenderer.render(anyMap(), anyString()))
-                    .thenReturn("mock-rendered-text");
-
-            return mailViewRenderer;
-        }
+        when(clock.getZone())
+                .thenReturn(zoneId);
+        when(clock.instant())
+                .thenReturn(time.atZone(zoneId).toInstant());
     }
 }

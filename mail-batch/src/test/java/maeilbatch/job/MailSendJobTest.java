@@ -96,13 +96,13 @@ class MailSendJobTest extends IntegrationTestSupport {
     @DisplayName("메일 전송 내역 및 받은 질문지 내역 저장 이후 질문지를 발송한다.(사후 작업으로 시퀀스 증가와 관리자 알림을 수행)")
     void mailSendJobHappyCase() throws Exception {
         LocalDateTime baseDateTime = LocalDateTime.of(2025, 5, 5, 7, 0); // Monday
-        setJpaAuditingTime(baseDateTime.minusHours(1));
+        setAuditingTime(baseDateTime.minusHours(1));
         Subscribe dailySubscribe = createSubscribe("daily@test.com", SubscribeFrequency.DAILY);
         Subscribe weeklySubscribe = createSubscribe("weekly@test.com", SubscribeFrequency.WEEKLY);
         createQuestions(10);
         Long dailyBefore = dailySubscribe.getNextQuestionSequence();
         Long weeklyBefore = weeklySubscribe.getNextQuestionSequence();
-        setJpaAuditingTime(baseDateTime.plusMinutes(1));
+        setAuditingTime(baseDateTime.plusMinutes(1));
 
         JobExecution result = jobLauncherTestUtils.launchJob(toJobParameters(baseDateTime, 1L));
 
@@ -135,11 +135,11 @@ class MailSendJobTest extends IntegrationTestSupport {
     @DisplayName("mailSendStep 실패 후 동일 파라미터 재실행 시 실패 step부터 재시작한다.")
     void restartFromFailedStep() throws Exception {
         LocalDateTime baseDateTime = LocalDateTime.of(2025, 5, 5, 7, 0); // Monday
-        setJpaAuditingTime(baseDateTime.minusHours(1));
+        setAuditingTime(baseDateTime.minusHours(1));
         createSubscribe("daily@test.com", SubscribeFrequency.DAILY);
         createQuestions(10);
         JobParameters params = toJobParameters(baseDateTime, 2L);
-        setJpaAuditingTime(baseDateTime.plusMinutes(1));
+        setAuditingTime(baseDateTime.plusMinutes(1));
 
         configureJavaMailFatalError();
         JobExecution failedExecution = jobLauncherTestUtils.launchJob(params);
