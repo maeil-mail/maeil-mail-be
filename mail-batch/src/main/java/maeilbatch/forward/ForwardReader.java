@@ -16,17 +16,32 @@ public class ForwardReader {
     private final DataSource dataSource;
 
     public JdbcPagingItemReader<ForwardLog> generate(LocalDateTime startDateTime, LocalDateTime endDateTime) {
+        return generate(startDateTime, endDateTime, 1L, Long.MAX_VALUE);
+    }
+
+    public JdbcPagingItemReader<ForwardLog> generate(
+            LocalDateTime startDateTime,
+            LocalDateTime endDateTime,
+            Long startId,
+            Long endId
+    ) {
         return new JdbcPagingItemReaderBuilder<ForwardLog>()
                 .name("forwardLogReader")
                 .dataSource(dataSource)
                 .pageSize(100)
                 .selectClause("select id, target, subject, message, status")
                 .fromClause("from forward_log")
-                .whereClause("where created_at >= :startDateTime and created_at < :endDateTime")
+                .whereClause("""
+                        where created_at >= :startDateTime
+                          and created_at < :endDateTime
+                          and id between :startId and :endId
+                        """)
                 .sortKeys(Map.of("id", Order.ASCENDING))
                 .parameterValues(Map.of(
                         "startDateTime", startDateTime,
-                        "endDateTime", endDateTime
+                        "endDateTime", endDateTime,
+                        "startId", startId,
+                        "endId", endId
                 ))
                 .dataRowMapper(ForwardLog.class)
                 .build();

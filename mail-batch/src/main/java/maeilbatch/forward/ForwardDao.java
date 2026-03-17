@@ -3,6 +3,7 @@ package maeilbatch.forward;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
@@ -12,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @RequiredArgsConstructor
-class ForwardDao {
+public class ForwardDao {
 
     private final NamedParameterJdbcTemplate jdbcTemplate;
 
@@ -41,5 +42,28 @@ class ForwardDao {
                 "update forward_log as f set f.status = :status, f.updated_at = :now where f.id = :id",
                 param
         );
+    }
+
+    @Transactional(readOnly = true)
+    public ForwardIdRange queryIdRange(LocalDateTime startDateTime, LocalDateTime endDateTime) {
+        SqlParameterSource param = new MapSqlParameterSource()
+                .addValue("startDateTime", startDateTime)
+                .addValue("endDateTime", endDateTime);
+
+        return jdbcTemplate.queryForObject(
+                """
+                        select coalesce(min(id), 0) as min_id, coalesce(max(id), 0) as max_id
+                        from forward_log
+                        where
+                            created_at >= :startDateTime and
+                            created_at < :endDateTime
+                        """,
+                param,
+                getForwardIdRangeRowMapper()
+        );
+    }
+
+    private RowMapper<ForwardIdRange> getForwardIdRangeRowMapper() {
+        return (rs, rowNum) -> new ForwardIdRange(rs.getLong("min_id"), rs.getLong("max_id"));
     }
 }
