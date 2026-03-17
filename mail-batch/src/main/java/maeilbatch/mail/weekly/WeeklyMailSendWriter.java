@@ -2,12 +2,12 @@ package maeilbatch.mail.weekly;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import maeilbatch.forward.ForwardRepository;
+import maeilbatch.forward.ForwardDao;
+import maeilbatch.forward.ForwardLog;
 import maeilbatch.mail.AbstractMailPayload;
-import maeilmail.question.Question;
-import maeilmail.subscribe.command.domain.Subscribe;
+import maeilbatch.mail.dao.SubscribeQuestionDao;
+import maeilbatch.mail.dao.SubscribeQuestionKey;
 import maeilmail.subscribe.command.domain.SubscribeQuestion;
-import maeilmail.subscribe.command.domain.SubscribeQuestionRepository;
 import org.springframework.batch.item.Chunk;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.stereotype.Component;
@@ -16,38 +16,41 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class WeeklyMailSendWriter implements ItemWriter<AbstractMailPayload> {
 
-    private final SubscribeQuestionRepository subscribeQuestionRepository;
-    private final ForwardRepository forwardRepository;
+    private final SubscribeQuestionDao subscribeQuestionDao;
+    private final ForwardDao forwardDao;
 
     @Override
     public void write(Chunk<? extends AbstractMailPayload> chunk) {
-        List<? extends AbstractMailPayload> items = chunk.getItems();
-        items.forEach(this::rollingHistory);
-        items.forEach(this::saveSendLog);
+        WeeklyMailPayloads weeklyMailPayloads = WeeklyMailPayloads.withChunk(chunk);
+        if (weeklyMailPayloads.isEmpty()) {
+            return;
+        }
+
+        rollingHistory(weeklyMailPayloads);
+        saveSendLogs(weeklyMailPayloads);
     }
 
-    private void rollingHistory(AbstractMailPayload payload) {
-        WeeklyMailPayload weeklyMailPayload = (WeeklyMailPayload) payload;
-        List<Question> questions = weeklyMailPayload.getQuestions();
-        removeAlreadySaved(weeklyMailPayload.getSubscribe(), questions);
-
-        List<SubscribeQuestion> subscribeQuestions = questions.stream()
-                .map(it -> SubscribeQuestion.success(weeklyMailPayload.getSubscribe(), it))
-                .toList();
-
-        subscribeQuestionRepository.saveAll(subscribeQuestions);
+    private void rollingHistory(WeeklyMailPayloads payloads) {
+        removeAlreadySaved(payloads);
+        saveSubscribeQuestions(payloads);
     }
 
-    private void removeAlreadySaved(Subscribe subscribe, List<Question> questions) {
-        List<SubscribeQuestion> alreadySaved = subscribeQuestionRepository.findBySubscribeAndQuestionIn(subscribe, questions);
-        List<Long> removeTargetIds = alreadySaved.stream()
-                .map(SubscribeQuestion::getId)
-                .toList();
+    private void removeAlreadySaved(WeeklyMailPayloads payloads) {
+        List<SubscribeQuestionKey> keys = payloads.getSubscribeQuestionKeys();
+        List<Long> removeTargetIds = subscribeQuestionDao.findIdsByKeys(keys);
 
-        subscribeQuestionRepository.removeAllByIdIn(removeTargetIds);
+        subscribeQuestionDao.batchDeleteByIds(removeTargetIds);
     }
 
-    private void saveSendLog(AbstractMailPayload payload) {
-        forwardRepository.save(payload.toForwardLog());
+    private void saveSubscribeQuestions(WeeklyMailPayloads payloads) {
+        List<SubscribeQuestion> subscribeQuestions = payloads.toSubscribeQuestions();
+
+        subscribeQuestionDao.batchInsert(subscribeQuestions);
+    }
+
+    private void saveSendLogs(WeeklyMailPayloads payloads) {
+        List<ForwardLog> logs = payloads.toForwardLogs();
+
+        forwardDao.batchInsert(logs);
     }
 }

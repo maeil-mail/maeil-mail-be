@@ -2,10 +2,12 @@ package maeilbatch.mail.daily;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import maeilbatch.forward.ForwardRepository;
+import maeilbatch.forward.ForwardDao;
+import maeilbatch.forward.ForwardLog;
 import maeilbatch.mail.AbstractMailPayload;
+import maeilbatch.mail.dao.SubscribeQuestionDao;
+import maeilbatch.mail.dao.SubscribeQuestionKey;
 import maeilmail.subscribe.command.domain.SubscribeQuestion;
-import maeilmail.subscribe.command.domain.SubscribeQuestionRepository;
 import org.springframework.batch.item.Chunk;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.stereotype.Component;
@@ -14,29 +16,41 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class DailyMailSendWriter implements ItemWriter<AbstractMailPayload> {
 
-    private final SubscribeQuestionRepository subscribeQuestionRepository;
-    private final ForwardRepository forwardRepository;
+    private final SubscribeQuestionDao subscribeQuestionDao;
+    private final ForwardDao forwardDao;
 
     @Override
     public void write(Chunk<? extends AbstractMailPayload> chunk) {
-        List<? extends AbstractMailPayload> items = chunk.getItems();
-        items.forEach(this::rollingHistory);
-        items.forEach(this::saveSendLog);
+        DailyMailPayloads dailyMailPayloads = DailyMailPayloads.withChunk(chunk);
+        if (dailyMailPayloads.isEmpty()) {
+            return;
+        }
+
+        rollingHistory(dailyMailPayloads);
+        saveSendLogs(dailyMailPayloads);
     }
 
-    private void rollingHistory(AbstractMailPayload payload) {
-        DailyMailPayload dailyMailPayload = (DailyMailPayload) payload;
-        subscribeQuestionRepository
-                .findBySubscribeAndQuestion(dailyMailPayload.getSubscribe(), dailyMailPayload.getQuestion())
-                .ifPresent(subscribeQuestionRepository::delete);
-
-        subscribeQuestionRepository.save(SubscribeQuestion.success(
-                dailyMailPayload.getSubscribe(),
-                dailyMailPayload.getQuestion()
-        ));
+    private void rollingHistory(DailyMailPayloads payloads) {
+        removeAlreadySaved(payloads);
+        saveSubscribeQuestions(payloads);
     }
 
-    private void saveSendLog(AbstractMailPayload payload) {
-        forwardRepository.save(payload.toForwardLog());
+    private void removeAlreadySaved(DailyMailPayloads payloads) {
+        List<SubscribeQuestionKey> keys = payloads.getSubscribeQuestionKeys();
+        List<Long> removeTargetIds = subscribeQuestionDao.findIdsByKeys(keys);
+
+        subscribeQuestionDao.batchDeleteByIds(removeTargetIds);
+    }
+
+    private void saveSubscribeQuestions(DailyMailPayloads payloads) {
+        List<SubscribeQuestion> subscribeQuestions = payloads.toSubscribeQuestions();
+
+        subscribeQuestionDao.batchInsert(subscribeQuestions);
+    }
+
+    private void saveSendLogs(DailyMailPayloads payloads) {
+        List<ForwardLog> logs = payloads.toForwardLogs();
+
+        forwardDao.batchInsert(logs);
     }
 }
