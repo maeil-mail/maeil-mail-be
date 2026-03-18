@@ -8,9 +8,6 @@ spring:
     job:
       enabled: false
 
-  datasource:
-    url: jdbc:h2:mem:testdb;MODE=MySQL
-
   jpa:
     hibernate:
       ddl-auto: create
@@ -19,6 +16,14 @@ spring:
         auto_quote_keyword: true
         format_sql: true
     show-sql: true
+
+  datasource:
+    hikari:
+      data-source-properties:
+        rewriteBatchedStatements: true
+        profileSQL: true
+        logger: Slf4JLogger
+        maxQuerySizeToLog: 999999
 
   sql:
     init:

@@ -11,16 +11,12 @@ import org.springframework.stereotype.Component;
 @Component("forwardMailSender")
 public class ForwardSender extends AbstractMailSender<ForwardLog> {
 
-    private final ForwardDao forwardDao;
-
     public ForwardSender(
             JavaMailSender javaMailSender,
             MimeMessageCustomizer mimeMessageCustomizer,
-            RateLimiter rateLimiter,
-            ForwardDao forwardDao
+            RateLimiter rateLimiter
     ) {
         super(javaMailSender, mimeMessageCustomizer, rateLimiter);
-        this.forwardDao = forwardDao;
     }
 
     @Override
@@ -31,12 +27,10 @@ public class ForwardSender extends AbstractMailSender<ForwardLog> {
     @Override
     protected void handleSuccess(ForwardLog forwardLog) {
         forwardLog.setStatus(ForwardStatus.DONE);
-        forwardDao.changeState(forwardLog.getId(), ForwardStatus.DONE);
     }
 
     @Override
     protected void handleFailure(ForwardLog forwardLog) {
         forwardLog.setStatus(ForwardStatus.FAILED);
-        forwardDao.changeState(forwardLog.getId(), ForwardStatus.FAILED);
     }
 }
