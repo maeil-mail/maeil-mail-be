@@ -22,33 +22,18 @@ public class AdminAuthInterceptor implements HandlerInterceptor {
         }
 
         String header = request.getHeader(HttpHeaders.AUTHORIZATION);
-        if (header == null) {
+        if (header == null || !header.startsWith("Basic ")) {
             throw new IllegalArgumentException(ADMIN_AUTH_FAIL_MESSAGE);
         }
 
-        String[] authTokens = header.split(" ");
-        String authType = authTokens[0];
-        String secret = authTokens[1];
-
-        validateAuthType(authType);
-        validateIdentity(secret);
-
+        String secret = header.substring("Basic ".length());
+        if (!adminSecret.equals(secret)) {
+            throw new IllegalArgumentException(ADMIN_AUTH_FAIL_MESSAGE);
+        }
         return true;
     }
 
     private boolean isPreflight(HttpServletRequest request) {
         return "OPTIONS".equals(request.getMethod());
-    }
-
-    private void validateAuthType(String authType) {
-        if (!("Basic".equals(authType))) {
-            throw new IllegalArgumentException("지원하지 않는 인증 타입입니다.");
-        }
-    }
-
-    private void validateIdentity(String secret) {
-        if (!(adminSecret.equals(secret))) {
-            throw new IllegalArgumentException(ADMIN_AUTH_FAIL_MESSAGE);
-        }
     }
 }
