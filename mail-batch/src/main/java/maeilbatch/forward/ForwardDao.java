@@ -1,5 +1,6 @@
 package maeilbatch.forward;
 
+import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -16,54 +17,87 @@ import org.springframework.transaction.annotation.Transactional;
 public class ForwardDao {
 
     private final NamedParameterJdbcTemplate jdbcTemplate;
+    private final Clock clock;
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void changeState(List<? extends ForwardLog> logs, ForwardStatus status) {
-        logs.forEach(it -> it.setStatus(status));
-        SqlParameterSource param = new MapSqlParameterSource()
-                .addValue("status", status.name())
-                .addValue("ids", logs.stream().map(ForwardLog::getId).toList())
-                .addValue("now", LocalDateTime.now());
-
-        jdbcTemplate.update(
-                "update forward_log as f set f.status = :status, f.updated_at = :now where f.id in (:ids)",
-                param
-        );
+    public void changeStateWithNewTx(List<? extends ForwardLog> logs, ForwardStatus status) {
+        changeState(logs, status);
     }
 
     @Transactional
-    public void changeState(Long id, ForwardStatus status) {
-        SqlParameterSource param = new MapSqlParameterSource()
-                .addValue("id", id)
-                .addValue("status", status.name())
-                .addValue("now", LocalDateTime.now());
+    public void changeState(List<? extends ForwardLog> logs, ForwardStatus status) {
+        if (logs.isEmpty()) {
+            return;
+        }
 
-        jdbcTemplate.update(
-                "update forward_log as f set f.status = :status, f.updated_at = :now where f.id = :id",
-                param
-        );
+        logs.forEach(it -> it.setStatus(status));
+        doChangeStatus(logs, status);
+    }
+
+    private void doChangeStatus(List<? extends ForwardLog> logs, ForwardStatus status) {
+        String sql = "update forward_log as f set f.status = :status, f.updated_at = :now where f.id in (:ids)";
+        SqlParameterSource param = new MapSqlParameterSource()
+                .addValue("status", status.name())
+                .addValue("ids", logs.stream().map(ForwardLog::getId).toList())
+                .addValue("now", LocalDateTime.now(clock));
+
+        jdbcTemplate.update(sql, param);
     }
 
     @Transactional(readOnly = true)
     public ForwardIdRange queryIdRange(LocalDateTime startDateTime, LocalDateTime endDateTime) {
+        String sql = """
+                select coalesce(min(id), 0) as min_id, coalesce(max(id), 0) as max_id
+                from forward_log
+                where
+                    created_at >= :startDateTime and
+                    created_at < :endDateTime
+                """;
         SqlParameterSource param = new MapSqlParameterSource()
                 .addValue("startDateTime", startDateTime)
                 .addValue("endDateTime", endDateTime);
 
-        return jdbcTemplate.queryForObject(
-                """
-                        select coalesce(min(id), 0) as min_id, coalesce(max(id), 0) as max_id
-                        from forward_log
-                        where
-                            created_at >= :startDateTime and
-                            created_at < :endDateTime
-                        """,
-                param,
-                getForwardIdRangeRowMapper()
-        );
+        return jdbcTemplate.queryForObject(sql, param, getForwardIdRangeRowMapper());
     }
 
     private RowMapper<ForwardIdRange> getForwardIdRangeRowMapper() {
-        return (rs, rowNum) -> new ForwardIdRange(rs.getLong("min_id"), rs.getLong("max_id"));
+        return (rs, rowNum) -> new ForwardIdRange(
+                rs.getLong("min_id"),
+                rs.getLong("max_id")
+        );
+    }
+
+    @Transactional
+    public void batchInsert(List<ForwardLog> logs) {
+        if (logs.isEmpty()) {
+            return;
+        }
+
+        doBatchInsert(logs);
+    }
+
+    private void doBatchInsert(List<ForwardLog> logs) {
+        String sql = """
+                insert into forward_log (target, subject, message, status, created_at, updated_at)
+                values (:target, :subject, :message, :status, :createdAt, :updatedAt)
+                """;
+        SqlParameterSource[] params = createParam(logs);
+
+        jdbcTemplate.batchUpdate(sql, params);
+    }
+
+    private SqlParameterSource[] createParam(List<ForwardLog> logs) {
+        LocalDateTime now = LocalDateTime.now(clock);
+
+        return logs.stream()
+                .map(log -> new MapSqlParameterSource()
+                        .addValue("target", log.getTarget())
+                        .addValue("subject", log.getSubject())
+                        .addValue("message", log.getMessage())
+                        .addValue("status", log.getStatus().name())
+                        .addValue("createdAt", now)
+                        .addValue("updatedAt", now)
+                )
+                .toArray(SqlParameterSource[]::new);
     }
 }
