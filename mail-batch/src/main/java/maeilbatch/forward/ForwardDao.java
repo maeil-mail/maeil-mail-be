@@ -81,12 +81,12 @@ public class ForwardDao {
                 insert into forward_log (target, subject, message, status, created_at, updated_at)
                 values (:target, :subject, :message, :status, :createdAt, :updatedAt)
                 """;
-        SqlParameterSource[] params = createParam(logs);
+        SqlParameterSource[] params = createBatchInsertParams(logs);
 
         jdbcTemplate.batchUpdate(sql, params);
     }
 
-    private SqlParameterSource[] createParam(List<ForwardLog> logs) {
+    private SqlParameterSource[] createBatchInsertParams(List<ForwardLog> logs) {
         LocalDateTime now = LocalDateTime.now(clock);
 
         return logs.stream()

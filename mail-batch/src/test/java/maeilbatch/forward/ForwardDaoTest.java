@@ -99,9 +99,9 @@ class ForwardDaoTest extends IntegrationTestSupport {
     @DisplayName("지정한 날짜 범위의 최소/최대 id를 조회한다.")
     void queryIdRange() {
         LocalDateTime baseDateTime = LocalDateTime.of(2025, 5, 5, 7, 0);
-        saveForwardLogs(2, baseDateTime.minusMinutes(1), ForwardStatus.PENDING);
-        List<ForwardLog> inRangeLogs = saveForwardLogs(3, baseDateTime.plusMinutes(1), ForwardStatus.PENDING);
-        saveForwardLogs(2, baseDateTime.plusDays(1), ForwardStatus.PENDING);
+        createForwardLogs(2, baseDateTime.minusMinutes(1), ForwardStatus.PENDING);
+        List<ForwardLog> inRangeLogs = createForwardLogs(3, baseDateTime.plusMinutes(1), ForwardStatus.PENDING);
+        createForwardLogs(2, baseDateTime.plusDays(1), ForwardStatus.PENDING);
 
         ForwardIdRange idRange = forwardDao.queryIdRange(baseDateTime, baseDateTime.plusDays(1));
 
@@ -124,8 +124,8 @@ class ForwardDaoTest extends IntegrationTestSupport {
     @DisplayName("지정한 날짜 범위에 로그가 없으면 id 범위는 0, 0을 반환한다.")
     void queryIdRangeWhenNoData() {
         LocalDateTime baseDateTime = LocalDateTime.of(2025, 5, 5, 7, 0);
-        saveForwardLogs(2, baseDateTime.minusDays(1), ForwardStatus.PENDING);
-        saveForwardLogs(2, baseDateTime.plusDays(1), ForwardStatus.PENDING);
+        createForwardLogs(2, baseDateTime.minusDays(1), ForwardStatus.PENDING);
+        createForwardLogs(2, baseDateTime.plusDays(1), ForwardStatus.PENDING);
 
         ForwardIdRange idRange = forwardDao.queryIdRange(baseDateTime, baseDateTime.plusHours(1));
 
@@ -144,7 +144,7 @@ class ForwardDaoTest extends IntegrationTestSupport {
         return forwardRepository.saveAll(List.of(pendingLog, failedLog));
     }
 
-    private List<ForwardLog> saveForwardLogs(int size, LocalDateTime createdAt, ForwardStatus status) {
+    private List<ForwardLog> createForwardLogs(int size, LocalDateTime createdAt, ForwardStatus status) {
         setAuditingTime(createdAt);
         List<ForwardLog> logs = new ArrayList<>();
 
