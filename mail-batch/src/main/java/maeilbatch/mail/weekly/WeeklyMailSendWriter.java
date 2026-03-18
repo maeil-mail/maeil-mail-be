@@ -39,7 +39,7 @@ public class WeeklyMailSendWriter implements ItemWriter<AbstractMailPayload> {
         List<SubscribeQuestionKey> keys = payloads.getSubscribeQuestionKeys();
         List<Long> removeTargetIds = subscribeQuestionDao.findIdsByKeys(keys);
 
-        subscribeQuestionDao.batchDeleteByIds(removeTargetIds);
+        subscribeQuestionDao.deleteByIds(removeTargetIds);
     }
 
     private void saveSubscribeQuestions(WeeklyMailPayloads payloads) {
