@@ -8,6 +8,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.options;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -68,7 +69,7 @@ class AdminApiTest extends ApiTestSupport {
     @DisplayName("Authorization 헤더에 'Basic ' 접두사가 없으면 인증에 실패한다.")
     void authFailWhenMissingBasicPrefix() throws Exception {
         assertThrows(ServletException.class, () ->
-                mockMvc.perform(get("/admin/question"))
+                mockMvc.perform(get("/admin/question").header("Authorization", secret))
                         .andDo(print()));
     }
 
@@ -76,7 +77,15 @@ class AdminApiTest extends ApiTestSupport {
     @DisplayName("잘못된 시크릿이면 인증에 실패한다.")
     void authFailWhenWrongSecret() throws Exception {
         assertThrows(ServletException.class, () ->
-                mockMvc.perform(get("/admin/question"))
+                mockMvc.perform(get("/admin/question").header("Authorization", "Basic wrong-secret"))
                         .andDo(print()));
+    }
+
+    @Test
+    @DisplayName("OPTIONS preflight 요청은 인증 없이 통과한다.")
+    void preflightRequestPassesWithoutAuth() throws Exception {
+        mockMvc.perform(options("/admin/question"))
+                .andDo(print())
+                .andExpect(status().isOk());
     }
 }
