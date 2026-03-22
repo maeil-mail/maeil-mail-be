@@ -1,5 +1,6 @@
 dependencies {
     implementation project(':mail-core')
+    implementation 'org.apache.commons:commons-pool2:2.12.1'
     testImplementation 'org.testcontainers:junit-jupiter'
     testImplementation 'org.testcontainers:mysql'
 }
