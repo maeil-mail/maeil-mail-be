@@ -4,7 +4,6 @@ import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
@@ -42,29 +41,6 @@ public class ForwardDao {
                 .addValue("now", LocalDateTime.now(clock));
 
         jdbcTemplate.update(sql, param);
-    }
-
-    @Transactional(readOnly = true)
-    public ForwardIdRange queryIdRange(LocalDateTime startDateTime, LocalDateTime endDateTime) {
-        String sql = """
-                select coalesce(min(id), 0) as min_id, coalesce(max(id), 0) as max_id
-                from forward_log
-                where
-                    created_at >= :startDateTime and
-                    created_at < :endDateTime
-                """;
-        SqlParameterSource param = new MapSqlParameterSource()
-                .addValue("startDateTime", startDateTime)
-                .addValue("endDateTime", endDateTime);
-
-        return jdbcTemplate.queryForObject(sql, param, getForwardIdRangeRowMapper());
-    }
-
-    private RowMapper<ForwardIdRange> getForwardIdRangeRowMapper() {
-        return (rs, rowNum) -> new ForwardIdRange(
-                rs.getLong("min_id"),
-                rs.getLong("max_id")
-        );
     }
 
     @Transactional

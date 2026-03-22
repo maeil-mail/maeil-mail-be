@@ -11,7 +11,6 @@ import maeilbatch.forward.ForwardWriter;
 import maeilbatch.mail.AbstractMailPayload;
 import maeilbatch.mail.FilterSubscribeProcessor;
 import maeilbatch.mail.MailSendItemReader;
-import maeilbatch.mail.MailSendPartitioner;
 import maeilbatch.mail.MailSendProcessorClassifier;
 import maeilbatch.mail.MailSendWriterClassifier;
 import maeilmail.subscribe.command.domain.Subscribe;
@@ -29,8 +28,6 @@ import org.springframework.batch.item.support.CompositeItemProcessor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.task.TaskExecutor;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.transaction.PlatformTransactionManager;
 
 @Slf4j
@@ -39,7 +36,6 @@ import org.springframework.transaction.PlatformTransactionManager;
 class MailSendJobConfig {
 
     private static final int CHUNK_SIZE = 100;
-    private static final int POOL_SIZE = 10;
 
     private final JobRepository jobRepository;
     private final PlatformTransactionManager transactionManager;
@@ -47,13 +43,13 @@ class MailSendJobConfig {
     @Bean
     public Job mailSendJob(
             Step mailGenerateStep,
-            Step managerMailSendStep,
+            Step mailSendStep,
             Step changeSequenceStep,
             JobExecutionListener mailSendJobReportListener
     ) {
         return new JobBuilder("mailSendJob", jobRepository)
                 .start(mailGenerateStep)
-                .next(managerMailSendStep)
+                .next(mailSendStep)
                 .next(changeSequenceStep)
                 .listener(mailSendJobReportListener)
                 .build();
@@ -112,20 +108,6 @@ class MailSendJobConfig {
     }
 
     @Bean
-    public Step managerMailSendStep(
-            Step mailSendStep,
-            MailSendPartitioner partitioner,
-            TaskExecutor partitionTaskExecutor
-    ) {
-        return new StepBuilder("managerMailSendStep", jobRepository)
-                .partitioner("mailSendStep", partitioner)
-                .step(mailSendStep)
-                .taskExecutor(partitionTaskExecutor)
-                .gridSize(POOL_SIZE)
-                .build();
-    }
-
-    @Bean
     public Step mailSendStep(
             JdbcPagingItemReader<ForwardLog> mailSendReader,
             ForwardProcessor forwardProcessor,
@@ -140,26 +122,12 @@ class MailSendJobConfig {
     }
 
     @Bean
-    public TaskExecutor partitionTaskExecutor() {
-        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        executor.setCorePoolSize(POOL_SIZE);
-        executor.setMaxPoolSize(POOL_SIZE);
-        executor.setThreadNamePrefix("partition-thread-");
-        executor.setWaitForTasksToCompleteOnShutdown(Boolean.TRUE);
-        executor.initialize();
-
-        return executor;
-    }
-
-    @Bean
     @StepScope
     public JdbcPagingItemReader<ForwardLog> mailSendReader(
             @Value("#{jobParameters['datetime']}") LocalDateTime dateTime,
-            @Value("#{stepExecutionContext['startId'] ?: 1L}") Long startId,
-            @Value("#{stepExecutionContext['endId'] ?: T(java.lang.Long).MAX_VALUE}") Long endId,
             ForwardReader forwardReader
     ) {
-        return forwardReader.generate(dateTime, dateTime.plusDays(1), startId, endId);
+        return forwardReader.generate(dateTime, dateTime.plusDays(1));
     }
 
     @Bean

@@ -95,65 +95,11 @@ class ForwardDaoTest extends IntegrationTestSupport {
         assertThat(forwardRepository.findAll()).isEmpty();
     }
 
-    @Test
-    @DisplayName("지정한 날짜 범위의 최소/최대 id를 조회한다.")
-    void queryIdRange() {
-        LocalDateTime baseDateTime = LocalDateTime.of(2025, 5, 5, 7, 0);
-        createForwardLogs(2, baseDateTime.minusMinutes(1), ForwardStatus.PENDING);
-        List<ForwardLog> inRangeLogs = createForwardLogs(3, baseDateTime.plusMinutes(1), ForwardStatus.PENDING);
-        createForwardLogs(2, baseDateTime.plusDays(1), ForwardStatus.PENDING);
-
-        ForwardIdRange idRange = forwardDao.queryIdRange(baseDateTime, baseDateTime.plusDays(1));
-
-        long expectedMinId = inRangeLogs.stream()
-                .mapToLong(ForwardLog::getId)
-                .min()
-                .orElseThrow();
-        long expectedMaxId = inRangeLogs.stream()
-                .mapToLong(ForwardLog::getId)
-                .max()
-                .orElseThrow();
-
-        assertAll(
-                () -> assertThat(idRange.minId()).isEqualTo(expectedMinId),
-                () -> assertThat(idRange.maxId()).isEqualTo(expectedMaxId)
-        );
-    }
-
-    @Test
-    @DisplayName("지정한 날짜 범위에 로그가 없으면 id 범위는 0, 0을 반환한다.")
-    void queryIdRangeWhenNoData() {
-        LocalDateTime baseDateTime = LocalDateTime.of(2025, 5, 5, 7, 0);
-        createForwardLogs(2, baseDateTime.minusDays(1), ForwardStatus.PENDING);
-        createForwardLogs(2, baseDateTime.plusDays(1), ForwardStatus.PENDING);
-
-        ForwardIdRange idRange = forwardDao.queryIdRange(baseDateTime, baseDateTime.plusHours(1));
-
-        assertAll(
-                () -> assertThat(idRange.minId()).isZero(),
-                () -> assertThat(idRange.maxId()).isZero(),
-                () -> assertThat(idRange.isEmpty()).isTrue()
-        );
-    }
-
     private List<ForwardLog> createForwardLogs() {
         ForwardLog pendingLog = new ForwardLog("one@test.com", "subject1", "message1");
         ForwardLog failedLog = new ForwardLog("two@test.com", "subject2", "message2");
         failedLog.setStatus(ForwardStatus.FAILED);
 
         return forwardRepository.saveAll(List.of(pendingLog, failedLog));
-    }
-
-    private List<ForwardLog> createForwardLogs(int size, LocalDateTime createdAt, ForwardStatus status) {
-        setAuditingTime(createdAt);
-        List<ForwardLog> logs = new ArrayList<>();
-
-        for (int i = 0; i < size; i++) {
-            ForwardLog log = new ForwardLog("user-%s@test.com".formatted(i), "subject-%s".formatted(i), "message-%s".formatted(i));
-            log.setStatus(status);
-            logs.add(log);
-        }
-
-        return forwardRepository.saveAll(logs);
     }
 }

@@ -1,7 +1,7 @@
 package maeilmail.mail;
 
 import lombok.extern.slf4j.Slf4j;
-import maeilmail.RateLimiter;
+import maeilmail.support.RateLimiter;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
 
