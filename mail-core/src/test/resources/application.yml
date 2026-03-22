@@ -39,7 +39,8 @@ mail:
   ses:
     rate-limit:
       bucket-key: ses-mail-core-test
-      capacity: 10
-      refill-amount: 10
+      capacity: 50
+      refill-amount: 50
       refill-seconds: 1
+      lease-amount: 5
       wait-timeout-millis: 2000
