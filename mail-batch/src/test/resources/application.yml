@@ -51,7 +51,8 @@ mail:
   ses:
     rate-limit:
       bucket-key: ses-batch-test
-      capacity: 90
-      refill-amount: 90
+      capacity: 50
+      refill-amount: 50
       refill-seconds: 1
+      lease-amount: 5
       wait-timeout-millis: 2000
