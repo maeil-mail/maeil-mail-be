@@ -12,7 +12,7 @@ import maeilmail.subscribe.command.domain.SubscribeFrequency;
 import maeilmail.subscribe.command.domain.SubscribeQuestion;
 import maeilmail.subscribe.command.domain.SubscribeQuestionRepository;
 import maeilmail.subscribe.command.domain.SubscribeRepository;
-import maeilmail.support.IntegrationTestSupport;
+import maeilmail.support.TestAuditingSupport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -29,7 +29,10 @@ import org.springframework.stereotype.Component;
  * - 실패 건수 : 0건
  */
 @Component
-public class SendReportCountingCase extends IntegrationTestSupport {
+public class SendReportCountingCase {
+
+    @Autowired
+    private TestAuditingSupport testAuditingSupport;
 
     @Autowired
     private SubscribeRepository subscribeRepository;
@@ -44,7 +47,7 @@ public class SendReportCountingCase extends IntegrationTestSupport {
     private EntityManager entityManager;
 
     public void createData() {
-        setJpaAuditingTime(LocalDate.of(2024, 11, 1).atStartOfDay());
+        testAuditingSupport.setJpaAuditingTime(LocalDate.of(2024, 11, 1).atStartOfDay());
         Subscribe subscribe = createSubscribe(SubscribeFrequency.WEEKLY);
         Subscribe acceptedMailButUnsubscribed = createSubscribe(SubscribeFrequency.DAILY);
         Question question = createQuestion();
@@ -62,7 +65,7 @@ public class SendReportCountingCase extends IntegrationTestSupport {
         unsubscribe(acceptedMailButUnsubscribed, deletedAt2);
 
         // 30일 7시 가입자이므로 30일날은 카운팅 대상 x
-        setJpaAuditingTime(LocalDateTime.of(2024, 12, 30, 7, 0, 0));
+        testAuditingSupport.setJpaAuditingTime(LocalDateTime.of(2024, 12, 30, 7, 0, 0));
         createSubscribe(SubscribeFrequency.DAILY);
 
         LocalDateTime monday = LocalDateTime.of(2024, 12, 30, 7, 10, 0);
@@ -85,7 +88,7 @@ public class SendReportCountingCase extends IntegrationTestSupport {
     }
 
     private void createSubscribeQuestions(Subscribe subscribe, Question question, LocalDateTime time, int success, int fail) {
-        setJpaAuditingTime(time);
+        testAuditingSupport.setJpaAuditingTime(time);
         for (int i = 0; i < success; i++) {
             createSubscribeQuestion(true, subscribe, question);
         }
