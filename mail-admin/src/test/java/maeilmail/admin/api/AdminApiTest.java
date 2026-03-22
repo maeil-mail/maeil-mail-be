@@ -2,15 +2,19 @@ package maeilmail.admin.api;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.options;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.Collections;
+
+import jakarta.servlet.ServletException;
 import maeilmail.PaginationResponse;
 import maeilmail.question.QuestionSummary;
 import maeilmail.support.ApiTestSupport;
@@ -51,5 +55,37 @@ class AdminApiTest extends ApiTestSupport {
                 () -> assertThat(actualPageable.getPageSize()).isEqualTo(10),
                 () -> assertThat(actualPageable.getPageNumber()).isEqualTo(0)
         );
+    }
+
+    @Test
+    @DisplayName("Authorization 헤더가 없으면 인증에 실패한다.")
+    void authFailWhenNoAuthorizationHeader() throws Exception {
+        assertThrows(ServletException.class, () ->
+                mockMvc.perform(get("/admin/question"))
+                        .andDo(print()));
+    }
+
+    @Test
+    @DisplayName("Authorization 헤더에 'Basic ' 접두사가 없으면 인증에 실패한다.")
+    void authFailWhenMissingBasicPrefix() throws Exception {
+        assertThrows(ServletException.class, () ->
+                mockMvc.perform(get("/admin/question").header("Authorization", secret))
+                        .andDo(print()));
+    }
+
+    @Test
+    @DisplayName("잘못된 시크릿이면 인증에 실패한다.")
+    void authFailWhenWrongSecret() throws Exception {
+        assertThrows(ServletException.class, () ->
+                mockMvc.perform(get("/admin/question").header("Authorization", "Basic wrong-secret"))
+                        .andDo(print()));
+    }
+
+    @Test
+    @DisplayName("OPTIONS preflight 요청은 인증 없이 통과한다.")
+    void preflightRequestPassesWithoutAuth() throws Exception {
+        mockMvc.perform(options("/admin/question"))
+                .andDo(print())
+                .andExpect(status().isOk());
     }
 }
