@@ -1,4 +1,4 @@
-package maeilmail;
+package maeilmail.support;
 
 import javax.sql.DataSource;
 import java.time.Duration;
