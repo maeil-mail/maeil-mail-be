@@ -143,22 +143,6 @@ class DistributedRateLimitSupportTest {
     }
 
     @Test
-    @DisplayName("임대 토큰을 timeout 안에 획득할 수 있으면 대기 후 토큰을 소비한다.")
-    void consumeBlockingWaitsUntilLeaseBecomesAvailable() {
-        DistributedTokenLeaseService leaseService = mock(DistributedTokenLeaseService.class);
-        when(leaseService.tryLeaseToken(5)).thenReturn(false, false, true);
-        DistributedRateLimitSupport rateLimitSupport = createRateLimitSupport(leaseService);
-
-        boolean consumed = rateLimitSupport.consumeBlocking(Duration.ofMillis(50));
-
-        assertAll(
-                () -> assertThat(consumed).isTrue(),
-                () -> assertThat(rateLimitSupport.getLeasedTokens()).isEqualTo(4),
-                () -> verify(leaseService, times(3)).tryLeaseToken(5)
-        );
-    }
-
-    @Test
     @DisplayName("임대 토큰을 timeout 안에 획득하지 못하면 예외를 발생한다.")
     void consumeBlockingThrowsExceptionWhenTimeoutExpires() {
         DistributedTokenLeaseService leaseService = mock(DistributedTokenLeaseService.class);

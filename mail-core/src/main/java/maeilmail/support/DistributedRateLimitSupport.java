@@ -14,8 +14,6 @@ import org.springframework.stereotype.Component;
 @Component
 class DistributedRateLimitSupport {
 
-    private static final long BLOCKING_RETRY_INTERVAL_NANOS = Duration.ofMillis(10).toNanos();
-
     @Getter(AccessLevel.NONE)
     private final DistributedTokenLeaseService leaseService;
 
@@ -45,17 +43,29 @@ class DistributedRateLimitSupport {
                 return true;
             }
 
-            long remainingNanos = deadlineNanos - System.nanoTime();
-            if (remainingNanos <= 0) {
-                throw new RateLimitExceededException();
-            }
-
-            LockSupport.parkNanos(Math.min(BLOCKING_RETRY_INTERVAL_NANOS, remainingNanos));
-            if (Thread.currentThread().isInterrupted()) {
-                Thread.currentThread().interrupt();
-                throw new RateLimitExceededException();
-            }
+            parkUntilNextRefillBoundaryOrDeadline(deadlineNanos);
         }
+    }
+
+    private void parkUntilNextRefillBoundaryOrDeadline(long deadlineNanos) {
+        long remainingNanos = deadlineNanos - System.nanoTime();
+        if (remainingNanos <= 0) {
+            throw new RateLimitExceededException();
+        }
+
+        long nanosUntilNextRefillBoundary = calculateNanosUntilNextRefillBoundary();
+        LockSupport.parkNanos(Math.min(remainingNanos, nanosUntilNextRefillBoundary));
+        if (Thread.currentThread().isInterrupted()) {
+            Thread.currentThread().interrupt();
+            throw new RateLimitExceededException();
+        }
+    }
+
+    private long calculateNanosUntilNextRefillBoundary() {
+        long currentTimeMillis = System.currentTimeMillis();
+        long millisUntilNextRefillBoundary = 1_000 - (currentTimeMillis % 1_000);
+
+        return Duration.ofMillis(millisUntilNextRefillBoundary).toNanos();
     }
 
     public synchronized boolean tryConsume() {
