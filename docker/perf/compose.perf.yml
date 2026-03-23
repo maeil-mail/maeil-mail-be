@@ -161,6 +161,63 @@ services:
     ports:
       - "3306:3306"
 
+  mysql-exporter:
+    container_name: mysql-exporter
+    image: prom/mysqld-exporter:v0.16.0
+    restart: no
+    networks:
+      perf-network:
+        ipv4_address: 172.16.0.12
+    depends_on:
+      - mm-mysql
+    environment:
+      MYSQLD_EXPORTER_PASSWORD: root
+    command:
+      - "--mysqld.address=mm-mysql:3306"
+      - "--mysqld.username=root"
+      - "--collect.info_schema.innodb_metrics"
+      - "--web.listen-address=:9104"
+    ports:
+      - "9104:9104"
+
+  prometheus:
+    container_name: prometheus
+    image: prom/prometheus:v2.54.1
+    restart: no
+    networks:
+      perf-network:
+        ipv4_address: 172.16.0.13
+    depends_on:
+      - mysql-exporter
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+      - "--web.enable-lifecycle"
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus-data:/prometheus
+    ports:
+      - "9090:9090"
+
+  grafana:
+    container_name: grafana
+    image: grafana/grafana:11.1.0
+    restart: no
+    networks:
+      perf-network:
+        ipv4_address: 172.16.0.14
+    depends_on:
+      - prometheus
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_USERS_DEFAULT_THEME: light
+    volumes:
+      - ./grafana/provisioning/datasources:/etc/grafana/provisioning/datasources:ro
+      - grafana-data:/var/lib/grafana
+    ports:
+      - "3000:3000"
+
   mm-mail:
     container_name: mm-mail
     image: mailhog/mailhog
@@ -219,6 +276,10 @@ services:
     mem_limit: 2g
     stdin_open: true
     tty: true
+
+volumes:
+  prometheus-data:
+  grafana-data:
 
 networks:
   perf-network:
