@@ -3,8 +3,6 @@ package maeilbatch.forward;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import maeilbatch.support.IntegrationTestSupport;
 import org.junit.jupiter.api.AfterEach;

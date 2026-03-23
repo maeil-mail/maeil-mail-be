@@ -5,10 +5,10 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.List;
+import maeilbatch.forward.ForwardStatus;
 import maeilbatch.mail.AbstractMailPayload;
 import maeilbatch.mail.dao.SubscribeQuestionKey;
 import maeilbatch.mail.weekly.WeeklyMailPayload;
-import maeilbatch.forward.ForwardStatus;
 import maeilmail.question.Question;
 import maeilmail.question.QuestionCategory;
 import maeilmail.subscribe.command.domain.Subscribe;
