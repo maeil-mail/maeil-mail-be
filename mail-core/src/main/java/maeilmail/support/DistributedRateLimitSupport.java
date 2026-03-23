@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Getter
 @Component
-class DistributedRateLimitSupport {
+public class DistributedRateLimitSupport {
 
     @Getter(AccessLevel.NONE)
     private final DistributedTokenLeaseService leaseService;

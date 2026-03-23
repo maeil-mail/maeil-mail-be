@@ -1,7 +1,7 @@
 package maeilmail.mail;
 
 import lombok.extern.slf4j.Slf4j;
-import maeilmail.support.RateLimiter;
+import maeilmail.support.DistributedRateLimitSupport;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
 
@@ -14,7 +14,7 @@ public class MailSender extends AbstractMailSender<SimpleMailMessage> {
     public MailSender(
             JavaMailSender javaMailSender,
             MimeMessageCustomizer mimeMessageCustomizer,
-            RateLimiter rateLimiter,
+            DistributedRateLimitSupport rateLimiter,
             MailEventRepository mailEventRepository
     ) {
         super(javaMailSender, mimeMessageCustomizer, rateLimiter);

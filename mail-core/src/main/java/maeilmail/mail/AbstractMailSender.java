@@ -1,10 +1,12 @@
 package maeilmail.mail;
 
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import maeilmail.support.RateLimiter;
+import maeilmail.support.DistributedRateLimitSupport;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Async;
@@ -13,9 +15,11 @@ import org.springframework.scheduling.annotation.Async;
 @RequiredArgsConstructor
 public abstract class AbstractMailSender<T extends MailMessage> {
 
+    private static final Duration WAIT_TIMEOUT = Duration.of(2, ChronoUnit.SECONDS);
+
     private final JavaMailSender javaMailSender;
     private final MimeMessageCustomizer mimeMessageCustomizer;
-    private final RateLimiter limiter;
+    private final DistributedRateLimitSupport limiter;
 
     public void sendMailSync(T message) {
         sendMail(message);
@@ -24,7 +28,7 @@ public abstract class AbstractMailSender<T extends MailMessage> {
     @Async
     public void sendMail(T message) {
         try {
-            limiter.tryConsume();
+            limiter.consumeBlocking(WAIT_TIMEOUT);
             logSending(message);
             MimeMessage emptyMimeMessage = javaMailSender.createMimeMessage();
             MimeMessage targetMimeMessage = mimeMessageCustomizer.customize(emptyMimeMessage, message);

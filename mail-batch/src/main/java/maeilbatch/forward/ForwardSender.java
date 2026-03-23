@@ -1,9 +1,9 @@
 package maeilbatch.forward;
 
 import lombok.extern.slf4j.Slf4j;
-import maeilmail.support.RateLimiter;
 import maeilmail.mail.AbstractMailSender;
 import maeilmail.mail.MimeMessageCustomizer;
+import maeilmail.support.DistributedRateLimitSupport;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
 
@@ -14,7 +14,7 @@ public class ForwardSender extends AbstractMailSender<ForwardLog> {
     public ForwardSender(
             JavaMailSender javaMailSender,
             MimeMessageCustomizer mimeMessageCustomizer,
-            RateLimiter rateLimiter
+            DistributedRateLimitSupport rateLimiter
     ) {
         super(javaMailSender, mimeMessageCustomizer, rateLimiter);
     }
