@@ -43,6 +43,7 @@ public class ConnectionPoolJavaMailSender implements JavaMailSender, AutoCloseab
 
     @Override
     public void send(SimpleMailMessage... simpleMessages) throws MailException {
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -53,17 +54,17 @@ public class ConnectionPoolJavaMailSender implements JavaMailSender, AutoCloseab
     @Override
     public void send(MimeMessage... mimeMessages) throws MailException {
         Transport transport = getConnection();
-        boolean invalidateTrarget = false;
+        boolean invalidateTarget = false;
 
-        for (MimeMessage mimeMessage : mimeMessages) {
-            try {
+        try {
+            for (MimeMessage mimeMessage : mimeMessages) {
                 sendMessage(transport, mimeMessage);
-            } catch (Exception e) {
-                invalidateTrarget = true;
-                throw new MailSendException("메일 전송을 실패했습니다.", e);
-            } finally {
-                returnOrInvalidate(transport, invalidateTrarget);
             }
+        } catch (Exception e) {
+            invalidateTarget = true;
+            throw new MailSendException("메일 전송을 실패했습니다.", e);
+        } finally {
+            returnOrInvalidate(transport, invalidateTarget);
         }
     }
 
