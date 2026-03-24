@@ -42,7 +42,7 @@ public class SmtpConnectionPool implements AutoCloseable {
         this.connectionPool = new GenericObjectPool<>(new SmtpConnectionFactory(settings), config);
     }
 
-    public void doWithConnection(TransportCallback cb) throws Exception {
+    public void doWithConnection(SmtpTransportCallback cb) throws Exception {
         Transport transport = connectionPool.borrowObject();
         boolean invalidateTransport = false;
 
@@ -67,11 +67,5 @@ public class SmtpConnectionPool implements AutoCloseable {
         }
 
         connectionPool.returnObject(transport);
-    }
-
-    @FunctionalInterface
-    public interface TransportCallback {
-
-        void execute(Transport transport) throws Exception;
     }
 }

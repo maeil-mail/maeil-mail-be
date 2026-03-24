@@ -53,7 +53,7 @@ public class SmtpConnectionPoolProxy implements JavaMailSender, AutoCloseable {
         }
     }
 
-    private SmtpConnectionPool.TransportCallback getSendMailCallBack(MimeMessage[] mimeMessages) {
+    private SmtpTransportCallback getSendMailCallBack(MimeMessage[] mimeMessages) {
         return transport -> {
             for (MimeMessage mimeMessage : mimeMessages) {
                 sendMessage(transport, mimeMessage);
