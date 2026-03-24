@@ -7,8 +7,12 @@ import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import maeilmail.support.DistributedRateLimitSupport;
+import maeilmail.support.RateLimitExceededException;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Recover;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.scheduling.annotation.Async;
 
 @Slf4j
@@ -21,12 +25,28 @@ public abstract class AbstractMailSender<T extends MailMessage> {
     private final MimeMessageCustomizer mimeMessageCustomizer;
     private final DistributedRateLimitSupport limiter;
 
+    @Retryable(
+            maxAttempts = 3,
+            backoff = @Backoff(delay = 1000L, multiplier = 2),
+            retryFor = RetryableMailException.class,
+            recover = "recover"
+    )
     public void sendMailSync(T message) {
-        sendMail(message);
+        doSend(message);
     }
 
     @Async
+    @Retryable(
+            maxAttempts = 2,
+            backoff = @Backoff(delay = 1000L, multiplier = 2),
+            retryFor = RetryableMailException.class,
+            recover = "recover"
+    )
     public void sendMail(T message) {
+        doSend(message);
+    }
+
+    private void doSend(T message) {
         try {
             limiter.consumeBlocking(WAIT_TIMEOUT);
             logSending(message);
@@ -34,13 +54,19 @@ public abstract class AbstractMailSender<T extends MailMessage> {
             MimeMessage targetMimeMessage = mimeMessageCustomizer.customize(emptyMimeMessage, message);
             javaMailSender.send(targetMimeMessage);
             handleSuccess(message);
-        } catch (MessagingException | MailException e) {
-            log.error("메일 전송 실패: {}", e.getMessage(), e);
-            handleFailure(message);
+        } catch (MessagingException | MailException | RateLimitExceededException e) {
+            log.error("메일 전송 실패 : {}", e.getMessage(), e);
+            throw new RetryableMailException(e);
         } catch (Exception e) {
             log.error("예기치 않은 오류 발생: {}", e.getMessage(), e);
             handleFailure(message);
         }
+    }
+
+    @Recover
+    protected void recover(Exception e, T message) {
+        log.error("최종 메일 전송 실패: {}", e.getMessage());
+        handleFailure(message);
     }
 
     protected abstract void logSending(T message);
@@ -48,4 +74,11 @@ public abstract class AbstractMailSender<T extends MailMessage> {
     protected abstract void handleSuccess(T message);
 
     protected abstract void handleFailure(T message);
+
+    private static class RetryableMailException extends RuntimeException {
+
+        public RetryableMailException(Exception e) {
+            super(e);
+        }
+    }
 }

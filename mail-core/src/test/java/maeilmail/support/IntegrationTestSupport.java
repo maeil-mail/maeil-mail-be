@@ -10,8 +10,10 @@ import com.querydsl.jpa.JPQLTemplates;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import maeilmail.mail.MailSender;
+import maeilmail.mail.MimeMessageCustomizer;
 import maeilmail.mail.SimpleMailMessage;
 import maeilmail.subscribe.command.application.VerifySubscribeService;
+import maeilmail.support.DistributedRateLimitSupport;
 import org.hibernate.cfg.AvailableSettings;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,6 +31,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.auditing.AuditingHandler;
 import org.springframework.data.auditing.DateTimeProvider;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -73,6 +76,15 @@ public abstract class IntegrationTestSupport {
 
     @MockitoBean
     protected VerifySubscribeService verifySubscribeService;
+
+    @MockitoBean
+    protected JavaMailSender javaMailSender;
+
+    @MockitoBean
+    protected MimeMessageCustomizer mimeMessageCustomizer;
+
+    @MockitoBean
+    protected DistributedRateLimitSupport distributedRateLimitSupport;
 
     @BeforeEach
     void setUp() {

@@ -6,12 +6,14 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.retry.annotation.EnableRetry;
 
 @ConfigurationPropertiesScan(basePackages = {"maeilmail", "maeilbatch"})
 @SpringBootApplication(
         scanBasePackages = {"maeilmail", "maeilbatch"}
 )
 @EnableJpaAuditing
+@EnableRetry
 @EnableJpaRepositories(basePackages = {"maeilmail", "maeilbatch"})
 @EntityScan(basePackages = {"maeilmail", "maeilbatch"})
 class MaeilBatchApplication {
