@@ -1,5 +1,7 @@
 package maeilbatch.support;
 
+import static org.mockito.ArgumentMatchers.anyMap;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 import java.time.Clock;
@@ -26,7 +28,7 @@ import org.testcontainers.containers.MySQLContainer;
 @Transactional
 @SpringBatchTest
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
-@Sql(scripts = "classpath:bucket4j.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_CLASS)
+@Sql(scripts = "classpath:init.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_CLASS)
 public abstract class IntegrationTestSupport {
 
     static final MySQLContainer<?> MYSQL = new MySQLContainer<>("mysql:8.4")
@@ -68,6 +70,8 @@ public abstract class IntegrationTestSupport {
     void setUp() {
         setAuditingTime(LocalDateTime.now());
         auditingHandler.setDateTimeProvider(dateTimeProvider);
+        when(mailViewRenderer.render(anyMap(), anyString()))
+                .thenReturn("view");
     }
 
     @AfterEach

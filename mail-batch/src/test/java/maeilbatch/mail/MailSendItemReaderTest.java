@@ -139,8 +139,9 @@ class MailSendItemReaderTest extends IntegrationTestSupport {
         try {
             List<Subscribe> firstPage = read(reader, 100);
             Long lastIdOfFirstPage = firstPage.get(99).getId();
+            Long firstIdOfFirstPage = firstPage.get(0).getId();
 
-            insertFrontRow(baseDateTime.minusMinutes(1));
+            insertFrontRow(firstIdOfFirstPage, baseDateTime.minusMinutes(1));
             List<Subscribe> remaining = readAll(reader);
 
             List<Long> allReadIds = new ArrayList<>();
@@ -264,7 +265,7 @@ class MailSendItemReaderTest extends IntegrationTestSupport {
         return subscribeRepository.saveAll(saved);
     }
 
-    private void insertFrontRow(LocalDateTime createdAt) {
+    private void insertFrontRow(Long id, LocalDateTime createdAt) {
         jdbcTemplate.update(
                 """
                         insert into subscribe(
@@ -272,7 +273,7 @@ class MailSendItemReaderTest extends IntegrationTestSupport {
                         )
                         values (?, ?, ?, ?, ?, ?, ?, ?, ?)
                         """,
-                0L,
+                id - 1,
                 "front@test.com",
                 QuestionCategory.BACKEND.name(),
                 15L,

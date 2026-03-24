@@ -86,8 +86,9 @@ class ForwardReaderTest extends IntegrationTestSupport {
         try {
             List<ForwardLog> firstPage = read(reader, 100);
             Long lastIdOfFirstPage = firstPage.get(99).getId();
+            Long firstIdOfFirstPage = firstPage.get(0).getId();
 
-            insertFrontRow(baseDateTime.plusMinutes(1));
+            insertFrontRow(firstIdOfFirstPage, baseDateTime.plusMinutes(1));
             List<ForwardLog> remaining = readAll(reader);
 
             List<Long> allReadIds = new ArrayList<>();
@@ -224,13 +225,13 @@ class ForwardReaderTest extends IntegrationTestSupport {
         return forwardLog;
     }
 
-    private void insertFrontRow(LocalDateTime createdAt) {
+    private void insertFrontRow(Long id, LocalDateTime createdAt) {
         jdbcTemplate.update(
                 """
                         insert into forward_log(id, target, subject, message, status, created_at, updated_at)
                         values (?, ?, ?, ?, ?, ?, ?)
                         """,
-                0L,
+                id - 1,
                 "front@test.com",
                 "front-subject",
                 "front-message",

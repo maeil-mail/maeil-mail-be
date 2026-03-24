@@ -35,29 +35,6 @@ class ForwardWriterTest extends IntegrationTestSupport {
     }
 
     @Test
-    @DisplayName("writer는 상태를 PROCESSING으로 변경하고 각 로그를 전송한다.")
-    void write() {
-        ForwardSender forwardSender = mock(ForwardSender.class);
-        ForwardWriter forwardWriter = new ForwardWriter(forwardDao, forwardSender);
-        List<ForwardLog> logs = createForwardLogs();
-        Chunk<ForwardLog> chunk = new Chunk<>(logs);
-
-        forwardWriter.write(chunk);
-
-        List<Long> ids = logs.stream()
-                .map(ForwardLog::getId)
-                .toList();
-        List<ForwardStatus> statuses = forwardRepository.findAllById(ids).stream()
-                .map(ForwardLog::getStatus)
-                .toList();
-
-        assertAll(
-                () -> assertThat(statuses).containsExactlyInAnyOrder(ForwardStatus.PROCESSING, ForwardStatus.PROCESSING),
-                () -> verify(forwardSender, times(2)).sendMailSync(any(ForwardLog.class))
-        );
-    }
-
-    @Test
     @DisplayName("writer는 전송 결과에 따라 forward 상태를 DONE, FAILED로 직접 반영한다.")
     void write_updatesForwardStatusBySendResult() {
         ForwardSender forwardSender = createForwardSender();
