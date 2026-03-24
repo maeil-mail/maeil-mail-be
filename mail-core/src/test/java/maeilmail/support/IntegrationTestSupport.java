@@ -13,7 +13,6 @@ import maeilmail.mail.MailSender;
 import maeilmail.mail.MimeMessageCustomizer;
 import maeilmail.mail.SimpleMailMessage;
 import maeilmail.subscribe.command.application.VerifySubscribeService;
-import maeilmail.support.DistributedRateLimitSupport;
 import org.hibernate.cfg.AvailableSettings;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
