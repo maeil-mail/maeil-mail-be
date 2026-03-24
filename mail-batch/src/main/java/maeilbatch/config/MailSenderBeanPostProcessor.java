@@ -19,8 +19,13 @@ public class MailSenderBeanPostProcessor implements BeanPostProcessor, Disposabl
         }
 
         SmtpConnectionProperties settings = SmtpConnectionProperties.from(delegate);
-        this.pooledMailSender = new SmtpConnectionPoolProxy(delegate, new SmtpConnectionPool(settings));
-        return pooledMailSender;
+        SmtpConnectionPool connectionPool = new SmtpConnectionPool(settings);
+        SmtpConnectionPoolProxy pooledMailSender = new SmtpConnectionPoolProxy(delegate, connectionPool);
+        pooledMailSender.testConnection();
+
+        this.pooledMailSender = pooledMailSender;
+
+        return this.pooledMailSender;
     }
 
     @Override

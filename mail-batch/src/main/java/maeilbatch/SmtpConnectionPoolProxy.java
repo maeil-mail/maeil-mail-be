@@ -74,4 +74,18 @@ public class SmtpConnectionPoolProxy implements JavaMailSender, AutoCloseable {
         Address[] recipients = mimeMessage.getAllRecipients();
         transport.sendMessage(mimeMessage, recipients != null ? recipients : new Address[0]);
     }
+
+    public void testConnection() {
+        String message = "테스트 SMTP 연결을 실패했습니다.";
+
+        try {
+            connectionPool.doWithConnection(transport -> {
+                if (!transport.isConnected()) {
+                    throw new IllegalStateException(message);
+                }
+            });
+        } catch (Exception e) {
+            throw new IllegalStateException(message, e);
+        }
+    }
 }
