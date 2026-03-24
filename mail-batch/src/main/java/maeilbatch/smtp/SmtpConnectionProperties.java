@@ -1,4 +1,4 @@
-package maeilbatch;
+package maeilbatch.smtp;
 
 import jakarta.mail.Session;
 import org.springframework.mail.javamail.JavaMailSenderImpl;

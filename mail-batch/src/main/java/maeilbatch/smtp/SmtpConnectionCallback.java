@@ -1,9 +1,9 @@
-package maeilbatch;
+package maeilbatch.smtp;
 
 import jakarta.mail.Transport;
 
 @FunctionalInterface
-public interface SmtpTransportCallback {
+public interface SmtpConnectionCallback {
 
     void execute(Transport transport) throws Exception;
 }

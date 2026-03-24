@@ -1,8 +1,5 @@
-package maeilbatch.config;
+package maeilbatch.smtp;
 
-import maeilbatch.SmtpConnectionPool;
-import maeilbatch.SmtpConnectionPoolProxy;
-import maeilbatch.SmtpConnectionProperties;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.config.BeanPostProcessor;

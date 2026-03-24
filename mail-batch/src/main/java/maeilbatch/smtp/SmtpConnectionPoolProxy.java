@@ -1,4 +1,4 @@
-package maeilbatch;
+package maeilbatch.smtp;
 
 import java.io.InputStream;
 import java.util.Date;
@@ -53,7 +53,7 @@ public class SmtpConnectionPoolProxy implements JavaMailSender, AutoCloseable {
         }
     }
 
-    private SmtpTransportCallback getSendMailCallBack(MimeMessage[] mimeMessages) {
+    private SmtpConnectionCallback getSendMailCallBack(MimeMessage[] mimeMessages) {
         return transport -> {
             for (MimeMessage mimeMessage : mimeMessages) {
                 sendMessage(transport, mimeMessage);

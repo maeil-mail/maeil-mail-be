@@ -1,4 +1,4 @@
-package maeilbatch;
+package maeilbatch.smtp;
 
 import java.time.Duration;
 import jakarta.mail.Transport;
@@ -42,7 +42,7 @@ public class SmtpConnectionPool implements AutoCloseable {
         this.connectionPool = new GenericObjectPool<>(new SmtpConnectionFactory(settings), config);
     }
 
-    public void doWithConnection(SmtpTransportCallback cb) throws Exception {
+    public void doWithConnection(SmtpConnectionCallback cb) throws Exception {
         Transport transport = connectionPool.borrowObject();
         boolean invalidateTransport = false;
 
