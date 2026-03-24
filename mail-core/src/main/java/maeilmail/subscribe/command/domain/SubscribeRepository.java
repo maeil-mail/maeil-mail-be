@@ -13,8 +13,6 @@ public interface SubscribeRepository extends JpaRepository<Subscribe, Long> {
 
     List<Subscribe> findAllByEmailAndDeletedAtIsNull(String email);
 
-    List<Subscribe> findAllByCreatedAtBeforeAndDeletedAtIsNullAndFrequency(LocalDateTime baseDateTime, SubscribeFrequency frequency);
-
     @Query(value = """
             update subscribe as s
             set s.next_question_sequence = s.next_question_sequence +
