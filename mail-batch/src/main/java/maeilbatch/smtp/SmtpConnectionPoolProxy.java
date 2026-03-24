@@ -47,13 +47,13 @@ public class SmtpConnectionPoolProxy implements JavaMailSender, AutoCloseable {
     @Override
     public void send(MimeMessage... mimeMessages) throws MailException {
         try {
-            connectionPool.doWithConnection(getSendMailCallBack(mimeMessages));
+            connectionPool.doWithConnection(getSendMailCallback(mimeMessages));
         } catch (Exception e) {
             throw new MailSendException("메일 전송을 실패했습니다.", e);
         }
     }
 
-    private SmtpConnectionCallback getSendMailCallBack(MimeMessage[] mimeMessages) {
+    private SmtpConnectionCallback getSendMailCallback(MimeMessage[] mimeMessages) {
         return transport -> {
             for (MimeMessage mimeMessage : mimeMessages) {
                 sendMessage(transport, mimeMessage);
@@ -79,13 +79,17 @@ public class SmtpConnectionPoolProxy implements JavaMailSender, AutoCloseable {
         String message = "테스트 SMTP 연결을 실패했습니다.";
 
         try {
-            connectionPool.doWithConnection(transport -> {
-                if (!transport.isConnected()) {
-                    throw new IllegalStateException(message);
-                }
-            });
+            connectionPool.doWithConnection(getTestConnectionCallback(message));
         } catch (Exception e) {
             throw new IllegalStateException(message, e);
         }
+    }
+
+    private SmtpConnectionCallback getTestConnectionCallback(String message) {
+        return transport -> {
+            if (!transport.isConnected()) {
+                throw new IllegalStateException(message);
+            }
+        };
     }
 }
