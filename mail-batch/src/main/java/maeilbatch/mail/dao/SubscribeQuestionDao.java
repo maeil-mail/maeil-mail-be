@@ -101,6 +101,26 @@ public class SubscribeQuestionDao {
         doDeleteByIds(ids);
     }
 
+    @Transactional
+    public void increaseNextQuestionSequence(LocalDateTime baseDateTime) {
+        String sql = """
+                update subscribe as s
+                join (
+                    select sq.subscribe_id, count(*) as amount
+                    from subscribe_question as sq
+                    where sq.created_at >= :baseDateTime
+                    group by sq.subscribe_id
+                ) as sub
+                    on sub.subscribe_id = s.id
+                set s.next_question_sequence = s.next_question_sequence + sub.amount
+                where s.deleted_at is null
+                """;
+        SqlParameterSource param = new MapSqlParameterSource()
+                .addValue("baseDateTime", baseDateTime);
+
+        jdbcTemplate.update(sql, param);
+    }
+
     private void doDeleteByIds(List<Long> ids) {
         String sql = "delete from subscribe_question where id in (:ids)";
         SqlParameterSource param = new MapSqlParameterSource()

@@ -1,8 +1,11 @@
 package maeilbatch.mail.dao;
 
+import static maeilmail.subscribe.command.domain.SubscribeFrequency.DAILY;
+import static maeilmail.subscribe.command.domain.SubscribeFrequency.WEEKLY;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import maeilbatch.support.IntegrationTestSupport;
 import maeilmail.question.Question;
@@ -137,6 +140,95 @@ class SubscribeQuestionDaoTest extends IntegrationTestSupport {
         assertThat(subscribeQuestionRepository.findAll()).hasSize(1);
     }
 
+    @Test
+    @DisplayName("구독자의 질문 개수만큼 시퀀스를 증가시킨다.")
+    void increaseNextQuestionSequence() {
+        LocalDateTime baseDateTime = LocalDateTime.of(2024, 11, 7, 7, 0, 0);
+        LocalDateTime noneChange = baseDateTime.plusSeconds(1);
+        createSubscribe("test1@test.com", baseDateTime, DAILY);
+        createSubscribe("test2@test.com", baseDateTime, DAILY);
+        createSubscribe("test3@test.com", noneChange, DAILY);
+        setAuditingTime(LocalDateTime.now());
+        for (Subscribe subscribe : subscribeRepository.findAll()) {
+            createSubscribeQuestion(subscribe, createQuestion(subscribe.getCategory()));
+        }
+
+        subscribeQuestionDao.increaseNextQuestionSequence(baseDateTime);
+
+        List<Subscribe> subscribes = subscribeRepository.findAll();
+
+        assertThat(subscribes)
+                .filteredOn("nextQuestionSequence", 1L)
+                .map(Subscribe::getEmail)
+                .containsExactlyInAnyOrder("test1@test.com", "test2@test.com", "test3@test.com");
+    }
+
+    @Test
+    @DisplayName("해당 구독자가 받은 질문의 수만큼 시퀀스를 증가시킨다.")
+    void increaseNextQuestionSequenceWithOffset() {
+        LocalDateTime baseDateTime = LocalDateTime.of(2024, 11, 7, 7, 0, 1);
+        LocalDateTime noneChange = baseDateTime.plusSeconds(1);
+        createSubscribe("test1@test.com", baseDateTime, WEEKLY);
+        createSubscribe("test2@test.com", baseDateTime, DAILY);
+        createSubscribe("test3@test.com", noneChange, DAILY);
+        setAuditingTime(LocalDateTime.now());
+        for (Subscribe subscribe : subscribeRepository.findAll()) {
+            if (subscribe.getFrequency() == DAILY) {
+                createSubscribeQuestion(subscribe, createQuestion(subscribe.getCategory()));
+                continue;
+            }
+
+            for (int i = 0; i < 5; i++) {
+                createSubscribeQuestion(subscribe, createQuestion(subscribe.getCategory()));
+            }
+        }
+
+        subscribeQuestionDao.increaseNextQuestionSequence(baseDateTime);
+
+        List<Subscribe> subscribes = subscribeRepository.findAll();
+        Subscribe subscribe1 = subscribes.get(0);
+        Subscribe subscribe2 = subscribes.get(1);
+        Subscribe subscribe3 = subscribes.get(2);
+
+        assertAll(
+                () -> assertThat(subscribe1.getNextQuestionSequence()).isEqualTo(5L),
+                () -> assertThat(subscribe2.getNextQuestionSequence()).isEqualTo(1L),
+                () -> assertThat(subscribe3.getNextQuestionSequence()).isEqualTo(1L)
+        );
+    }
+
+    @Test
+    @DisplayName("구독 해지자는 시퀀스를 증가시키지 않는다.")
+    void increaseNextQuestionSequenceIgnoreUnsubscribed() {
+        LocalDateTime baseDateTime = LocalDateTime.of(2024, 11, 7, 7, 0, 0);
+        Subscribe active = createSubscribe("active@test.com", baseDateTime, DAILY);
+        Subscribe unsubscribed = createSubscribe("unsubscribed@test.com", baseDateTime, DAILY);
+        unsubscribed.unsubscribe();
+        subscribeRepository.save(unsubscribed);
+
+        setAuditingTime(LocalDateTime.now());
+        createSubscribeQuestion(active, createQuestion(active.getCategory()));
+        createSubscribeQuestion(unsubscribed, createQuestion(unsubscribed.getCategory()));
+
+        subscribeQuestionDao.increaseNextQuestionSequence(baseDateTime);
+
+        List<Subscribe> subscribes = subscribeRepository.findAll();
+        Subscribe savedActive = subscribes.stream()
+                .filter(subscribe -> subscribe.getEmail().equals("active@test.com"))
+                .findFirst()
+                .orElseThrow();
+        Subscribe savedUnsubscribed = subscribes.stream()
+                .filter(subscribe -> subscribe.getEmail().equals("unsubscribed@test.com"))
+                .findFirst()
+                .orElseThrow();
+
+        assertAll(
+                () -> assertThat(savedActive.getNextQuestionSequence()).isEqualTo(1L),
+                () -> assertThat(savedUnsubscribed.getNextQuestionSequence()).isEqualTo(0L),
+                () -> assertThat(savedUnsubscribed.getDeletedAt()).isNotNull()
+        );
+    }
+
     private Subscribe createSubscribe(String email, SubscribeFrequency frequency) {
         Subscribe subscribe = new Subscribe(email, QuestionCategory.BACKEND, frequency);
         return subscribeRepository.save(subscribe);
@@ -145,5 +237,24 @@ class SubscribeQuestionDaoTest extends IntegrationTestSupport {
     private Question createQuestion(String title) {
         Question question = new Question(title, "content-%s".formatted(title), QuestionCategory.BACKEND);
         return questionRepository.save(question);
+    }
+
+    private Question createQuestion(QuestionCategory category) {
+        Question question = new Question("question", "content", category);
+
+        return questionRepository.save(question);
+    }
+
+    private Subscribe createSubscribe(String email, LocalDateTime createdAt, SubscribeFrequency frequency) {
+        setAuditingTime(createdAt);
+        Subscribe subscribe = new Subscribe(email, QuestionCategory.FRONTEND, frequency);
+
+        return subscribeRepository.save(subscribe);
+    }
+
+    private void createSubscribeQuestion(Subscribe subscribe, Question question) {
+        SubscribeQuestion subscribeQuestion = SubscribeQuestion.success(subscribe, question);
+
+        subscribeQuestionRepository.save(subscribeQuestion);
     }
 }
