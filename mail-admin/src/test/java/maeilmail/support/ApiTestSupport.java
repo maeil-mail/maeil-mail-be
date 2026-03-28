@@ -7,8 +7,8 @@ import maeilmail.admin.domain.AdminNoticeRepository;
 import maeilmail.question.QuestionQueryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 @WebMvcTest(controllers = {AdminApi.class})
@@ -18,15 +18,15 @@ public abstract class ApiTestSupport {
     @Autowired
     protected MockMvc mockMvc;
 
-    @MockBean
+    @MockitoBean
     protected QuestionQueryService questionQueryService;
 
-    @MockBean
+    @MockitoBean
     protected AdminQuestionService adminQuestionService;
 
-    @MockBean
+    @MockitoBean
     protected AdminNoticeService adminNoticeService;
 
-    @MockBean
+    @MockitoBean
     protected AdminNoticeRepository adminNoticeRepository;
 }

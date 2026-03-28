@@ -187,4 +187,23 @@ create table category_policy
     primary key (id),
     unique key `category_policy_category_unique` (category),
     constraint `fk_category_policy_start_question_id` foreign key (`start_question_id`) references `question` (`id`)
-)
+);
+
+create table forward_log
+(
+    id         bigint       not null auto_increment,
+    target     varchar(255) not null,
+    subject    varchar(255) not null,
+    message    text         not null,
+    status     varchar(50)  not null,
+    created_at timestamp(6) not null,
+    updated_at timestamp(6) not null,
+    primary key (id)
+);
+
+create table if not exists bucket
+(
+    id    bigint not null auto_increment,
+    state blob   null,
+    primary key (id)
+);

@@ -11,6 +11,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import maeilmail.BaseEntity;
@@ -19,6 +20,7 @@ import maeilmail.question.QuestionCategory;
 @Entity
 @Getter
 @Table(name = "subscribe")
+@AllArgsConstructor(access = AccessLevel.PUBLIC)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Subscribe extends BaseEntity {
 
@@ -45,6 +47,10 @@ public class Subscribe extends BaseEntity {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private SubscribeFrequency frequency;
+
+    public Subscribe(String email, QuestionCategory category, SubscribeFrequency frequency) {
+        this(email, category, frequency, 0L);
+    }
 
     public Subscribe(String email, QuestionCategory category, SubscribeFrequency frequency, Long nextQuestionSequence) {
         this.email = email;

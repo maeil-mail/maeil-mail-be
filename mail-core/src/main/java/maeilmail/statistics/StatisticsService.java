@@ -1,12 +1,13 @@
 package maeilmail.statistics;
 
+import static maeilmail.subscribe.command.domain.SubscribeFrequency.WEEKLY;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Map;
 import java.util.function.BiFunction;
 import lombok.RequiredArgsConstructor;
-import maeilmail.bulksend.schedule.SendWeeklyQuestionScheduler;
 import maeilmail.subscribe.command.domain.SubscribeFrequency;
 import maeilmail.utils.DateUtils;
 import org.springframework.stereotype.Service;
@@ -37,7 +38,7 @@ public class StatisticsService {
     private BiFunction<SubscribeFrequency, Long, Long> getFrequencyCountPolicy(LocalDate date) {
         return (subscribeFrequency, count) -> {
             if (DateUtils.isMonday(date)) {
-                return count * SendWeeklyQuestionScheduler.WEEKLY_MAIL_SEND_COUNT;
+                return count * WEEKLY.getSendCount();
             }
 
             return 0L;

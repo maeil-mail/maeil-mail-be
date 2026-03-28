@@ -1,4 +1,10 @@
 package maeilmail.mail;
 
-public record MailMessage(String to, String subject, String text, String type) {
+public interface MailMessage {
+
+    String getTo();
+
+    String getText();
+
+    String getSubject();
 }

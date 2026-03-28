@@ -1,0 +1,58 @@
+spring:
+  main:
+    allow-bean-definition-overriding: false
+
+  batch:
+    jdbc:
+      initialize-schema: always
+    job:
+      enabled: false
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        auto_quote_keyword: true
+        format_sql: true
+    show-sql: true
+
+  datasource:
+    hikari:
+      data-source-properties:
+        rewriteBatchedStatements: true
+        profileSQL: true
+        logger: Slf4JLogger
+        maxQuerySizeToLog: 999999
+
+  sql:
+    init:
+      mode: never
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: atom
+    password: mock
+    properties:
+      mail:
+        smtp:
+          auth: true
+          timeout: 5000
+          starttls:
+            enable: true
+
+distribute:
+  server:
+    count: 1
+    index: 1
+
+mail:
+  ses:
+    rate-limit:
+      bucket-key: ses-batch-test
+      capacity: 50
+      refill-amount: 50
+      refill-seconds: 1
+      lease-amount: 5
+      wait-timeout-millis: 2000
