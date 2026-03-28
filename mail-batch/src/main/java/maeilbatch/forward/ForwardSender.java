@@ -33,4 +33,9 @@ public class ForwardSender extends AbstractMailSender<ForwardLog> {
     protected void handleFailure(ForwardLog forwardLog) {
         forwardLog.setStatus(ForwardStatus.FAILED);
     }
+
+    @Override
+    protected void handleAmbiguous(ForwardLog forwardLog) {
+        forwardLog.setStatus(ForwardStatus.PROCESSING);
+    }
 }

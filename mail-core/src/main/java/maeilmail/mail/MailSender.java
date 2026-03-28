@@ -35,4 +35,9 @@ public class MailSender extends AbstractMailSender<SimpleMailMessage> {
     protected void handleFailure(SimpleMailMessage message) {
         mailEventRepository.save(MailEvent.fail(message.to(), message.type()));
     }
+
+    @Override
+    protected void handleAmbiguous(SimpleMailMessage message) {
+        handleFailure(message);
+    }
 }
