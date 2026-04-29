@@ -1,0 +1,17 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: learning-api
+  jpa:
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health

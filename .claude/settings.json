@@ -1,0 +1,48 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/post-tool-java.sh"
+          }
+        ]
+      }
+    ]
+  },
+  "permissions": {
+    "allow": [
+      "Bash(./gradlew compileJava*)",
+      "Bash(./gradlew :learning-api:*)",
+      "Bash(./gradlew test*)",
+      "Bash(./gradlew build*)",
+      "Bash(./gradlew dependencies*)",
+      "Bash(./gradlew bootRun*)",
+      "Bash(./gradlew -v*)",
+      "Bash(./gradlew clean*)",
+      "Bash(git checkout *)",
+      "Bash(git pull *)",
+      "Bash(git push origin feature/*)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git log *)",
+      "Bash(git diff *)",
+      "Bash(git status*)",
+      "Bash(git branch*)",
+      "Bash(git check-ignore*)",
+      "Bash(gh pr create*)",
+      "Bash(gh pr list*)",
+      "Bash(gh auth status*)",
+      "Bash(docker ps*)",
+      "Bash(docker run*)",
+      "Bash(java -version*)",
+      "Bash(find *)",
+      "Bash(ls *)",
+      "Bash(mkdir *)",
+      "Bash(chmod *)",
+      "Bash(cat *)"
+    ]
+  }
+}
