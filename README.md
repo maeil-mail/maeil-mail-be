@@ -1,14 +1,18 @@
-[매일메일 바로가기](https://www.maeil-mail.kr?utm_source=github_be)
+### 📮 매일메일 - 서비스 종료
+> ⚠️ 서비스 종료 이후 도메인을 내렸으며, 이전 매일메일 운영 도메인에 올라가 있는 사이트는 매일메일에 의해 운영되고 있는 사이트가 아닙니다.
 
-## 📮 매일메일 - 기술 면접 질문 구독 서비스
+혹시, 매일메일이 도움이 된다면 Star를 눌러주세요 ⭐️  
+여러분들의 작은 관심이 모여 서비스가 운영되고 있습니다! 감사합니다! :)
 
-[<img width="949" alt="스크린샷 2024-10-22 오후 2 03 36" src="https://github.com/user-attachments/assets/66206b1c-1556-4f66-9a46-3311b2f55abb">](https://www.maeil-mail.kr?utm_source=github_be)
+## 매일메일 - 기술 면접 질문 구독 서비스
 
-[<img width="948" alt="스크린샷 2024-10-22 오후 2 04 11" src="https://github.com/user-attachments/assets/632f18f6-6842-46b1-bec8-070398318758">](https://www.maeil-mail.kr?utm_source=github_be)
+<img width="949" alt="스크린샷 2024-10-22 오후 2 03 36" src="https://github.com/user-attachments/assets/66206b1c-1556-4f66-9a46-3311b2f55abb">
 
-[<img width="955" alt="스크린샷 2024-10-22 오후 2 05 00" src="https://github.com/user-attachments/assets/dd76e163-b568-499e-8ad2-4e14729166c9">](https://www.maeil-mail.kr?utm_source=github_be)
+<img width="948" alt="스크린샷 2024-10-22 오후 2 04 11" src="https://github.com/user-attachments/assets/632f18f6-6842-46b1-bec8-070398318758">
 
-[<img width="957" alt="스크린샷 2024-10-22 오후 2 05 27" src="https://github.com/user-attachments/assets/b4a90df6-49ca-4482-a066-2a4d4e222e9b">](https://www.maeil-mail.kr?utm_source=github_be)
+<img width="955" alt="스크린샷 2024-10-22 오후 2 05 00" src="https://github.com/user-attachments/assets/dd76e163-b568-499e-8ad2-4e14729166c9">
+
+<img width="957" alt="스크린샷 2024-10-22 오후 2 05 27" src="https://github.com/user-attachments/assets/b4a90df6-49ca-4482-a066-2a4d4e222e9b">
 
 ### 🔍 어떤 서비스인가요?
 
@@ -35,10 +39,5 @@
 이메일만 등록해놓으시면, 저희가 매일 오전 7시에 기술 면접 질문과 잘 정리된 답변을 보내드립니다. 😊
 출,퇴근 시간 및 이동 시간에 메일만 확인하신다면 자연스럽게 성장하실 수 있습니다!
 
-이메일 등록만 해놓으시고 하루에 5분만 투자해보세요!
+이메일 등록만 해놓으시고 하루에 5분만 투자해 보세요!
 
---------------
-[매일메일 바로가기](https://www.maeil-mail.kr?utm_source=github_be)
-
-혹시, 도움이 되었다면 Star를 눌러주세요 ⭐️  
-작은 관심이 서비스 운영에 큰 도움이 됩니다! 감사합니다. :)
